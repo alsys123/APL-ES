@@ -5,6 +5,7 @@
         const match = sentence.match(/♠[AKQJ0-9x]+ ♥[AKQJ0-9x]+ ♦[AKQJ0-9x]+ ♣[AKQJ0-9x]+/);
         return match ? match[0].trim() : null;
       }
+
 // special check the texdt field for bridge question accuracy
       function checkMyText(inputText) {
         const origText = inputText;
