@@ -11,21 +11,19 @@
 
   <!-- Your own JS files -->
   <script src="mainline.js?v=2"></script>
-<script src="Validate-bridge-question.js?v=2"></script>
+  <script src="Validate-bridge-question.js?v=2"></script>
   
   <!-- External CSS file -->
   <link rel="stylesheet" href="style.css?v=2">
 </head>
-
   <body>
-  <div id="content"></div>
+  <div id="MainContent"></div>
   <script>
     fetch('body.html')
       .then(response => response.text())
       .then(html => {
-        document.getElementById('content').innerHTML = html;
+        document.getElementById('MainContent').innerHTML = html;
       });
   </script>
 </body>
-
 </html>
