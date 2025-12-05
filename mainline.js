@@ -1,3 +1,30 @@
+
+const CONFIG = {
+        apiKey: 'AIzaSyD9hYZTf-8u-mgnwz1JsjU44UJ6DurbXdc',
+        //     spreadsheetId: '1M4fAtFnLxhz7i-94RjwofLJh7f0xrxVinjbjz9X2b9A',  // CIXExam
+        spreadsheetId: '1zq2h3RbAtpy3N7NUa2VcjYzCDRQqG8UsUcuIRdzZMSI',  // bridgeExam
+        questionsRange: ['examQuestions!A:J', 'sectionPartTitles!A:E'],
+        discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+      };
+
+      const students = {
+        'student1': 'a',
+        'student2': 'b',
+        'student3': 'c',
+        'admin': 'admin123'
+      };
+
+      //   let currentUser = null;
+      // Global variables - v12
+      let currentUser = 'student1';
+      let currentSection = 1;
+      let currentPart = 1;
+      let answers = {};
+      let questions = {};
+      let totalQuestions = 0;
+      let sectionPartTitlesDesc = {};
+      let autoCheckEnabled = false; // default OFF false
+
 function scrollPageBottom() {
         // Use the element that actually scrolls inside Google Sites
         const scrollTarget = document.scrollingElement || document.documentElement;
