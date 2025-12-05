@@ -19,5 +19,15 @@
 <body>
   <h1>Bridge Exam System</h1>
   <p>This is styled by your external CSS file.</p>
+  <body>
+  <div id="content"></div>
+  <script>
+    fetch('body.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('content').innerHTML = html;
+      });
+  </script>
+</body>
 </body>
 </html>
