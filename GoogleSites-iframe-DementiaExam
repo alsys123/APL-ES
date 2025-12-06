@@ -10,7 +10,9 @@
       <script>
         const CONFIG = {
           apiKey: "AIzaSyD9hYZTf-8u-mgnwz1JsjU44UJ6DurbXdc",
-          spreadsheetId: "1zq2h3RbAtpy3N7NUa2VcjYzCDRQqG8UsUcuIRdzZMSI",
+
+          spreadsheetId: "1S0ITwkBBa1IAbIBUM54RJOp9aj5xxc3XvVhyrnaB89U",
+
           questionsRange: ["examQuestions!A:J", "sectionPartTitles!A:E"],
           discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
         };
