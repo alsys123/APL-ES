@@ -6,6 +6,7 @@
         return match ? match[0].trim() : null;
       }
 
+// *** entry point to checking ....
 // special check the texdt field for bridge question accuracy
       function checkMyText(inputText) {
         const origText = inputText;
