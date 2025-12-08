@@ -1,0 +1,35 @@
+<iframe width="900" height="600" style="border:none;" srcdoc='
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>Bridge Exam System</title>
+      <script src="https://apis.google.com/js/api.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+      <script>
+        const CONFIG = {
+          apiKey: "AIzaSyD9hYZTf-8u-mgnwz1JsjU44UJ6DurbXdc",
+          spreadsheetId: "1Bx5LJjhU3u3ojeUTYFLZkjwZr_f2XPCmBnul60TJYfE",
+          questionsRange: ["examQuestions!A:J", "sectionPartTitles!A:E"],
+          discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
+        };
+      </script>
+
+      <script src="https://alsys123.github.io/APL-ES/mainline.js?v=3"></script>
+      <script src="https://alsys123.github.io/APL-ES/Validate-bridge-question.js?v=2"></script>
+      <link rel="stylesheet" href="https://alsys123.github.io/APL-ES/style.css?v=2">
+    </head>
+    <body>
+      <div id="MainContent"></div>
+      <script>
+        fetch("https://alsys123.github.io/APL-ES/body.html")
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById("MainContent").innerHTML = html;
+          });
+      </script>
+    </body>
+    </html>
+  '>
+</iframe>
