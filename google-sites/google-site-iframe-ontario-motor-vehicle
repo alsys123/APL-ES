@@ -1,9 +1,11 @@
-<iframe width="900" height="600" style="border:none;" srcdoc='
+<div style="display:flex;justify-content:center;align-items:center;height:100vh;">
+  <iframe width="90%" height="90%" style="border:none;"
+srcdoc='
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
-      <title>Bridge Exam System</title>
+      <title>Ontario Motor Lisence Exam System</title>
       <script src="https://apis.google.com/js/api.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
@@ -17,7 +19,7 @@
       </script>
 
       <script src="https://alsys123.github.io/APL-ES/mainline.js?v=3"></script>
-      <script src="https://alsys123.github.io/APL-ES/Validate-bridge-question.js?v=2"></script>
+      
       <link rel="stylesheet" href="https://alsys123.github.io/APL-ES/style.css?v=2">
     </head>
     <body>
@@ -33,3 +35,4 @@
     </html>
   '>
 </iframe>
+</div>
