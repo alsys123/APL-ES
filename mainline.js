@@ -107,9 +107,10 @@ function scrollPageBottom() {
 
 
             // special only for error checking bridge quesions
-            let textCheck = row[3];
-            const text = checkMyText(textCheck);
-            // const text = row[3];   // uncomment when special error checking is done
+            //let textCheck = row[3];
+            //const text = checkMyText(textCheck);
+            
+            const text = row[3];   // uncomment when special error checking is done
 
 
             const options = [row[4], row[5], row[6], row[7]];
@@ -326,18 +327,6 @@ function scrollPageBottom() {
         updateProgress();
         updateNavigation();
       }
-      /*
-            function openExplainModal() {
-              const modal = document.getElementById("explainModal");
-              const notesDiv = document.getElementById("notes-content");
-      
-              const currentTitles = sectionPartTitlesDesc[currentSection]?.[currentPart] || [];
-              const notes = currentTitles.length ? currentTitles[0].notes : "";
-      
-              notesDiv.textContent = notes || "No notes available.";
-              modal.style.display = "block";
-            }
-      */
 
       function openExplainModal() {
         const modal = document.getElementById("explainModal");
@@ -373,7 +362,6 @@ function scrollPageBottom() {
         }
       };
 
-
       function selectAnswer(qId, optionIndex) {
         // If the same option is already selected, deselect it
         if (answers[qId] === optionIndex) {
@@ -395,11 +383,8 @@ function scrollPageBottom() {
         document.getElementById('currentSection').textContent = `${currentSection} of 6`;
         document.getElementById('currentPart').textContent = `${currentPart} of 10`;
 
-
-
         // v13 check we have all the titles in an array
         const currentTitles = sectionPartTitlesDesc[currentSection]?.[currentPart] || [];
-
 
         if (currentTitles.length === 0) {
           throw new Error('Err13: Cannot find the array of titles.');
@@ -509,6 +494,9 @@ function scrollPageBottom() {
       }
 
       window.onload = initExam;
+
+// **** Start of import/export ****
+
       // --- Export current progress to ZIP ---
       async function exportToZip() {
         try {
@@ -621,6 +609,9 @@ function scrollPageBottom() {
         }
       } //importFromZip
 
+// ****  end of import/export  ****
+
+/// ** Start of grading exam ****
       function gradeExam() {
         function getStatus(correct, incorrect, unanswered, total) {
           if (correct === 0 && incorrect === 0 && unanswered > 0) {
@@ -746,6 +737,8 @@ function scrollPageBottom() {
         enableCollapsibles();
       } // gradeExam
 
+// *** END of grading exam ***
+
       function populateJumpDropdown() {
         const select = document.getElementById('jumpSection');
         if (!select) return;
@@ -779,29 +772,6 @@ function scrollPageBottom() {
         }
       }
 
-
-      /*
-            function populateJumpDropdown() {
-              const select = document.getElementById('jumpSection');
-              if (!select) return;
-              select.innerHTML = '<option value="">-- Select Section/Part --</option>';
-      
-              for (let s = 1; s <= 6; s++) {
-                for (let p = 1; p <= 10; p++) {
-                  const titles = sectionPartTitlesDesc[s]?.[p] || [];
-                  const label = titles.length
-                    ? `Section ${s}, Part ${p} — ${titles[0].textSection}: ${titles[0].textPart}`
-                    : `Section ${s}, Part ${p}`;
-                  const opt = document.createElement('option');
-                  opt.value = `${s}-${p}`;
-                  opt.textContent = label;
-                  select.appendChild(opt);
-                }
-              }
-              // 👉 set default selection
-              //	 dropdown.value = `${currentSection}-${currentPart}`;
-            }
-      */
 
       function jumpToSectionPart() {
         const val = document.getElementById('jumpSection').value;
@@ -975,27 +945,6 @@ function scrollPageBottom() {
           dropdown.value = `${currentSection}-${currentPart}`;
         }
       }
-
-      /*
-       function toggleAutoCheck() {
-         autoCheckEnabled = !autoCheckEnabled;
-       
-         const btn = document.getElementById('autoCheckBtn');
-         if (autoCheckEnabled) {
-           btn.textContent = "🕵️ Disable Auto-Check";
-           btn.classList.remove("btn-secondary");
-           btn.classList.add("btn-success"); // green when ON
-           showNotification("Auto-check is now ON", "success");
-         } else {
-           btn.textContent = "🕵️ Enable Auto-Check";
-           btn.classList.remove("btn-success");
-           btn.classList.add("btn-secondary"); // gray when OFF
-           showNotification("Auto-check is now OFF", "warning");
-         }
-       
-         renderQuestions(); // refresh cards immediately
-       }
-      */
 
       function toggleAutoCheck() {
         autoCheckEnabled = !autoCheckEnabled;
