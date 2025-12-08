@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bridge Question Accuracy Checker</title>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 1200px; margin: 0 auto; padding: 40px; }
+    h1 { color: #667eea; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+    .loading { text-align: center; padding: 40px; }
+    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+    .stats { background: #f0f0ff; padding: 20px; border-radius: 12px; margin-bottom: 30px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
+    .stat-item { text-align: center; }
+    .stat-label { font-size: 14px; color: #666; margin-bottom: 5px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #667eea; }
+    .error-card { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+    .error-card.critical { background: #f8d7da; border-left-color: #dc3545; }
+    .question-id { font-weight: 700; color: #667eea; margin-bottom: 10px; }
+    .question-location { color: #666; margin-bottom: 10px; }
+    .question-text { font-size: 16px; margin-bottom: 15px; }
+    .error-message { background: white; padding: 12px; border-radius: 6px; color: #d63031; font-weight: 600; margin-top: 10px; }
+    .hand-display { font-family: monospace; font-size: 18px; background: #f9f9f9; padding: 10px; border-radius: 6px; margin: 10px 0; }
+    .options-list { margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 6px; }
+    .option-item { padding: 8px; margin: 5px 0; border-left: 3px solid #ddd; padding-left: 12px; }
+    .option-item.correct { border-left-color: #28a745; background: #d4edda; font-weight: 600; }
+    .correct-answer { background: #d4edda; padding: 12px; border-radius: 6px; border-left: 4px solid #28a745; margin: 10px 0; font-weight: 600; }
+    .explanation { background: #f0f8ff; padding: 12px; border-radius: 6px; border-left: 4px solid #667eea; margin: 10px 0; font-style: italic; }
+    .explanation-label { font-weight: 700; color: #667eea; margin-bottom: 5px; }
+    .corrected-question { background: #e6ffed; padding: 12px; border-radius: 6px; border-left: 4px solid #28a745; margin: 10px 0; font-style: italic; }
+    .no-errors { text-align: center; padding: 60px 20px; color: #28a745; font-size: 24px; font-weight: 600; }
+    .no-errors::before { content: "✓"; display: block; font-size: 80px; margin-bottom: 20px; }
+    .filter-section { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .filter-btn { padding: 10px 20px; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .filter-btn:hover { background: #667eea; color: white; }
+    .filter-btn.active { background: #667eea; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🃏 Bridge Question Checker</h1>
+    <p class="subtitle">Accuracy validation for bridge exam questions</p>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading questions from Google Sheets...</p>
+    </div>
+
+    <div id="content" style="display: none;">
+      <div class="stats">
+        <div class="stat-item"><div class="stat-label">Total Questions</div><div class="stat-value" id="totalQuestions">0</div></div>
+        <div class="stat-item"><div class="stat-label">Errors Found</div><div class="stat-value" id="errorCount" style="color: #dc3545;">0</div></div>
+        <div class="stat-item"><div class="stat-label">Accuracy Rate</div><div class="stat-value" id="accuracyRate">100%</div></div>
+      </div>
+
+      <div class="filter-section">
+        <span style="font-weight: 600; color: #666;">Filter by:</span>
+        <button class="filter-btn active" onclick="filterErrors('all')">All Errors</button>
+        <button class="filter-btn" onclick="filterErrors('card-count')">Card Count</button>
+        <button class="filter-btn" onclick="filterErrors('hcp')">HCP Mismatch</button>
+      </div>
+
+      <div id="errorsList"></div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      apiKey: 'AIzaSyD9hYZTf-8u-mgnwz1JsjU44UJ6DurbXdc',
+      spreadsheetId: '1zq2h3RbAtpy3N7NUa2VcjYzCDRQqG8UsUcuIRdzZMSI',
+      questionsRange: 'examQuestions!A:J',
+      discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+    };
+
+    let allErrors = [];
+    let currentFilter = 'all';
+
+    function extractHand(sentence) {
+      const match = sentence.match(/♠[AKQJ0-9x]+ ♥[AKQJ0-9x]+ ♦[AKQJ0-9x]+ ♣[AKQJ0-9x]+/);
+      return match ? match[0].trim() : null;
+    }
+
+    function countCards(hand) {
+      return hand.replace(/[^AKQJ0-9x]/g, '').length;
+    }
+
+    function countHCP(hand) {
+      const values = { 'A': 4, 'K': 3, 'Q': 2, 'J': 1 };
+      let total = 0;
+      const honors = hand.match(/[AKQJ]/g) || [];
+      honors.forEach(h => total += values[h]);
+      return total;
+    }
+
+    function extractClaimedHCP(text) {
+      const match = text.match(/(\d+)\s*HCP|HCP\s*=?\s*(\d+)/i);
+      if (!match) return null;
+      return match[1] ? Number(match[1]) : Number(match[2]);
+    }
+
+    function checkQuestion(questionText) {
+      const errors = [];
+      const hand = extractHand(questionText);
+      
+      if (hand) {
+        const cardCount = countCards(hand);
+
+                if (cardCount < 13) {
+          let correction = hand;
+          while (countCards(correction) < 13) {
+            correction += "x"; // append placeholder until 13
+          }
+          errors.push({ 
+            type: 'card-count', 
+            message: `Less than 13 cards (${cardCount})`, 
+            hand,
+            correction
+          });
+        } else if (cardCount > 13) {
+          let correction = hand;
+          while (countCards(correction) > 13 && correction.includes("x")) {
+            correction = correction.replace(/x$/, ""); // remove trailing x
+          }
+          errors.push({ 
+            type: 'card-count', 
+            message: `More than 13 cards (${cardCount})`, 
+            hand,
+            correction
+          });
+        }
+
+        // Check HCP
+        const claimedHCP = extractClaimedHCP(questionText);
+        if (claimedHCP !== null) {
+          const actualHCP = countHCP(hand);
+          if (claimedHCP !== actualHCP) {
+            errors.push({ 
+              type: 'hcp', 
+              message: `HCP mismatch: Claimed ${claimedHCP}, Actual ${actualHCP}`,
+              hand,
+              claimed: claimedHCP,
+              actual: actualHCP
+            });
+          }
+        }
+      }
+
+      return errors;
+    }
+    
+    function correctQuestion(questionText, errors) {
+	let corrected = questionText;
+
+	errors.forEach(error => {
+	    if (error.type === 'hcp' && error.actual !== undefined) {
+		// If actual higher than claim  by 2, replace last 'Q' with 'x'
+      if (error.actual - error.claimed === 2) {
+        corrected = corrected.replace(/Q(?!.*Q)/, "x");
+      } else if (error.claimed - error.actual === 2) {   // we need to add a Q if too low
+        corrected = corrected.replace(/♣(?!.*♣)/, "♣Q");
+      } else if (error.claimed - error.actual === 1) {   // we need to add a J if too low
+        corrected = corrected.replace(/♣(?!.*♣)/, "♣J");
+      } else {
+        // Otherwise just fix the numeric claim in text
+        corrected = corrected.replace(/(\d+)\s*HCP|HCP\s*=?\s*(\d+)/i, ` *** ${error.actual} HCP <== do not do this`);
+      }
+    }
+
+    if (error.type === 'card-count' && error.correction) {
+      corrected = corrected.replace(error.hand, error.correction);
+    }
+  });
+
+  return corrected;
+    }
+    
+/*
+    function correctQuestion(questionText, errors) {
+      let corrected = questionText;
+      errors.forEach(error => {
+        if (error.type === 'hcp' && error.actual !== undefined) {
+          corrected = corrected.replace(/(\d+)\s*HCP|HCP\s*=?\s*(\d+)/i, `${error.actual} HCP`);
+        }
+        if (error.type === 'card-count' && error.correction) {
+          corrected = corrected.replace(error.hand, error.correction);
+        }
+      });
+      return corrected;
+    }
+    */
+    
+    async function init() {
+      try {
+        await new Promise(resolve => gapi.load('client', resolve));
+        await gapi.client.init({
+          apiKey: CONFIG.apiKey,
+          discoveryDocs: CONFIG.discoveryDocs
+        });
+        await loadAndCheckQuestions();
+      } catch (error) {
+        console.error('Init error:', error);
+        document.getElementById('loading').innerHTML = 
+          '<p style="color: #dc3545;">Error loading questions. Please refresh the page.</p>';
+      }
+    }
+
+    async function loadAndCheckQuestions() {
+      const response = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: CONFIG.spreadsheetId,
+        range: CONFIG.questionsRange
+      });
+
+      const rows = response.result.values || [];
+      if (rows.length <= 1) throw new Error('No questions found');
+
+      allErrors = [];
+      let totalQuestions = 0;
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row[0]) continue;
+
+        totalQuestions++;
+        const qId = parseInt(row[0]);
+        const section = parseInt(row[1]);
+        const part = parseInt(row[2]);
+        const text = row[3];
+        const options = [row[4], row[5], row[6], row[7]];
+        const correctLetter = (row[8] || '').toUpperCase();
+        const correctIndex = correctLetter.charCodeAt(0) - 65;
+        const explanation = row[9] || '';
+
+        const errors = checkQuestion(text);
+        let correctedText = text;
+        if (errors.length > 0) correctedText = correctQuestion(text, errors);
+
+        if (errors.length > 0) {
+          allErrors.push({
+            id: qId,
+            section,
+            part,
+            text,
+            correctedText,
+            options,
+            correctIndex,
+            correctLetter,
+            explanation,
+            errors
+          });
+        }
+      }
+
+      displayResults(totalQuestions);
+    }
+
+    function displayResults(totalQuestions) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+
+      document.getElementById('totalQuestions').textContent = totalQuestions;
+      document.getElementById('errorCount').textContent = allErrors.length;
+      
+      const accuracy = totalQuestions > 0 
+        ? Math.round(((totalQuestions - allErrors.length) / totalQuestions) * 100)
+        : 100;
+      document.getElementById('accuracyRate').textContent = accuracy + '%';
+
+      renderErrors();
+    }
+
+    function filterErrors(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderErrors();
+    }
+
+    function renderErrors() {
+      const container = document.getElementById('errorsList');
+      
+      if (allErrors.length === 0) {
+        container.innerHTML = '<div class="no-errors">All questions are accurate!</div>';
+        return;
+      }
+
+      let filteredErrors = allErrors;
+      if (currentFilter !== 'all') {
+        filteredErrors = allErrors.filter(q => q.errors.some(e => e.type === currentFilter));
+      }
+
+      if (filteredErrors.length === 0) {
+        container.innerHTML = '<div class="no-errors">No errors of this type found!</div>';
+        return;
+      }
+
+      let html = '';
+      filteredErrors.forEach(q => {
+        const hasCardError = q.errors.some(e => e.type === 'card-count');
+        const cardClass = hasCardError ? 'critical' : '';
+
+        html += `
+          <div class="error-card ${cardClass}">
+            <div class="question-id">Question ${q.id}</div>
+            <div class="question-location">Section ${q.section}, Part ${q.part}</div>
+            <div class="question-text">${q.text}</div>
+        `;
+
+        if (q.correctedText && q.correctedText !== q.text) {
+          html += `
+            <div class="corrected-question">
+              <div class="explanation-label">✅ Corrected Version:</div>
+              ${q.correctedText}
+            </div>
+          `;
+        }
+
+        q.errors.forEach(error => {
+          if (currentFilter === 'all' || currentFilter === error.type) {
+            html += `<div class="error-message">⚠️ ${error.message}</div>`;
+            if (error.hand) {
+              html += `<div class="hand-display">${error.hand}</div>`;
+            }
+          }
+        });
+
+        html += '<div class="options-list">';
+        q.options.forEach((opt, idx) => {
+          const isCorrect = idx === q.correctIndex;
+          const correctClass = isCorrect ? 'correct' : '';
+          const correctMarker = isCorrect ? '✓ ' : '';
+          html += `<div class="option-item ${correctClass}">${correctMarker}${String.fromCharCode(65 + idx)}. ${opt}</div>`;
+        });
+        html += '</div>';
+
+        html += `<div class="correct-answer">✓ Correct Answer: ${q.correctLetter}</div>`;
+
+        if (q.explanation && q.explanation.trim()) {
+          html += `
+            <div class="explanation">
+              <div class="explanation-label">💡 Explanation:</div>
+              ${q.explanation}
+            </div>
+          `;
+        }
+
+        html += '</div>'; // close error-card
+      });
+
+      container.innerHTML = html;
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
