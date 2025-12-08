@@ -1,4 +1,6 @@
-<iframe width="900" height="600" style="border:none;" srcdoc='
+<div style="display:flex;justify-content:center;align-items:center;height:100vh;">
+  <iframe width="90%" height="90%" style="border:none;"
+srcdoc='
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -35,3 +37,4 @@
     </html>
   '>
 </iframe>
+</div>
