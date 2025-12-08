@@ -4,7 +4,8 @@
         'student1': 'a',
         'student2': 'b',
         'student3': 'c',
-        'admin': 'admin123'
+        'admin': 'admin123',
+            'z','z'
       };
 
       //   let currentUser = null;
