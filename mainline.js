@@ -5,7 +5,10 @@
         'student2': 'b',
         'student3': 'c',
         'admin': 'admin123',
-            'Z': 'z'
+          'Z': 'z',
+	  'z': 'z',
+	  'a': 'a',
+	  'A': 'a'
       };
 
       //   let currentUser = null;
@@ -17,7 +20,11 @@
       let questions = {};
       let totalQuestions = 0;
       let sectionPartTitlesDesc = {};
-      let autoCheckEnabled = false; // default OFF false
+let autoCheckEnabled = false; // default OFF false
+
+let questionStats = {}; 
+// keyed by qId: { attempts: number, correct: boolean }
+
 
 function scrollPageBottom() {
         // Use the element that actually scrolls inside Google Sites
@@ -112,16 +119,38 @@ function scrollPageBottom() {
             //const text = checkMyText(textCheck);
             
             const text = row[3];   // uncomment when special error checking is done
+              const options = [row[4], row[5], row[6], row[7]];
 
 
-            const options = [row[4], row[5], row[6], row[7]];
-            const correctLetter = (row[8] || '').toUpperCase();
+	      // Shuffle options
+	      const shuffled = options
+		    .map((opt, i) => ({ opt, i }))
+		    .sort(() => Math.random() - 0.5);
+
+	      
+              const correctLetter = (row[8] || '').toUpperCase();
+
+	      const correctIndexOriginal = correctLetter.charCodeAt(0) - 65;
+	      const correctIndexShuffled = shuffled.findIndex(o => o.i === correctIndexOriginal);
+
             const correctIndex = correctLetter.charCodeAt(0) - 65;
-            const explanation = row[9] || '';
+              const explanation = row[9] || '';
+	           
+              if (!questions[section]) questions[section] = {};
+              if (!questions[section][part]) questions[section][part] = [];
 
-            if (!questions[section]) questions[section] = {};
-            if (!questions[section][part]) questions[section][part] = [];
-
+	      
+	      // Save shuffled options and new correct index
+	      questions[section][part].push({
+		  id: qId,
+		  text: row[3],
+		  options: shuffled.map(o => o.opt),
+		  correct: correctIndexShuffled,
+		  explanation: row[9] || ''
+	      });
+	      }
+	      
+/*
             questions[section][part].push({
               id: qId,
               text: text,
@@ -130,7 +159,8 @@ function scrollPageBottom() {
               explanation: explanation
             });
           }
-
+*/
+	      
           totalQuestions = rows.length - 1;
           console.log(`Log01:  Loaded ${totalQuestions} questions from Google Sheets`);
 
@@ -363,6 +393,7 @@ function scrollPageBottom() {
         }
       };
 
+/*
       function selectAnswer(qId, optionIndex) {
         // If the same option is already selected, deselect it
         if (answers[qId] === optionIndex) {
@@ -373,6 +404,27 @@ function scrollPageBottom() {
 
         renderQuestions(); // refresh UI
       }
+*/
+
+function selectAnswer(qId, optionIndex) {
+  // Increment attempts
+  if (!questionStats[qId]) {
+    questionStats[qId] = { attempts: 0, correct: false };
+  }
+  questionStats[qId].attempts++;
+
+  // Record answer
+  answers[qId] = optionIndex;
+
+  // Check correctness
+  const currentQuestions = questions[currentSection]?.[currentPart] || [];
+  const q = currentQuestions.find(q => q.id === qId);
+  if (q) {
+    questionStats[qId].correct = (optionIndex === q.correct);
+  }
+
+  renderQuestions(); // refresh UI
+} //selectAnswer
 
       function updateProgress() {
         const totalAnswered = Object.keys(answers).length;
@@ -477,6 +529,7 @@ function scrollPageBottom() {
             }
           }
 
+	    /*
           html += `
                 <div class="result-item ${status}">
                     <strong>Question ${globalNum}:</strong> ${q.text}<br>
@@ -484,6 +537,25 @@ function scrollPageBottom() {
                     ${status === 'incorrect' && q.explanation ? `<div class="explanation">💡 ${q.explanation}</div>` : ''}
                 </div>
             `;
+	    */
+const stats = questionStats[q.id] || { attempts: 0, correct: false };
+const attemptsText = stats.attempts > 0 
+  ? `${stats.attempts} attempt${stats.attempts > 1 ? 's' : ''}` 
+  : "No attempts";
+
+const outcomeText = stats.correct ? "✅ Eventually Correct" : "❌ Not Correct";
+
+html += `
+  <div class="result-item ${status}">
+    <strong>Question ${globalNum}:</strong> ${q.text}<br>
+    <em>${statusText}</em><br>
+    <span class="attempts">Attempts: ${attemptsText}</span><br>
+    <span class="outcome">${outcomeText}</span>
+    ${status === 'incorrect' && q.explanation ? `<div class="explanation">💡 ${q.explanation}</div>` : ''}
+  </div>
+`;
+
+	    
         });
 
         document.getElementById('resultsContent').innerHTML = html;
@@ -498,7 +570,9 @@ function scrollPageBottom() {
 
 // **** Start of import/export ****
 
-      // --- Export current progress to ZIP ---
+
+// --- Export current progress to ZIP ---
+/*
       async function exportToZip() {
         try {
           if (!currentUser) {
@@ -508,11 +582,12 @@ function scrollPageBottom() {
 
           // Prepare payload
           const payload = {
-            version: '1.0',
+            version: '2.0',
             user: currentUser,
             section: currentSection,
-            part: currentPart,
-            answers,
+              part: currentPart,
+	      stats: questionStats,   // ✅ only correctness + attempts
+          //  answers,
             totalQuestions,
             timestamp: new Date().toISOString()
           };
@@ -540,6 +615,55 @@ function scrollPageBottom() {
           showNotification('Failed to export progress.', 'error');
         }
       }
+*/
+// --- Export current progress to ZIP ---
+async function exportToZip() {
+  try {
+    if (!currentUser) {
+      showNotification('Please log in before exporting.', 'warning');
+      return;
+    }
+
+    // Prepare payload
+    const payload = {
+      version: '2.0',
+      user: currentUser,
+      section: currentSection,
+      part: currentPart,
+      answers,          // ✅ raw selected indices for re‑rendering
+      stats: questionStats, // ✅ attempts + correctness
+      totalQuestions,
+      timestamp: new Date().toISOString()
+    };
+
+    // Create ZIP with progress.json
+    const zip = new JSZip();
+    const fileName = `progress_${currentUser}.json`;
+    zip.file(fileName, JSON.stringify(payload, null, 2), { date: new Date() });
+
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 6 }
+    });
+
+    // Trigger download
+    const downloadName = `exam_${currentUser}_${new Date().toISOString().replace(/[:.]/g, '-')}.zip`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = downloadName;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    a.remove();
+
+    showNotification('Exported progress to ZIP.', 'success');
+  } catch (err) {
+    console.error('Export error:', err);
+    showNotification('Failed to export progress.', 'error');
+  }
+}
+
 
       // --- Import progress from ZIP ---
       function triggerImport() {
@@ -553,6 +677,60 @@ function scrollPageBottom() {
         input.click();
       }
 
+// import from zip
+
+async function importFromZip(file) {
+  try {
+    if (!currentUser) {
+      showNotification('Please log in before importing.', 'warning');
+      return;
+    }
+
+    const zip = await JSZip.loadAsync(file);
+    const entry = Object.values(zip.files).find(f => !f.dir && f.name.toLowerCase().endsWith('.json'));
+    if (!entry) {
+      showNotification('ZIP does not contain a JSON progress file.', 'error');
+      return;
+    }
+
+    const jsonText = await entry.async('string');
+    let data;
+    try {
+      data = JSON.parse(jsonText);
+    } catch (e) {
+      showNotification('Invalid JSON inside ZIP.', 'error');
+      return;
+    }
+
+    if (data.user !== currentUser) {
+      showNotification(`Progress belongs to ${data.user}. Log in as that user to import.`, 'warning');
+      return;
+    }
+
+    // ✅ Restore both answers and stats
+    currentSection = Number(data.section) || 1;
+    currentPart = Number(data.part) || 1;
+    answers = typeof data.answers === 'object' && data.answers !== null ? data.answers : {};
+    questionStats = typeof data.stats === 'object' && data.stats !== null ? data.stats : {};
+
+    // Persist to localStorage
+    saveProgress();
+
+    // Refresh UI
+    renderQuestions();
+
+    const totalAnswered = Object.keys(answers).length;
+    showNotification(
+      `Imported progress.<br>Answered: ${totalAnswered}/${totalQuestions}<br>Section ${currentSection}, Part ${currentPart}`,
+      'success'
+    );
+  } catch (err) {
+    console.error('Import error:', err);
+    showNotification('Failed to import progress from ZIP.', 'error');
+  }
+}
+
+/*
       async function importFromZip(file) {
         try {
           if (!currentUser) {
@@ -591,7 +769,9 @@ function scrollPageBottom() {
             return;
           }
 
-          // Apply imported state
+            // Apply imported state
+	      // Restore stats
+  questionStats = data.stats || {};
           currentSection = Number(data.section) || 1;
           currentPart = Number(data.part) || 1;
           answers = typeof data.answers === 'object' && data.answers !== null ? data.answers : {};
@@ -609,6 +789,7 @@ function scrollPageBottom() {
           showNotification('Failed to import progress from ZIP.', 'error');
         }
       } //importFromZip
+*/
 
 // ****  end of import/export  ****
 

@@ -28,3 +28,10 @@ python3 -m http.server 8080 --bind 0.0.0.0
 in firefox bring up the local file:
 
 http://localhost:8080/Examv10.html
+
+==== git commands ====
+git status
+git add .
+git commit -m "Describe what you changed"
+git push
+
