@@ -680,6 +680,52 @@ html += `
       }
 */
 // --- Export current progress to ZIP ---
+//3.0 new
+async function exportToZip() {
+  try {
+    if (!currentUser) {
+      showNotification('Please log in before exporting.', 'warning');
+      return;
+    }
+
+    const payload = {
+      version: '3.0',
+      user: currentUser,
+      section: currentSection,
+      part: currentPart,
+      answers,           // ✅ selected index in shuffled order
+      stats: questionStats, // ✅ attempts + correctness
+      shuffleMap,        // ✅ qId → array of original indices (shuffle order)
+      totalQuestions,
+      timestamp: new Date().toISOString()
+    };
+
+    const zip = new JSZip();
+    const fileName = `progress_${currentUser}.json`;
+    zip.file(fileName, JSON.stringify(payload, null, 2), { date: new Date() });
+
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 6 }
+    });
+
+    const downloadName = `exam_${currentUser}_${new Date().toISOString().replace(/[:.]/g, '-')}.zip`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = downloadName;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    a.remove();
+
+    showNotification('Exported progress to ZIP.', 'success');
+  } catch (err) {
+    console.error('Export error:', err);
+    showNotification('Failed to export progress.', 'error');
+  }
+}
+/*
 async function exportToZip() {
   try {
     if (!currentUser) {
@@ -726,7 +772,7 @@ async function exportToZip() {
     showNotification('Failed to export progress.', 'error');
   }
 }
-
+*/
 
       // --- Import progress from ZIP ---
       function triggerImport() {
