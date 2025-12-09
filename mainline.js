@@ -787,7 +787,74 @@ async function exportToZip() {
       }
 
 // import from zip
+// new 3.0
+async function importFromZip(file) {
+  try {
+    if (!currentUser) {
+      showNotification('Please log in before importing.', 'warning');
+      return;
+    }
 
+    const zip = await JSZip.loadAsync(file);
+    const entry = Object.values(zip.files).find(f => !f.dir && f.name.toLowerCase().endsWith('.json'));
+    if (!entry) {
+      showNotification('ZIP does not contain a JSON progress file.', 'error');
+      return;
+    }
+
+    const jsonText = await entry.async('string');
+    let data;
+    try {
+      data = JSON.parse(jsonText);
+    } catch (e) {
+      showNotification('Invalid JSON inside ZIP.', 'error');
+      return;
+    }
+
+    if (data.user !== currentUser) {
+      showNotification(`Progress belongs to ${data.user}. Log in as that user to import.`, 'warning');
+      return;
+    }
+
+    // ✅ Restore section/part, answers, stats, and shuffleMap
+    currentSection = Number(data.section) || 1;
+    currentPart = Number(data.part) || 1;
+    answers = typeof data.answers === 'object' && data.answers !== null ? data.answers : {};
+    questionStats = typeof data.stats === 'object' && data.stats !== null ? data.stats : {};
+    shuffleMap = typeof data.shuffleMap === 'object' && data.shuffleMap !== null ? data.shuffleMap : {};
+
+    // ✅ Reapply shuffle order to questions
+    Object.values(questions).forEach(sectionParts => {
+      Object.values(sectionParts).forEach(partQuestions => {
+        partQuestions.forEach(q => {
+          const map = shuffleMap[q.id];
+          if (map) {
+            // reorder options back to saved shuffle
+            q.options = map.map(originalIndex => q.options[originalIndex]);
+            // recompute correct index in shuffled order
+            q.correct = map.indexOf(q.correct);
+          }
+        });
+      });
+    });
+
+    // Persist to localStorage
+    saveProgress();
+
+    // Refresh UI
+    renderQuestions();
+
+    const totalAnswered = Object.keys(answers).length;
+    showNotification(
+      `Imported progress.<br>Answered: ${totalAnswered}/${totalQuestions}<br>Section ${currentSection}, Part ${currentPart}`,
+      'success'
+    );
+  } catch (err) {
+    console.error('Import error:', err);
+    showNotification('Failed to import progress from ZIP.', 'error');
+  }
+}
+/*
 async function importFromZip(file) {
   try {
     if (!currentUser) {
@@ -838,7 +905,7 @@ async function importFromZip(file) {
     showNotification('Failed to import progress from ZIP.', 'error');
   }
 }
-
+*/
 /*
       async function importFromZip(file) {
         try {
