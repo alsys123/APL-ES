@@ -1,0 +1,22 @@
+<div style="display:flex;justify-content:center;align-items:center;height:100vh;">
+  <iframe width="90%" height="90%" style="border:none;"
+    srcdoc='
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <title>Bridge Exam System</title>
+        <script src="https://alsys123.github.io/APL-ES/loader.js"></script>
+      </head>
+      <body>
+        <div id="MainContent"></div>
+        <script>
+          fetch("https://alsys123.github.io/APL-ES/body.html")
+            .then(r => r.text())
+            .then(html => document.getElementById("MainContent").innerHTML = html);
+        </script>
+      </body>
+      </html>
+    '>
+  </iframe>
+</div>
