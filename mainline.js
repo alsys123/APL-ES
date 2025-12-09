@@ -1,43 +1,43 @@
 
 
-      const students = {
-        'student1': 'a',
-        'student2': 'b',
-        'student3': 'c',
-        'admin': 'admin123',
-          'Z': 'z',
-	  'z': 'z',
-	  'a': 'a',
-	  'A': 'a'
-      };
+const students = {
+    'student1': 'a',
+    'student2': 'b',
+    'student3': 'c',
+    'admin': 'admin123',
+    'Z': 'z',
+    'z': 'z',
+    'a': 'a',
+    'A': 'a'
+};
 
 // new
 
-let shuffleMap = {};       // qId → array of original indices
+
 
 // endod new
-      //   let currentUser = null;
-      // Global variables - v12
-      let currentUser = 'student1';
-      let currentSection = 1;
-      let currentPart = 1;
-      let answers = {};
-      let questions = {};
-      let totalQuestions = 0;
-      let sectionPartTitlesDesc = {};
+//   let currentUser = null;
+// Global variables - v12
+let currentUser = 'student1';
+let currentSection = 1;
+let currentPart = 1;
+let answers = {};
+let questions = {};
+let totalQuestions = 0;
+let sectionPartTitlesDesc = {};
 let autoCheckEnabled = false; // default OFF false
 
 let questionStats = {}; 
 // keyed by qId: { attempts: number, correct: boolean }
-
+let shuffleMap = {};       // qId → array of original indices
 
 function scrollPageBottom() {
-        // Use the element that actually scrolls inside Google Sites
-        const scrollTarget = document.scrollingElement || document.documentElement;
+    // Use the element that actually scrolls inside Google Sites
+    const scrollTarget = document.scrollingElement || document.documentElement;
 
-        const maxScroll = scrollTarget.scrollHeight - scrollTarget.clientHeight;
-        scrollTarget.scrollTo({ top: maxScroll, behavior: 'smooth' });
-      }
+    const maxScroll = scrollTarget.scrollHeight - scrollTarget.clientHeight;
+    scrollTarget.scrollTo({ top: maxScroll, behavior: 'smooth' });
+}
 
       function showNotification(message, type = 'success') {
         const notification = document.getElementById('notification');
@@ -52,31 +52,31 @@ function scrollPageBottom() {
         document.getElementById(screenId).classList.add('active');
       }
 
-      async function initExam() {
-        try {
-          await new Promise(resolve => {
+async function initExam() {
+    try {
+        await new Promise(resolve => {
             gapi.load('client', resolve);
-          });
+        });
 
-          await gapi.client.init({
+        await gapi.client.init({
             apiKey: CONFIG.apiKey,
             discoveryDocs: CONFIG.discoveryDocs
-          });
+        });
 
-          await loadQuestionsFromSheet();
+        await loadQuestionsFromSheet();
 
-          //    showScreen('loginScreen');  v10 out
+        //    showScreen('loginScreen');  v10 out
 
-        } catch (error) {
-          console.error('Init error:', error);
-          showNotification('Failed to load exam. Please refresh.', 'error');
-          document.querySelector('.loading-text').textContent = 'Error loading exam. Please refresh the page.';
-        }
+    } catch (error) {
+        console.error('Init error:', error);
+        showNotification('Failed to load exam. Please refresh.', 'error');
+        document.querySelector('.loading-text').textContent = 'Error loading exam. Please refresh the page.';
+    }
 
 
-        showScreen('loginScreen');
+    showScreen('loginScreen');
 
-      }
+}
 /*
 // new v3.0
 async function loadQuestionsFromSheet() {
@@ -148,7 +148,7 @@ async function loadQuestionsFromSheet() {
 }
 */
 
-      //2.0
+      //3.0
       async function loadQuestionsFromSheet() {
 
         try {
@@ -197,16 +197,18 @@ async function loadQuestionsFromSheet() {
               const options = [row[4], row[5], row[6], row[7]];
 
 
-	      // Shuffle options
+  	      // Shuffle options
 	      const shuffled = options
 		    .map((opt, i) => ({ opt, i }))
 		    .sort(() => Math.random() - 0.5);
-
-	      
-              const correctLetter = (row[8] || '').toUpperCase();
+	  
+              const correctLetter = (row[8] || "").toUpperCase();
 
 	      const correctIndexOriginal = correctLetter.charCodeAt(0) - 65;
 	      const correctIndexShuffled = shuffled.findIndex(o => o.i === correctIndexOriginal);
+
+	      shuffleMap[qId] = shuffled.map(o => o.i);
+	    //  console.log("shuffle map", shuffleMap[qId]);
 
             const correctIndex = correctLetter.charCodeAt(0) - 65;
               const explanation = row[9] || '';
@@ -221,7 +223,7 @@ async function loadQuestionsFromSheet() {
 		  text: row[3],
 		  options: shuffled.map(o => o.opt),
 		  correct: correctIndexShuffled,
-		  explanation: row[9] || ''
+		  explanation: row[9] || ""
 	      });
 	      }
 	      
@@ -277,6 +279,8 @@ async function loadQuestionsFromSheet() {
         populateJumpGrid();
 
       }  // loadQuestionsFromSheet
+
+
 
       function login() {
         const username = document.getElementById('username').value.trim();
