@@ -77,8 +77,8 @@ function scrollPageBottom() {
         showScreen('loginScreen');
 
       }
-// new 
-
+/*
+// new v3.0
 async function loadQuestionsFromSheet() {
   try {
     const response = await gapi.client.sheets.spreadsheets.values.batchGet({
@@ -146,8 +146,9 @@ async function loadQuestionsFromSheet() {
     showNotification("Failed to load questions from sheet.", "error");
   }
 }
-/*
-      //
+*/
+
+      //2.0
       async function loadQuestionsFromSheet() {
 
         try {
@@ -276,8 +277,6 @@ async function loadQuestionsFromSheet() {
         populateJumpGrid();
 
       }  // loadQuestionsFromSheet
-
-*/
 
       function login() {
         const username = document.getElementById('username').value.trim();
