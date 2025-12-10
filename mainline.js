@@ -788,10 +788,34 @@ async function exportToZip() {
         };
         input.click();
       }
+// savedIdx is the index in the OLD (exported) shuffled order
+// returns the index in the CURRENT shuffled order
+function translateSelectedIndex(qId, savedIdx, oldMap, currentMap) {
+//    console.log("remap on import: Q", qId, ".  Saved index = ", savedIdx );
+ //   console.log("   oldmap: ", oldMap );
+ //   console.log("   curmap: ", currentMap );
+    
+  const old = oldMap?.[qId];
+  const cur = currentMap?.[qId];
+  if (!Array.isArray(old) || !Array.isArray(cur)) return savedIdx; // graceful fallback
+
+  // Find which ORIGINAL option the learner selected back then
+  const originalIdx = old[savedIdx]; // e.g., savedIdx=1, old=[2,1,0,3] → originalIdx=1
+
+  // Where is that ORIGINAL option in the current shuffle?
+    const newIdx = cur.indexOf(originalIdx); // e.g., cur=[1,0,3,2] → newIdx=0
+
+ //   console.log("   import fix  ==> ", newIdx );
+    
+  return newIdx === -1 ? savedIdx : newIdx;
+} //translateSelectedIndex
 
 // import from zip
 // new 3.0
 async function importFromZip(file) {
+
+  //  console.log('Current shuffleMap:', shuffleMap);
+    
   try {
     if (!currentUser) {
       showNotification('Please log in before importing.', 'warning');
@@ -824,8 +848,9 @@ async function importFromZip(file) {
     currentPart = Number(data.part) || 1;
     answers = typeof data.answers === 'object' && data.answers !== null ? data.answers : {};
     questionStats = typeof data.stats === 'object' && data.stats !== null ? data.stats : {};
-    shuffleMap = typeof data.shuffleMap === 'object' && data.shuffleMap !== null ? data.shuffleMap : {};
+    importShuffleMap = typeof data.shuffleMap === 'object' && data.shuffleMap !== null ? data.shuffleMap : {};
 
+      /*
     // ✅ Reapply shuffle order to questions
     Object.values(questions).forEach(sectionParts => {
       Object.values(sectionParts).forEach(partQuestions => {
@@ -840,10 +865,22 @@ async function importFromZip(file) {
         });
       });
     });
+*/
 
-    // Persist to localStorage
-    saveProgress();
+      
 
+      
+      // Assume: importedData.answers, importedData.shuffleMap are from the ZIP
+//         shuffleMap is the current in-memory map for this session
+Object.keys(data.answers).forEach(qId => {
+  const savedIdx = data.answers[qId];
+  const translated = translateSelectedIndex(qId, savedIdx, importShuffleMap, shuffleMap);
+  answers[qId] = translated; // now aligned to current q.options
+});
+
+          // Persist to localStorage
+      saveProgress();
+      
     // Refresh UI
     renderQuestions();
 
