@@ -35,3 +35,5 @@ git add .
 git commit -m "Describe what you changed"
 git push
 
+git pull .... for a coplete refresh
+git restore to forget local changes
