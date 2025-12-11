@@ -1,5 +1,8 @@
 Readme for A Prior Learning Exam System (APL-ES)
 
+v25.12 r10
+- fix import export.
+
 Dec 8, 2025:
 - entry point to the code is the google-sites html.  This creates the iframe, the Config for accessing the data and also loads up the css, html and the js mainline for the code.  Each test has its own entry point.
 - Help&About has its own file.  A single html.
