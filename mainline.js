@@ -73,80 +73,8 @@ async function initExam() {
         document.querySelector('.loading-text').textContent = 'Error loading exam. Please refresh the page.';
     }
 
-
     showScreen('loginScreen');
-
 }
-/*
-// new v3.0
-async function loadQuestionsFromSheet() {
-  try {
-    const response = await gapi.client.sheets.spreadsheets.values.batchGet({
-      spreadsheetId: CONFIG.spreadsheetId,
-      ranges: CONFIG.questionsRange
-    });
-
-    const examQuestions = response.valueRanges[0].values || [];
-    const sectionTitles = response.valueRanges[1].values || [];
-
-    // --- Section titles ---
-    sectionTitles.forEach(row => {
-      const section = parseInt(row[0], 10);
-      const part = parseInt(row[1], 10);
-      if (!sectionPartTitlesDesc[section]) sectionPartTitlesDesc[section] = {};
-      sectionPartTitlesDesc[section][part] = {
-        textSection: row[2] || "",
-        textPart: row[3] || "",
-        description: row[4] || ""
-      };
-    });
-
-    // --- Questions ---
-    examQuestions.forEach((row, idx) => {
-      const section = parseInt(row[0], 10);
-      const part = parseInt(row[1], 10);
-      const qId = `Q${section}-${part}-${idx + 1}`;
-
-      if (!questions[section]) questions[section] = {};
-      if (!questions[section][part]) questions[section][part] = [];
-
-      // Options before shuffle
-      const options = [row[4], row[5], row[6], row[7]];
-
-      // Shuffle options
-      const shuffled = options
-        .map((opt, i) => ({ opt, i }))
-        .sort(() => Math.random() - 0.5);
-
-      // Correct answer letter from sheet (A/B/C/D)
-      const correctLetter = (row[8] || "").toUpperCase();
-      const correctIndexOriginal = correctLetter.charCodeAt(0) - 65;
-
-      // Find where the correct answer ended up
-      const correctIndexShuffled = shuffled.findIndex(o => o.i === correctIndexOriginal);
-
-      // Save shuffle mapping for export/import
-      shuffleMap[qId] = shuffled.map(o => o.i);
-
-      // Push question object
-      questions[section][part].push({
-        id: qId,
-        text: row[3],
-        options: shuffled.map(o => o.opt),
-        correct: correctIndexShuffled,
-        explanation: row[9] || ""
-      });
-
-      totalQuestions++;
-    });
-
-    console.log(`Loaded ${totalQuestions} questions.`);
-  } catch (err) {
-    console.error("Error loading questions:", err);
-    showNotification("Failed to load questions from sheet.", "error");
-  }
-}
-*/
 
       //3.0
       async function loadQuestionsFromSheet() {
