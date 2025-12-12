@@ -43,17 +43,24 @@ git restore to forget local changes
 
 
 General flow:
-   entry (development) 
+   entry (development): 
          --> indexBridge.html
                 --> Config-Bridge-Exam.js
                 --> mainline.js
                 --> style.css
                 --> body.html
 
-   entry (production: bridge exam) 
+   entry (production: bridge exam): 
         --> google-sites/bridgeExam-v2.html
                  --> https://alsys123.github.io/APL-ES/loader.js
-                 --> https://alsys123.github.io/APL-ES/body.html
+                         --> https://apis.google.com/js/api.js
+                         --> https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js
+                         --> https://alsys123.github.io/APL-ES/configBridge.js
+                         --> https://alsys123.github.io/APL-ES/mainline.js
+                         --> https://alsys123.github.io/APL-ES/style.css
+                         --> https://alsys123.github.io/APL-ES/body.html
 
         
-   entry (production: pilot, cognitive and auto exams)
+   entry (production: pilot, cognitive and auto exams):
+
+   
