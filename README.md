@@ -43,5 +43,11 @@ git restore to forget local changes
 
 
 General flow:
-   entry (development) --> indexBridge.html
-   
+   entry (development) 
+         --> indexBridge.html
+                --> Config-Bridge-Exam.js
+                    mainline.js
+                    style.css
+                    body.html
+
+   entry (production) --> 
