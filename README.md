@@ -62,5 +62,11 @@ General flow:
 
         
    entry (production: pilot, cognitive and auto exams):
+     copied go embedded page on google sites (all files are same structure)
+           - googleSites-iframe-CIXExam.html
+           - ...motorvehicle-license.html
+           - ...dementia.html
+
+           
 
    
