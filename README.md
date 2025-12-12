@@ -46,11 +46,14 @@ General flow:
    entry (development) 
          --> indexBridge.html
                 --> Config-Bridge-Exam.js
-                    mainline.js
-                    style.css
-                    body.html
+                --> mainline.js
+                --> style.css
+                --> body.html
 
    entry (production: bridge exam) 
         --> google-sites/bridgeExam-v2.html
+                 --> https://alsys123.github.io/APL-ES/loader.js
+                 --> https://alsys123.github.io/APL-ES/body.html
 
         
+   entry (production: pilot, cognitive and auto exams)
