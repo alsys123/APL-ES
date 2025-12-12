@@ -40,3 +40,8 @@ git push
 
 git pull .... for a coplete refresh
 git restore to forget local changes
+
+
+General flow:
+   entry (development) --> indexBridge.html
+   
