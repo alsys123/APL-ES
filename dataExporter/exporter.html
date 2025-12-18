@@ -1,52 +1,66 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Spreadsheet Exporter</title>
-  <script src="https://apis.google.com/js/api.js"></script>
+  <title>Spreadsheet Exporter (with fixed ranges)</title>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #spreadsheetId { width: 600px; padding: 6px; }
+    #status { margin-top: 10px; white-space: pre-wrap; font-size: 0.9em; }
+    #csvPreview { margin-top: 20px; padding: 10px; border: 1px solid #ccc;
+                  background: #f9f9f9; max-height: 300px; overflow:auto; font-family: monospace; }
+  </style>
 </head>
 <body>
   <h1>Export Google Spreadsheet to ZIP</h1>
   <input id="spreadsheetId" placeholder="Enter Spreadsheet ID">
   <button onclick="exportSpreadsheet()">Export</button>
+  <p id="status"></p>
+  <div id="csvPreview"></div>
 
   <script>
-    // Load Google API client
-    function initClient() {
-      gapi.load('client:auth2', () => {
-        gapi.client.init({
-          apiKey: 'AIzaSyD9hYZTf-8u-mgnwz1JsjU44UJ6DurbXdc',
-          // clientId: '<YOUR_CLIENT_ID>',
-          discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-          scope: "https://www.googleapis.com/auth/spreadsheets.readonly"
-        });
-      });
-    }
-    initClient();
-
     async function exportSpreadsheet() {
-      const spreadsheetId = document.getElementById('spreadsheetId').value;
-      await gapi.auth2.getAuthInstance().signIn();
-
-      const meta = await gapi.client.sheets.spreadsheets.get({ spreadsheetId });
-      const zip = new JSZip();
-
-      for (const sheet of meta.result.sheets) {
-        const title = sheet.properties.title;
-        const res = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId,
-          range: title
-        });
-        const rows = res.result.values || [];
-        const csv = rows.map(r => r.join(',')).join('\n');
-        zip.file(`${title}.csv`, csv);
+      const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+      const status = document.getElementById("status");
+      const preview = document.getElementById("csvPreview");
+      preview.textContent = "";
+      if (!spreadsheetId) {
+        status.textContent = "Please enter a Spreadsheet ID.";
+        return;
       }
 
-      const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, `${spreadsheetId}.zip`);
+      // Hard-coded ranges
+      const ranges = [
+        { name: "examQuestions", range: "examQuestions!A:J" },
+        { name: "sectionPartTitles", range: "sectionPartTitles!A:E" },
+        { name: "examData", range: "examData!A:B" }
+      ];
+
+      try {
+        const zip = new JSZip();
+
+        for (const [index, sheet] of ranges.entries()) {
+          status.textContent += `Fetching ${sheet.range}...\n`;
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet.name)}&range=${encodeURIComponent(sheet.range)}`;
+          const resp = await fetch(csvUrl);
+          const csv = await resp.text();
+          zip.file(`${sheet.name}.csv`, csv);
+
+          // Show preview of the first sheet
+          if (index === 0) {
+            preview.textContent = `Preview of ${sheet.name}:\n\n` + csv;
+          }
+        }
+
+        status.textContent += "Packaging ZIP...\n";
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, `APL-ES-exporter-${spreadsheetId}.zip`);
+        status.textContent += "Download complete.";
+      } catch (err) {
+        status.textContent = "Error: " + err.message;
+      }
     }
   </script>
 </body>
