@@ -66,9 +66,11 @@ function initExam(examQuestions, sectionPartTitles, examData) {
 
   // Continue into your normal exam rendering/validation flow
   // e.g. ValidateBridgeQuestion(questions);
-  // renderExamUI(questions, sections, metadata);
+    // renderExamUI(questions, sections, metadata);
+    showScreen('loginScreen');
 }
 
+/*
 async function initExam() {
     try {
         await new Promise(resolve => {
@@ -92,6 +94,7 @@ async function initExam() {
 
     showScreen('loginScreen');
 } //initExam
+*/
 
       //3.0
       async function loadQuestionsFromSheet() {
@@ -563,9 +566,17 @@ html += `
 
       function closeResults() {
         document.getElementById('resultsModal').classList.remove('active');
-      }
+      } //closeResults
 
-      window.onload = initExam;
+// **** Entry Point ****
+// window.onload = initExam;
+
+// New
+window.onload = function() {
+  // Initialize picker UI
+  document.getElementById("examPicker").value = "";
+  document.getElementById("status").textContent = "Please select an exam to begin.";
+};
 
 // **** Start of import/export ****
 
