@@ -45,12 +45,12 @@ function scrollPageBottom() {
         messageEl.innerHTML = message;
         notification.className = `notification ${type} show`;
         setTimeout(() => notification.classList.remove('show'), 4000);
-      }
+      } //showNotification
 
-      function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-      }
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+} //showScreen
 
 // Existing initExam signature (adapted)
 function initExam(examQuestions, sectionPartTitles, examData) {
@@ -70,7 +70,7 @@ function initExam(examQuestions, sectionPartTitles, examData) {
     showScreen('loginScreen');
 }
 
-/*
+
 async function initExam() {
     try {
         await new Promise(resolve => {
@@ -94,7 +94,7 @@ async function initExam() {
 
     showScreen('loginScreen');
 } //initExam
-*/
+
 
       //3.0
       async function loadQuestionsFromSheet() {
@@ -571,12 +571,28 @@ html += `
 // **** Entry Point ****
 // window.onload = initExam;
 
+
 // New
+
+/*
 window.onload = function() {
-  // Initialize picker UI
-  document.getElementById("examPicker").value = "";
-  document.getElementById("status").textContent = "Please select an exam to begin.";
+
+    console.log("ready to load login");
+    
+    showScreen('loginScreen');
+
+    //showScreen('loadingScreen');
+    
+    //showScreen('pickLoaderScreen');
+    
+    // Initialize picker UI
+    //  document.getElementById("examPicker").value = "";
+    //  document.getElementById("status").textContent = "Please select an exam to begin.";
+    
 };
+*/
+
+
 
 // **** Start of import/export ****
 
