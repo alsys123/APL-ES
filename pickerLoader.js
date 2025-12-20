@@ -55,9 +55,9 @@
 
       const parseCSV = txt => txt.trim().split("\n").map(line => line.split(","));
 
-      const examQuestions = parseCSV(examQuestionsCSV);
-      const sectionPartTitles = parseCSV(sectionPartTitlesCSV);
-      const examData = parseCSV(examDataCSV);
+      const examQuestionsCVSParsed = parseCSV(examQuestionsCSV);
+      const sectionPartTitlesCVSParsed = parseCSV(sectionPartTitlesCSV);
+      const examDataCVSParsed = parseCSV(examDataCSV);
 
       status.textContent = "Loaded exam:\n" +
         "examQuestions rows: " + examQuestions.length + "\n" +
@@ -66,7 +66,7 @@
 
       // 👉 Here you hand off to your usual APL-ES code flow
 	// runExam(examQuestions, sectionPartTitles, examData);
-	initExam(examQuestions, sectionPartTitles, examData);
+	initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed);
 	
     } //parseExamZip
 
