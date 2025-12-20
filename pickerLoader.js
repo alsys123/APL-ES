@@ -22,7 +22,9 @@
       }
     }
 
-    async function loadExamZip(url) {
+async function loadExamZip(url) {
+
+   
       try {
         status.textContent = "Fetching " + url + "...";
         const resp = await fetch(url);

@@ -220,7 +220,11 @@ async function loadQuestionsFromCSV(questions,sections,metadata) {
           throw error;
         }
 */
-	
+
+    //console.log("Keys for section", s, ":", Object.keys(sectionPartTitlesDesc[s] || {}));
+    
+    //	console.log("sectionPartTitlesDesc in populate:", sectionPartTitlesDesc);
+    
         populateJumpDropdown();
         populateJumpGrid();
 
@@ -1213,11 +1217,13 @@ async function importFromZip(file) {
 
       function populateJumpDropdown() {
         const select = document.getElementById('jumpSection');
-        if (!select) return;
+          if (!select) return;
 
         // Reset dropdown
         select.innerHTML = '<option value="">-- Select Section/Part --</option>';
 
+	  console.log("I am okay");
+	  
         // Helper: shorten section text only
         const shortenSection = (text, max = 30) =>
           text && text.length > max ? text.substring(0, max) + "…" : text;
