@@ -65,10 +65,16 @@ async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, exam
   const sections = sectionPartTitlesCVSParsed.slice();
   const metadata = examDataCVSParsed.slice();
 
+    //console.log("my meta data = ", metadata);
+
+    const meta = Object.fromEntries(metadata);
+    document.getElementById("examTitle").textContent = meta.Title;
+    
+    
   // Example: validate first question
-  console.log("First question:", questions[0]);
-  console.log("Sections:", sections[0]);
-  console.log("Metadata:", metadata);
+//  console.log("First question:", questions[0]);
+//  console.log("Sections:", sections[0]);
+//  console.log("Metadata:", metadata);
 
   // Continue into your normal exam rendering/validation flow
   // e.g. ValidateBridgeQuestion(questions);
@@ -233,7 +239,7 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
           } // end of loop
 
  //   console.log("at end of loop");
-    console.log("Available section keys:", Object.keys(sectionPartTitlesDesc));
+//    console.log("Available section keys:", Object.keys(sectionPartTitlesDesc));
     
 //    console.log("First entry:",sectionPartTitlesDesc[1][1][0].textSection,sectionPartTitlesDesc[1][1][0].textPart );
 
@@ -292,10 +298,14 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
         currentSection = 1;
         currentPart = 1;
         answers = {};
-        showScreen('loginScreen');
+//        showScreen('loginScreen');
+	  showScreen('pickLoaderScreen');
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
-        document.getElementById('loginError').textContent = '';
+          document.getElementById('loginError').textContent = '';
+	  
+	  gPickerLoaderStatus.textContent = "\n\n" + "Please Pick!" + "\n\n";
+
       } //logout
 
       function loadProgress() {
@@ -332,7 +342,7 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
 
         const currentQuestions = questions[currentSection]?.[currentPart] || [];
 
-	  console.log("questions =", JSON.stringify(questions, null, 2));
+	//  console.log("questions =", JSON.stringify(questions, null, 2));
 
         if (currentQuestions.length === 0) {
           container.innerHTML = `

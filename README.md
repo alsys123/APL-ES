@@ -43,6 +43,8 @@ git restore to forget local changes
 
 
 General flow:
- .. indexAPLES-v4.html --> mainline-v4/js
+ .. indexAPLES-v4.html 
+     --> body-v2.html
+	    --> mainline-v4.js, pickerLoader.js
  
  

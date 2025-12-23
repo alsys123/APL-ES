@@ -595,8 +595,14 @@
       display: none;
       /* hidden by default */
     }
-
-
+    
+    #pickerLoaderStatus {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	background: #f0f0f0;
+	text-align: center;
+    }
+    
 
     .close {
       float: right;

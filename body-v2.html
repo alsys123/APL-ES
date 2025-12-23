@@ -1,12 +1,12 @@
 <div class="container">
-    <!-- Loading Screen -->
-<!--    <div class="screen active" id="loadingScreen"> -->
+  <!-- Loading Screen -->
+  <!--    <div class="screen active" id="loadingScreen"> -->
     <div class="screen" id="loadingScreen"> 
       <h1>📝 Exam System</h1>
       <div class="spinner"></div>
-      <div class="loading-text">Loading questions from Google Sheets...</div>
+      <div class="loading-text">Loading questions from ZIP...</div>
     </div>
-
+    
     ```
     <!-- PickerLoader Screen -->
     <div class="screen" id="pickLoaderScreen">
@@ -21,7 +21,7 @@
       </select>
       
       <input type="file" id="customFile" accept=".zip" style="display:none;" onchange="loadCustomZip(this.files[0])">
-      <pre id="status"></pre>
+      <pre id="pickerLoaderStatus"></pre>
       
     </div>
     
@@ -63,7 +63,10 @@
       <div class="exam-header">
         <!-- <h1>CIX Exam for Pilots</h1> -->
       <!--  <h1>Bridge Exam for Learning</h1> -->
-          <h1>Exam System for Learning</h1>
+	<!--        <h1>Exam System for Learning</h1>  -->
+	
+	<h1 id="examTitle">Exam System for Learning</h1>
+
         <div class="exam-info">
           <div class="info-item">
             <div class="info-label">Student</div>

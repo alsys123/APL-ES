@@ -1,6 +1,6 @@
 
 
-    const status = document.getElementById("status");
+    const gPickerLoaderStatus = document.getElementById("pickerLoaderStatus");
 
     // Map exam types to GitHub ZIP URLs
     const examZips = {
@@ -25,22 +25,23 @@ function getJsDelivrURL(examName) {
         document.getElementById("customFile").style.display = "none";
         loadExamZip(examZips[choice]);
       }
-    }
+    } // handleExamSelect
 
+//
 async function loadExamZip(url) {
 
  //   console.log("here is am - at 1");
     
    
       try {
-        status.textContent = "Fetching " + url + "...";
+        gPickerLoaderStatus.textContent = "Fetching " + url + "...";
         const resp = await fetch(url);
         const blob = await resp.blob();
         const zip = await JSZip.loadAsync(blob);
 
         await parseExamZip(zip);
       } catch (err) {
-        status.textContent = "Error loading exam: " + err.message;
+        gPickerLoaderStatus.textContent = "Error loading exam: " + err.message;
       }
 
      //   console.log("here is am - at 2");
@@ -49,13 +50,13 @@ async function loadExamZip(url) {
 
     async function loadCustomZip(file) {
       try {
-        status.textContent = "Loading custom ZIP...";
+        gPickerLoaderStatus.textContent = "Loading custom ZIP...";
         const data = await file.arrayBuffer();
         const zip = await JSZip.loadAsync(data);
 
         await parseExamZip(zip);
       } catch (err) {
-        status.textContent = "Error loading custom exam: " + err.message;
+        gPickerLoaderStatus.textContent = "Error loading custom exam: " + err.message;
       }
     }
 
@@ -134,7 +135,7 @@ async function parseExamZip(zip) {
 //		examQuestionsCVSParsed.length, " ", sectionPartTitlesCVSParsed.length, " ",
 //		examDataCVSParsed.length);
 
-    status.textContent = "Loaded exam:\n" +
+    gPickerLoaderStatus.textContent = "\n\n" + "Loaded exam:\n" +
         "examQuestions rows: " + examQuestionsCVSParsed.length + "\n" +
         "sectionPartTitles rows: " + sectionPartTitlesCVSParsed.length + "\n" +
         "examData rows: " + examDataCVSParsed.length;
