@@ -43,42 +43,6 @@ git restore to forget local changes
 
 
 General flow:
-   entry (development): 
-         --> indexBridge.html
-                --> https://apis.google.com/js/api.js
-                --> https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js
-                --> Config-Bridge-Exam.js
-                --> mainline.js
-                --> style.css
-                --> body.html
-
-   entry (production: bridge exam): (NEWer style)
-        --> google-sites/bridgeExam-v2.html
-                 --> https://alsys123.github.io/APL-ES/loader.js
-                         --> https://apis.google.com/js/api.js
-                         --> https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js
-                         --> https://alsys123.github.io/APL-ES/configBridge.js
-                         --> https://alsys123.github.io/APL-ES/mainline.js
-                         --> https://alsys123.github.io/APL-ES/style.css
-                         --> https://alsys123.github.io/APL-ES/body.html
-
-        
-   entry (production: pilot, cognitive and auto exams): (OLDer style)
-     copied into embedded page on google sites (all files are the same structure)
-           - googleSites-iframe-CIXExam.html
-           - ...motorvehicle-license.html
-           - ...dementia.html
-                SAME Structure for each:
-                 --> https://apis.google.com/js/api.js
-                 --> https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js
-                 --> a config definition is unique to each test: 
-                    example:     const CONFIG = {
-                       apiKey: "AIzaSyD9hYZTf-8u-mgnwz1JsjU44UJ6DurbXdc",
-                       spreadsheetId: "1S0ITwkBBa1IAbIBUM54RJOp9aj5xxc3XvVhyrnaB89U",
-                       questionsRange: ["examQuestions!A:J", "sectionPartTitles!A:E"],
-                       discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
-                       };
-                --> https://alsys123.github.io/APL-ES/mainline.js
-                --> https://alsys123.github.io/APL-ES/style.css
-                --> https://alsys123.github.io/APL-ES/body.html
-
+ .. indexAPLES-v4.html --> mainline-v4/js
+ 
+ 

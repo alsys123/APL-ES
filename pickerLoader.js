@@ -4,11 +4,16 @@
 
     // Map exam types to GitHub ZIP URLs
     const examZips = {
-      bridge: "https://raw.githubusercontent.com/alsys123/APL-ES/main/dataSets/APL-ES-exporter-Bridge.zip",
-      pilot: "https://raw.githubusercontent.com/alsys123/APL-ES/main/dataSets/APL-ES-exporter-Pilot.zip",
-      cognitive: "https://raw.githubusercontent.com/alsys123/APL-ES/main/dataSets/APL-ES-exporter-Cognitive.zip",
-      auto: "https://raw.githubusercontent.com/alsys123/APL-ES/main/dataSets/APL-ES-exporter-Auto.zip"
+      bridge: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Bridge.zip",
+      pilot: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Pilot.zip",
+      cognitive: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Cognitive.zip",
+      auto: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Auto.zip"
     };
+
+//
+function getJsDelivrURL(examName) {
+  return `https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/${examName}.zip`;
+} //getJsDelivrURL
 
     function handleExamSelect() {
       const choice = document.getElementById("examPicker").value;
@@ -24,6 +29,8 @@
 
 async function loadExamZip(url) {
 
+ //   console.log("here is am - at 1");
+    
    
       try {
         status.textContent = "Fetching " + url + "...";
@@ -35,7 +42,10 @@ async function loadExamZip(url) {
       } catch (err) {
         status.textContent = "Error loading exam: " + err.message;
       }
-    }
+
+     //   console.log("here is am - at 2");
+
+    } // loadExamZip
 
     async function loadCustomZip(file) {
       try {
@@ -49,25 +59,91 @@ async function loadExamZip(url) {
       }
     }
 
-    async function parseExamZip(zip) {
-      // Expecting examQuestions.csv, sectionPartTitles.csv, examData.csv
+//
+function parseCSVFull(text) {
+  const rows = [];
+  let current = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i + 1];
+
+    if (inQuotes) {
+      if (c === '"' && next === '"') {
+        field += '"';      // escaped quote
+        i++;               // skip next
+      } else if (c === '"') {
+        inQuotes = false;  // closing quote
+      } else {
+        field += c;
+      }
+    } else {
+      if (c === '"') {
+        inQuotes = true;
+      } else if (c === ",") {
+        current.push(field);
+        field = "";
+      } else if (c === "\n") {
+        current.push(field);
+        rows.push(current);
+        current = [];
+        field = "";
+      } else if (c === "\r") {
+        // ignore CR (Windows line endings)
+      } else {
+        field += c;
+      }
+    }
+  }
+
+  // push last field/row if file doesn't end with newline
+  if (field.length > 0 || current.length > 0) {
+    current.push(field);
+    rows.push(current);
+  }
+
+  return rows;
+} //parseCVS
+
+
+async function parseExamZip(zip) {
+    
+//    console.log("here is am - at 3");
+
+    // Expecting examQuestions.csv, sectionPartTitles.csv, examData.csv
       const examQuestionsCSV = await zip.file("examQuestions.csv").async("string");
       const sectionPartTitlesCSV = await zip.file("sectionPartTitles.csv").async("string");
       const examDataCSV = await zip.file("examData.csv").async("string");
 
-      const parseCSV = txt => txt.trim().split("\n").map(line => line.split(","));
+//    console.log("here is am - at 3 a");
+    
+   const parseCSV = txt => txt.trim().split("\n").map(line => line.split(","));
 
-      const examQuestionsCVSParsed = parseCSV(examQuestionsCSV);
-      const sectionPartTitlesCVSParsed = parseCSV(sectionPartTitlesCSV);
-      const examDataCVSParsed = parseCSV(examDataCSV);
+//    console.log("here is am - at 3 a -p1 ");
+    
+    const examQuestionsCVSParsed = parseCSVFull(examQuestionsCSV);
+    //console.log("orig: ", examQuestionsCSV );
+    //console.log("parsed: ", examQuestionsCVSParsed );
+    
+    const sectionPartTitlesCVSParsed = parseCSVFull(sectionPartTitlesCSV);
+    const examDataCVSParsed = parseCSVFull(examDataCSV);
 
-      status.textContent = "Loaded exam:\n" +
-        "examQuestions rows: " + examQuestions.length + "\n" +
-        "sectionPartTitles rows: " + sectionPartTitles.length + "\n" +
-        "examData rows: " + examData.length;
+//    console.log("here is am - at 3 b",
+//		examQuestionsCVSParsed.length, " ", sectionPartTitlesCVSParsed.length, " ",
+//		examDataCVSParsed.length);
+
+    status.textContent = "Loaded exam:\n" +
+        "examQuestions rows: " + examQuestionsCVSParsed.length + "\n" +
+        "sectionPartTitles rows: " + sectionPartTitlesCVSParsed.length + "\n" +
+        "examData rows: " + examDataCVSParsed.length;
 
       // 👉 Here you hand off to your usual APL-ES code flow
-	// runExam(examQuestions, sectionPartTitles, examData);
+    // runExam(examQuestions, sectionPartTitles, examData);
+
+//    console.log("here is am - at 4");
+    
 	initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed);
 	
     } //parseExamZip
