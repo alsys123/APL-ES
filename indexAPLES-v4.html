@@ -24,18 +24,26 @@
     // Wait for base DOM to be parsed
     document.addEventListener("DOMContentLoaded", () => {
 	
-    fetch('body-v2.html')
+    fetch('body-v3.html')
       .then(response => response.text())
-      .then(html => {
-          document.getElementById('MainContent').innerHTML = html;
-	  // If showScreen is defined in mainline, load that first:
-	  loadScript('mainline-v4.js?v=2', () => {
-	      showScreen('pickLoaderScreen');
-	  });
-
-	  loadScript('pickerLoader.js?v=2');
-	    
-      }).catch(err => console.error('Error loading body-v2.html:', err));
+	    .then(html => {
+		document.getElementById('MainContent').innerHTML = html;
+		//console.log("at 1");
+		loadScript('mainline-v4.js?v=2', () => {
+		    // Show the picker screen
+		    showScreen('pickLoaderScreen');
+		    
+		    // NOW load pickerLoader.js and run setup AFTER it loads
+		    loadScript('pickerLoader.js?v=2', () => {
+		//	console.log("pickerLoader.js loaded, running setup...");
+			if (typeof setupPickerLoaderUI === "function") {
+			    setupPickerLoaderUI();
+			} else {
+			    console.error("setupPickerLoaderUI is not defined");
+			}
+		    });
+		});
+	    }).catch(err => console.error('Error loading body-v3.html:', err));
 
     });
 
