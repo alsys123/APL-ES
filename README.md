@@ -41,10 +41,9 @@ git push
 git pull .... for a coplete refresh
 git restore to forget local changes
 
+ 
+url embedded call in google sites:
 
-General flow:
- .. indexAPLES-v4.html 
-     --> body-v2.html
-	    --> mainline-v4.js, pickerLoader.js
- 
- 
+"https://alsys123.github.io/APL-ES/APL-ES-WRAPPER.html"
+
+
