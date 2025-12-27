@@ -1,6 +1,6 @@
 
 //console.log("mainline-v4 is LOADED");
-
+/*
 const students = {
     'student1': 'a',
     'student2': 'b',
@@ -11,7 +11,7 @@ const students = {
     'a': 'a',
     'A': 'a'
 };
-
+*/
 // new
 
 
@@ -266,21 +266,30 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
       }  // loadQuestionsFromCSV
 
 
+//
+function login() {
+       
+//    const username = document.getElementById('username').value.trim();
+    const username = document.getElementById('username')?.value?.trim() || "";
 
-
-
-      function login() {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
+   //     const password = document.getElementById('password').value;
         const errorEl = document.getElementById('loginError');
 
-
+    /*
+	  if (!username) {
+	    //  username = ?? "student1";
+	      username = "student1";
+	    //  	      username = username || "student1";
+	    }
+	    */
+   /*
         if (!username || !password) {
           errorEl.textContent = 'Please enter username and password';
           return;
         }
-
-        if (students[username] === password) {
+*/
+//        if (students[username] === password) {
+        if (username) {
           currentUser = username;
           loadProgress();
           showScreen('examScreen');
@@ -288,7 +297,7 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
           renderQuestions();
           showNotification('Welcome! Your progress is saved automatically.', 'success');
         } else {
-          errorEl.textContent = 'Invalid username or password';
+          errorEl.textContent = 'Error with username';
         }
 
       } // login
@@ -301,8 +310,8 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
         answers = {};
 //        showScreen('loginScreen');
 	  showScreen('pickLoaderScreen');
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
+        document.getElementById('username').value = 'student1';
+    //    document.getElementById('password').value = '';
           document.getElementById('loginError').textContent = '';
 	  
 	  gPickerLoaderStatus.textContent = "\n\n" + "Please Pick!" + "\n\n";

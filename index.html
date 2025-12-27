@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>APL-ES Wrapper</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    /* Top navigation bar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+
+    .nav-left,
+    .nav-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .topbar button {
+      padding: 8px 14px;
+      border: 1px solid #aaa;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .topbar button:hover {
+      background: #e6e6e6;
+    }
+
+    /* Push iframe down below the top bar */
+    iframe {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 50px);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="nav-left">
+      <button onclick="goHome()">Home</button>
+    </div>
+
+    <div class="nav-right">
+      <button onclick="openExams()">The Exams</button>
+      <button onclick="openExtractor()">Data Extractor</button>
+      <button onclick="openHelp()">Help & About</button>
+    </div>
+  </div>
+
+  <iframe id="mainFrame" src="indexAPLES-v4.html"></iframe>
+
+  <script>
+    function goHome() {
+      document.getElementById("mainFrame").src = "home.html";
+    }
+
+    function openExams() {
+      document.getElementById("mainFrame").src = "indexAPLES-v4.html";
+    }
+
+    function openExtractor() {
+      document.getElementById("mainFrame").src = "dataExporter/dataExtractorWrapper.html";
+    }
+
+    function openHelp() {
+      document.getElementById("mainFrame").src = "helpAbout/helpAboutWrapper.html";
+    }
+  </script>
+
+</body>
+</html>

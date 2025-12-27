@@ -10,11 +10,7 @@
     ```
     
     <div class="screen" id="pickLoaderScreen">
-      <!-- Top Bar -->
-      <div id="pickerTopBar">
-	<button id="helpButton">Help / About</button>
-      </div>
-      
+            
       <!-- Title -->
       <h1 id="pickerTitle">Select an Exam</h1>
       
@@ -83,17 +79,17 @@
     
     <!-- Login Screen -->
     <div class="screen" id="loginScreen">
-      <h1>📝 Exam System</h1>
+      <h1>📝 APL-ES Leaning & Exam System</h1>
+      <h2>Please enter any username.</h2>
+      <center><small>This is used for saving and naming the export file. Defaults to "student1"</small></center>
+      <br><br>
       <div class="login-form">
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Enter your username" autocomplete="username">
+          <input type="text" id="username" placeholder="Enter your username"
+		 autocomplete="username" value="student1" >
         </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
-        </div>
-        <button class="btn" onclick="login()">Login</button>
+       <button class="btn" onclick="login()">Login</button>
         <div class="error" id="loginError"></div>
       </div>
     </div>
