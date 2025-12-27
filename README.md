@@ -45,7 +45,10 @@ git restore to forget local changes
 url embedded call in google sites:
 
 "https://alsys123.github.io/APL-ES/APL-ES-WRAPPER.html"
+
 "https://alsys123.github.io/APL-ES/helpAbout/helpAboutWrapper.html"
+
+"https://alsys123.github.io/APL-ES/dataExporter/dataExtractorWrapper.html"
 
 
 
