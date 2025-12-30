@@ -35,6 +35,7 @@ in firefox bring up the local file:
 http://localhost:8080/Examv10.html
 
 ==== git commands ====
+new copy ... git clone https://github.com/alsys123/APL-ES
 
 git status
 
@@ -55,8 +56,9 @@ url embedded call in google sites:
 
 "https://alsys123.github.io/APL-ES/helpAbout/helpAboutWrapper.html"
 
-"https://alsys123.github.io/APL-ES/dataExporter/dataExtractorWrapper.html"
+"https://alsys123.github.io/APL-ES/dataExtractor/dataExtractorWrapper.html"
 
+index.html is the mainline for the entire app
 
 
 

@@ -1,6 +1,0 @@
-Welcome to the CIX Exam System for Pilots.
-This comprehensive examination platform has been designed to test your knowledge of Radio Telephony (RT) procedures and Air Traffic Control communications essential for VFR operations on VATSIM. Based on Neville Munro’s practical training materials, the system contains 300 questions across 6 sections covering everything from basic voice procedures and circuit operations to zone transits, emergency procedures, and communications with various air traffic services.
-The course progresses from fundamental P1 skills through advanced P2 procedures, testing your ability to communicate effectively with Tower, Approach, Radar controllers, and various aerodrome services. You’ll encounter scenarios involving departures, arrivals, standard overhead joins, MATZ transits, position reporting, and emergency situations—all the radio procedure knowledge needed to operate confidently in controlled and uncontrolled airspace.
-Your progress is saved automatically as you work through each section and part. Use the Auto-Check feature to learn from detailed explanations, or disable it for practice exam conditions. You need 80% or higher to pass each section.
-Login with your credentials to begin mastering the essential RT skills for safe VATSIM operations.
-v23.8 Nov 27 2025
