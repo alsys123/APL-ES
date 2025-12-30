@@ -1,20 +1,5 @@
 
 //console.log("mainline-v4 is LOADED");
-/*
-const students = {
-    'student1': 'a',
-    'student2': 'b',
-    'student3': 'c',
-    'admin': 'admin123',
-    'Z': 'z',
-    'z': 'z',
-    'a': 'a',
-    'A': 'a'
-};
-*/
-// new
-
-
 
 // endod new
 //   let currentUser = null;
@@ -53,79 +38,32 @@ function showScreen(screenId) {
     document.getElementById(screenId).classList.add('active');
 } //showScreen
 
-// Existing initExam signature (adapted)
+//__ initExam
 async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed) {
-  // Setup exam state
-    /*
-    const questions = examQuestions.slice(1); // skip header row
-  const sections = sectionPartTitles.slice(1);
-  const metadata = examData.slice(1);
-*/
     // leave header row
     const questionsFromCSV = examQuestionsCVSParsed.slice(); 
   const sections = sectionPartTitlesCVSParsed.slice();
   const metadata = examDataCVSParsed.slice();
 
-    //console.log("my meta data = ", metadata);
-
     const meta = Object.fromEntries(metadata);
     document.getElementById("examTitle").textContent = meta.Title;
+    document.getElementById("examVersion").textContent = meta.version;
     
-    
-  // Example: validate first question
-//  console.log("First question:", questions[0]);
-//  console.log("Sections:", sections[0]);
-//  console.log("Metadata:", metadata);
-
-  // Continue into your normal exam rendering/validation flow
-  // e.g. ValidateBridgeQuestion(questions);
-    // renderExamUI(questions, sections, metadata);
-
     await loadQuestionsFromCSV(questionsFromCSV,sections,metadata);
     
     showScreen('loginScreen');
     
 } //initExam
 
+//__ loadQuestionsFromCSV
 async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
-
-	// we have questions, sections, metadata arrays from cvs
-	
-	/*
-          //v11
-          const valueRanges = response.result.valueRanges || [];
-
-          if (valueRanges.length === 0) {
-            throw new Error("Err04: No ranges returned at all");
-          }
-          console.log(`Log01: Found ${valueRanges.length} number of sheets in Google Sheets`);
-
-          if (valueRanges.length === 0 || !valueRanges[0].values) {
-            throw new Error('Err01: No questions found in questions sheet');
-          }
-
-          const rows = valueRanges[0].values;  // the first Sheet - questions
-	*/
-	
-//	const rows = questions;
-//	console.log("my first question: ", questions[0]);
-
     const rows = [...questionsFromCSV];
-    
-//    console.log("in CVS conv: questions =", JSON.stringify(questions, null, 2));
-
-          //v11 out      const rows = response.result.values || [];
-
           if (rows.length <= 1) {
             throw new Error('Err02: No questions found in sheet');
           }
 
           questions = {};
 
-//	console.log("my fist row: ", rows[0]);
-	
-//	return;
-	
           for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
             if (!row[0]) continue;
@@ -181,17 +119,9 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
 
 	      } // loop
 	      
-          totalQuestions = rows.length - 1;
-          console.log(`Log01:  Loaded ${totalQuestions} questions from CVS`);
+    totalQuestions = rows.length - 1;
+    console.log(`Log01:  Loaded ${totalQuestions} questions from CVS`);
 
-    /*
-          // --- v12 load the section and part Titles array- sectionPartTitlesDesc
-          if (valueRanges.length === 0 || !valueRanges[1].values) {
-            throw new Error('Err09: No titles found in questions sheet');
-          }
-    */
-    
-    //      const rowsT = valueRanges[1].values;  // the second Sheet - the titles
     const rowsT = [...sections];
     
     if (rowsT.length <= 1) {
@@ -208,16 +138,8 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
 	
             const row = rowsT[i];
             if (!row[0]) continue;
-
-//	console.log(`at i = ${i} row is now: ${row}`);
-	
-	    
-//        const sNum = parseInt(row[0]);
 	const sNum = parseInt(String(row[0]).replace(/[^\d]/g, ""), 10);
 
-//	console.log(`Saving section Number = sNum: ${sNum} from row: ${row[0]}`);
-
-//        const pNum = parseInt(row[1]);
 	const pNum = parseInt(String(row[1]).replace(/[^\d]/g, ""), 10);
 	
             const sText = row[2];
@@ -235,60 +157,24 @@ async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
               notes: notesText
             });
 
-//	console.log(`Saving section/part: ${sNum} ${pNum} : ${sText} and ${pText}.`); 
-
           } // end of loop
 
- //   console.log("at end of loop");
-//    console.log("Available section keys:", Object.keys(sectionPartTitlesDesc));
-    
-//    console.log("First entry:",sectionPartTitlesDesc[1][1][0].textSection,sectionPartTitlesDesc[1][1][0].textPart );
-
-// debug only
-//    const titles = sectionPartTitlesDesc[1]?.[1] || [];
-//    console.log("Size of titles=",titles.length);
-
-/*
-          // end of try			  
-        } catch (error) {
-          console.error('Err05: Error loading questions and titles from spreadsheet', error);
-          throw error;
-        }
-*/
-
-   // console.log("Keys for section", ":", Object.keys(sectionPartTitlesDesc[s] || {}));
-    
-    //	console.log("sectionPartTitlesDesc in populate:", sectionPartTitlesDesc);
-    
         populateJumpDropdown();
         populateJumpGrid();
 
-      }  // loadQuestionsFromCSV
+} // loadQuestionsFromCSV
 
 
-//
+//__ login
 function login() {
        
-//    const username = document.getElementById('username').value.trim();
-    const username = document.getElementById('username')?.value?.trim() || "";
-
-   //     const password = document.getElementById('password').value;
-        const errorEl = document.getElementById('loginError');
-
-    /*
-	  if (!username) {
-	    //  username = ?? "student1";
+    let username = document.getElementById('username')?.value?.trim() || "";
+    const errorEl = document.getElementById('loginError');
+ 
+    if (username == "") {
 	      username = "student1";
-	    //  	      username = username || "student1";
 	    }
-	    */
-   /*
-        if (!username || !password) {
-          errorEl.textContent = 'Please enter username and password';
-          return;
-        }
-*/
-//        if (students[username] === password) {
+
         if (username) {
           currentUser = username;
           loadProgress();
@@ -300,8 +186,9 @@ function login() {
           errorEl.textContent = 'Error with username';
         }
 
-      } // login
+} // login
 
+// __ logout
       function logout() {
         saveProgress();
         currentUser = null;
@@ -310,30 +197,29 @@ function login() {
         answers = {};
 //        showScreen('loginScreen');
 	  showScreen('pickLoaderScreen');
-        document.getElementById('username').value = 'student1';
-    //    document.getElementById('password').value = '';
+        document.getElementById('username').value = '';
           document.getElementById('loginError').textContent = '';
-	  
 	  gPickerLoaderStatus.textContent = "\n\n" + "Please Pick!" + "\n\n";
 
       } //logout
 
-      function loadProgress() {
-        const saved = localStorage.getItem(`exam_${currentUser}`);
-        if (saved) {
-          try {
+// __ loadProgress
+function loadProgress() {
+    const saved = localStorage.getItem(`exam_${currentUser}`);
+    if (saved) {
+        try {
             const data = JSON.parse(saved);
             currentSection = data.section || 1;
             currentPart = data.part || 1;
             answers = data.answers || {};
             console.log('Progress loaded:', Object.keys(answers).length, 'answers');
-          } catch (e) {
+        } catch (e) {
             console.error('Err6: Error loading progress:', e);
-          }
         }
-      } //loadProgress
+    }
+} //loadProgress
 
-      function saveProgress() {
+function saveProgress() {
         const data = {
           section: currentSection,
           part: currentPart,
@@ -624,28 +510,6 @@ html += `
 
 // **** Entry Point ****
 // window.onload = initExam;
-
-
-// New
-
-/*
-window.onload = function() {
-
-    console.log("ready to load login");
-    
-    showScreen('loginScreen');
-
-    //showScreen('loadingScreen');
-    
-    //showScreen('pickLoaderScreen');
-    
-    // Initialize picker UI
-    //  document.getElementById("examPicker").value = "";
-    //  document.getElementById("status").textContent = "Please select an exam to begin.";
-    
-};
-*/
-
 
 
 // **** Start of import/export ****

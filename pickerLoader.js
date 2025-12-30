@@ -1,22 +1,23 @@
 
 //console.log("pickerLader LOADED");
-	    
-	    const gPickerLoaderStatus = document.getElementById("pickerLoaderStatus");
-	    
-	    // Map exam types to GitHub ZIP URLs
-    const examZips = {
-	bridge: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Bridge.zip",
-      aviation: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Pilot.zip",
-      cognitive: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Cognitive.zip",
-      driver: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Auto.zip"
-    };
+
+const gPickerLoaderStatus = document.getElementById("pickerLoaderStatus");
+
+// Map exam types to GitHub ZIP URLs
+const examZips = {
+    bridge: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Bridge.zip",
+    aviation: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Pilot.zip",
+    cognitive: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Cognitive.zip",
+    driver: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Auto.zip"
+};
 
 
-//
+// _ getJsDelivrURL
 function getJsDelivrURL(examName) {
     return `https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/${examName}.zip`;
 } //getJsDelivrURL
 
+//_ handleExamSelect
 function handleExamSelect() {
     const choice = document.getElementById("examPicker").value;
     if (!choice) return;
@@ -30,12 +31,8 @@ function handleExamSelect() {
 } // handleExamSelect
 
 
-//
+// __ loadExamZip
 async function loadExamZip(url) {
-
- //   console.log("here is am - at 1");
-    
-   
       try {
         gPickerLoaderStatus.textContent = "Fetching " + url + "...";
         const resp = await fetch(url);
@@ -46,12 +43,11 @@ async function loadExamZip(url) {
       } catch (err) {
         gPickerLoaderStatus.textContent = "Error loading exam: " + err.message;
       }
+    
+} // loadExamZip
 
-     //   console.log("here is am - at 2");
-
-    } // loadExamZip
-
-    async function loadCustomZip(file) {
+// __loadCustomZip
+async function loadCustomZip(file) {
       try {
         gPickerLoaderStatus.textContent = "Loading custom ZIP...";
         const data = await file.arrayBuffer();
@@ -61,9 +57,9 @@ async function loadExamZip(url) {
       } catch (err) {
         gPickerLoaderStatus.textContent = "Error loading custom exam: " + err.message;
       }
-    }
+    } // loadCustomZip
 
-	    //
+//
 function parseCSVFull(text) {
   const rows = [];
   let current = [];
@@ -111,32 +107,19 @@ function parseCSVFull(text) {
     return rows;
 } //parseCVS
 	    
-	    
-	    async function parseExamZip(zip) {
-		
-		//    console.log("here is am - at 3");
-		
+// __ parseExamZip
+async function parseExamZip(zip) {
 		// Expecting examQuestions.csv, sectionPartTitles.csv, examData.csv
 		const examQuestionsCSV = await zip.file("examQuestions.csv").async("string");
 		const sectionPartTitlesCSV = await zip.file("sectionPartTitles.csv").async("string");
 		const examDataCSV = await zip.file("examData.csv").async("string");
 		
-		//    console.log("here is am - at 3 a");
-		
 		const parseCSV = txt => txt.trim().split("\n").map(line => line.split(","));
 		
-		//    console.log("here is am - at 3 a -p1 ");
-		
 		const examQuestionsCVSParsed = parseCSVFull(examQuestionsCSV);
-		//console.log("orig: ", examQuestionsCSV );
-		//console.log("parsed: ", examQuestionsCVSParsed );
 		
 		const sectionPartTitlesCVSParsed = parseCSVFull(sectionPartTitlesCSV);
 		const examDataCVSParsed = parseCSVFull(examDataCSV);
-		
-		//    console.log("here is am - at 3 b",
-		//		examQuestionsCVSParsed.length, " ", sectionPartTitlesCVSParsed.length, " ",
-		//		examDataCVSParsed.length);
 		
 		gPickerLoaderStatus.textContent = "\n\n" + "Loaded exam:\n" +
 		    "examQuestions rows: " + examQuestionsCVSParsed.length + "\n" +
@@ -144,15 +127,12 @@ function parseCSVFull(text) {
 		    "examData rows: " + examDataCVSParsed.length;
 		
 		// 👉 Here you hand off to your usual APL-ES code flow
-		// runExam(examQuestions, sectionPartTitles, examData);
-		
-		//    console.log("here is am - at 4");
-		
 		initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed);
 		
-	    } //parseExamZip
-	    
-    //
+} //parseExamZip
+
+
+// __ setupPickerLoaderUI
     function setupPickerLoaderUI() {
 	// Card click
 	document.querySelectorAll(".examCard").forEach(card => {
@@ -171,24 +151,24 @@ function parseCSVFull(text) {
 		loadExamZip(examZips[exam]);
 	    });
 	});
-
+	
 	// Custom exam card
-  const customCard = document.querySelector('.examCard[data-exam="custom"]');
-  if (customCard) {
-    const fileInput = customCard.querySelector("#customFile");
-    const button = customCard.querySelector(".examButton");
-
-    // Clicking the card opens the file picker
-    customCard.addEventListener("click", () => {
-      fileInput.click();
-    });
-
-    // Clicking the button also opens the file picker
-    button.addEventListener("click", e => {
-      e.stopPropagation();
-      fileInput.click();
-    });
-  }
+	const customCard = document.querySelector('.examCard[data-exam="custom"]');
+	if (customCard) {
+	    const fileInput = customCard.querySelector("#customFile");
+	    const button = customCard.querySelector(".examButton");
+	    
+	    // Clicking the card opens the file picker
+	    customCard.addEventListener("click", () => {
+		fileInput.click();
+	    });
+	    
+	    // Clicking the button also opens the file picker
+	    button.addEventListener("click", e => {
+		e.stopPropagation();
+		fileInput.click();
+	    });
+	}
 	// Help/About
 	const helpBtn = document.getElementById("helpButton");
 	if (helpBtn) {
@@ -196,6 +176,6 @@ function parseCSVFull(text) {
 		showScreen("helpScreen");
 	    });
 	}
-    }
-	    
+    } //setupPickerLoaderUI
+
 	    

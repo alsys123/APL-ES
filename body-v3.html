@@ -59,24 +59,7 @@
 
     </div>
 
-    <!-- PickerLoader Screen
-    <div class="screen" id="pickLoaderScreen">
-      <h1>Select Exam</h1>
-      <select id="examPicker" onchange="handleExamSelect()">
-	<option value="">-- Choose an exam --</option>
-	<option value="bridge">Bridge</option>
-	<option value="pilot">Pilot</option>
-	<option value="cognitive">Cognitive</option>
-	<option value="auto">Auto</option>
-	<option value="custom">Custom (upload)</option>
-      </select>
-      
-      <input type="file" id="customFile" accept=".zip" style="display:none;" onchange="loadCustomZip(this.files[0])">
-      <pre id="pickerLoaderStatus"></pre>
-      
-    </div>
-    -->
-    
+       
     <!-- Login Screen -->
     <div class="screen" id="loginScreen">
       <h1>📝 APL-ES Leaning & Exam System</h1>
@@ -87,7 +70,7 @@
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" id="username" placeholder="Enter your username"
-		 autocomplete="username" value="student1" >
+		 autocomplete="username" value="" >
         </div>
        <button class="btn" onclick="login()">Login</button>
         <div class="error" id="loginError"></div>
@@ -118,7 +101,10 @@
 	<!--        <h1>Exam System for Learning</h1>  -->
 	
 	<h1 id="examTitle">Exam System for Learning</h1>
-
+	<div>
+	  <h3 id="examVersion" style="font-weight: normal; text-align: right;">1.0</h3>
+	</div>
+	
         <div class="exam-info">
           <div class="info-item">
             <div class="info-label">Student</div>
