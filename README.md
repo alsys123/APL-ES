@@ -58,7 +58,7 @@ url embedded call in google sites:
 
 "https://alsys123.github.io/APL-ES/dataExtractor/dataExtractorWrapper.html"
 
-index.html is the mainline for the entire app
+"https://alsys123.github.io/APL-ES/index.html" is the mainline for the entire app
 
 
 
