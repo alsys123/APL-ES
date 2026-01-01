@@ -596,12 +596,18 @@
       /* hidden by default */
     }
 
+.container:has(#pickerLoaderContainer.active) {
+    max-width: none;
+    padding: 0;
+}
+
     #pickerLoaderContainer {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
   font-family: sans-serif;
+          max-width: none;
 }
 
 /* Top Bar */
