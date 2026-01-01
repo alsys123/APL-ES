@@ -11,7 +11,9 @@
     #spreadsheetId { width: 600px; padding: 6px; }
     #status { margin-top: 10px; white-space: pre-wrap; font-size: 0.9em; }
     #csvPreview { margin-top: 20px; padding: 10px; border: 1px solid #ccc;
-                  background: #f9f9f9; max-height: 300px; overflow:auto; font-family: monospace; }
+                  background: #f9f9f9; max-height: 300px; overflow:auto; font-family: monospace;
+		  white-space: pre;
+ }
   </style>
 </head>
 <body>
@@ -19,7 +21,9 @@
   <h1>Export Google Spreadsheet to ZIP (v1.1)</h1>
   <input id="spreadsheetId" placeholder="Enter Spreadsheet ID">
   <button onclick="exportSpreadsheet()">Export</button>
+
   <p id="status"></p>
+  
   <div id="csvPreview"></div>
   
 </body>
