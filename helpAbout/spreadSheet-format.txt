@@ -1,9 +1,9 @@
 
 filenames for the built-in sample exams:
-APLES-exporter-Auto.zip
-APLES-exporter-Bridge.zip
-APLES-exporter-Cognitive.zip
-APLES-exporter-Pilot.zip
+APL-ES-exporter-Auto.zip
+APL-ES-exporter-Bridge.zip
+APL-ES-exporter-Cognitive.zip
+APL-ES-exporter-Pilot.zip
 
 
 Google Spreadsheet format for each of the three (3) Forms in the spreadsheet:
