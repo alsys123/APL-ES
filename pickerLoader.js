@@ -5,10 +5,10 @@ const gPickerLoaderStatus = document.getElementById("pickerLoaderStatus");
 
 // Map exam types to GitHub ZIP URLs
 const examZips = {
-    bridge: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Bridge.zip",
-    aviation: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Pilot.zip",
-    cognitive: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Cognitive.zip",
-    driver: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APL-ES-exporter-Auto.zip"
+    aviation: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Aviation.zip",
+    bridge: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Bridge.zip",
+    cognitive: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Cognitive.zip",
+    driver: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Driver.zip"
 };
 
 

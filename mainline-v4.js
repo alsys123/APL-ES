@@ -49,7 +49,7 @@ async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, exam
     const sections = sectionPartTitlesCVSParsed.slice();
     const metadata = examDataCVSParsed.slice();
     
-    //console.log("Exam Data cvs Parsed",examDataCVSParsed);
+    console.log("Exam Data cvs Parsed",examDataCVSParsed);
 
     //const meta = Object.fromEntries(metadata);
 
