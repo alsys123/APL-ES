@@ -40,7 +40,7 @@ async function exportSpreadsheet() {
 	    // examData
             if (index === 2) {
                 const lines = csv.split(/\r?\n/);
-                const firstSample = lines.slice(0, 5).join("\n");
+                const firstSample = lines.slice(0, 8).join("\n");
                 preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
             }
 	//    preview.textContent += "----"; 

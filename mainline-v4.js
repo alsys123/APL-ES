@@ -16,6 +16,7 @@ let autoCheckEnabled = false; // default OFF false
 let questionStats = {}; 
 // keyed by qId: { attempts: number, correct: boolean }
 let shuffleMap = {};       // qId → array of original indices
+let gMetaData = {};
 
 function scrollPageBottom() {
     // Use the element that actually scrolls inside Google Sites
@@ -40,20 +41,40 @@ function showScreen(screenId) {
 
 //__ initExam
 async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed) {
+
+    gMetaData = examDataCVSParsed;  // set the the global variable for the Meta Data
+    
     // leave header row
     const questionsFromCSV = examQuestionsCVSParsed.slice(); 
-  const sections = sectionPartTitlesCVSParsed.slice();
-  const metadata = examDataCVSParsed.slice();
+    const sections = sectionPartTitlesCVSParsed.slice();
+    const metadata = examDataCVSParsed.slice();
+    
+    //console.log("Exam Data cvs Parsed",examDataCVSParsed);
 
-    const meta = Object.fromEntries(metadata);
-    document.getElementById("examTitle").textContent = meta.Title;
-    document.getElementById("examVersion").textContent = meta.version;
+    //const meta = Object.fromEntries(metadata);
+
+   // console.log("meta: ", meta);
+
+    //const Title   = examDataCVSParsed.find(row => row[1] === "Title")?.[2];
+    //const Version = examDataCVSParsed.find(row => row[1] === "Version")?.[2];
+    const Title   = getMetaDataValue(examDataCVSParsed, "Title");
+    const Version = getMetaDataValue(examDataCVSParsed, "Version");
+    
+    document.getElementById("examTitle").textContent = Title;
+    document.getElementById("examVersion").textContent = Version;
     
     await loadQuestionsFromCSV(questionsFromCSV,sections,metadata);
     
     showScreen('loginScreen');
     
 } //initExam
+
+//__ getMetaDataValue
+function getMetaDataValue(examDataCVSParsed, key) {
+    const returnValue = examDataCVSParsed.find(row => row[1] === key)?.[2];
+    return(returnValue);
+} // getMetaDataValue
+
 
 //__ loadQuestionsFromCSV
 async function loadQuestionsFromCSV(questionsFromCSV,sections,metadata) {
@@ -546,7 +567,10 @@ async function exportToZip() {
       compressionOptions: { level: 6 }
     });
 
-    const downloadName = `exam_${currentUser}_${new Date().toISOString().replace(/[:.]/g, '-')}.zip`;
+      const ExportName   = getMetaDataValue(gMetaData, "ExportName");
+      
+      const downloadName = `${currentUser}_${ExportName}_${new Date().toISOString().replace(/[:.]/g, '-')}.zip`;
+      
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = downloadName;

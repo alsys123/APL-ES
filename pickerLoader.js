@@ -59,7 +59,7 @@ async function loadCustomZip(file) {
       }
     } // loadCustomZip
 
-//
+//__ parseCSVFull
 function parseCSVFull(text) {
   const rows = [];
   let current = [];
@@ -105,16 +105,18 @@ function parseCSVFull(text) {
   }
 
     return rows;
-} //parseCVS
+} //parseCSVFull
 	    
-// __ parseExamZip
+//__ parseExamZip
 async function parseExamZip(zip) {
 		// Expecting examQuestions.csv, sectionPartTitles.csv, examData.csv
 		const examQuestionsCSV = await zip.file("examQuestions.csv").async("string");
 		const sectionPartTitlesCSV = await zip.file("sectionPartTitles.csv").async("string");
 		const examDataCSV = await zip.file("examData.csv").async("string");
-		
-		const parseCSV = txt => txt.trim().split("\n").map(line => line.split(","));
+
+ //   console.log("Exam Data cvs",examDataCSV);
+    
+//		const parseCSV = txt => txt.trim().split("\n").map(line => line.split(","));
 		
 		const examQuestionsCVSParsed = parseCSVFull(examQuestionsCSV);
 		
@@ -125,6 +127,11 @@ async function parseExamZip(zip) {
 		    "examQuestions rows: " + examQuestionsCVSParsed.length + "\n" +
 		    "sectionPartTitles rows: " + sectionPartTitlesCVSParsed.length + "\n" +
 		    "examData rows: " + examDataCVSParsed.length;
+
+    console.log("\n\n" + "Loaded exam:\n" +
+		    "examQuestions rows: " + examQuestionsCVSParsed.length + "\n" +
+		    "sectionPartTitles rows: " + sectionPartTitlesCVSParsed.length + "\n" +
+		"examData rows: " + examDataCVSParsed.length);
 		
 		// 👉 Here you hand off to your usual APL-ES code flow
 		initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed);
