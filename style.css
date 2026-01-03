@@ -684,54 +684,6 @@
   cursor: pointer;
 }
 
-/* Title */
-#pickerTitle {
-  margin-bottom: 20px;
-}
-
-/* Exam Grid */
-#examGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
-}
-
-/* Exam Card */
-/*
-.examCard {
-  background: #f8f8f8;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  max-width: 100%;
-  margin: 0 auto;
-}
- */
-.examCard {
-/*  background: #f8f8f8; 
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1); */
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  max-width: 100%;
-  margin: 0 auto; /* centers it */
-}
- 
-.examCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-/* Exam Image */
-.examImage {
-  width: 80%;
-  max-width: 300px;
-  border-radius: 5px;
-}
-
 /* Label */
 .examLabel {
   margin-top: 10px;
