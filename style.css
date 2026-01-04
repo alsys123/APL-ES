@@ -44,7 +44,16 @@
       margin-bottom: 20px;
       text-align: center;
     }
-
+    
+    h4 {
+	color: black;
+	background-color: white;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    
     .login-form {
       max-width: 400px;
       margin: 0 auto;

@@ -59,12 +59,31 @@ async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, exam
     //const Version = examDataCVSParsed.find(row => row[1] === "Version")?.[2];
     const Title   = getMetaDataValue(examDataCVSParsed, "Title");
     const Version = getMetaDataValue(examDataCVSParsed, "Version");
+    const Description = getMetaDataValue(examDataCVSParsed, "Description");
+    const ReleaseDate = getMetaDataValue(examDataCVSParsed, "ReleaseDate");
     
     document.getElementById("examTitle").textContent = Title;
     document.getElementById("examVersion").textContent = Version;
     
     await loadQuestionsFromCSV(questionsFromCSV,sections,metadata);
-    
+
+    // show pre-amble screen
+    let html = `
+            <div class="result-summary">
+                <h3><strong>${Title}</strong></h3>
+                <p>${Description}<strong></strong></p>
+        <p style="text-align: right;"><small><i>Version: ${Version} was release on ${ReleaseDate} </i></small></p>
+     <h4><strong>Note:</strong></h4>
+                <p style="text-align: left;">To see this message again. Logout and log back in again.</p>
+     <h4><strong>Not for Official Use:</strong></h4>
+                <p style="text-align: left;">As otherwise noted above, these sample exams are for extertainment and fun only.
+                  They do represent any official documenation and information on the particular subject matter.</p>
+            </div>
+        `;
+
+    document.getElementById('messageResultsContent').innerHTML = html;
+    document.getElementById('messageModal').classList.add('active');
+
     showScreen('loginScreen');
     
 } //initExam
@@ -452,63 +471,64 @@ function selectAnswer(qId, optionIndex) {
         document.body.scrollTop = 0; 		    // v10
       }
 
-      function checkAnswers() {
-        const currentQuestions = questions[currentSection]?.[currentPart] || [];
-        let correct = 0, incorrect = 0, unanswered = 0;
-
-        currentQuestions.forEach(q => {
-          if (answers[q.id] === undefined) {
+//__ checkAnswers
+function checkAnswers() {
+    const currentQuestions = questions[currentSection]?.[currentPart] || [];
+    let correct = 0, incorrect = 0, unanswered = 0;
+    
+    currentQuestions.forEach(q => {
+        if (answers[q.id] === undefined) {
             unanswered++;
-          } else if (answers[q.id] === q.correct) {
+        } else if (answers[q.id] === q.correct) {
             correct++;
-          } else {
+        } else {
             incorrect++;
-          }
-        });
-
-        const total = currentQuestions.length;
-        const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-        let html = `
+        }
+    });
+    
+    const total = currentQuestions.length;
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+    
+    let html = `
             <div class="result-summary">
                 <h3>Section ${currentSection}, Part ${currentPart}</h3>
                 <div class="score">${percentage}%</div>
                 <p><strong>${correct}</strong> correct | <strong>${incorrect}</strong> incorrect | <strong>${unanswered}</strong> unanswered</p>
             </div>
         `;
-
-        currentQuestions.forEach((q, index) => {
-          const globalNum = ((currentSection - 1) * 50) + ((currentPart - 1) * 5) + (index + 1);
-          let status = 'unanswered';
-          let statusText = 'Not answered';
-
-          if (answers[q.id] !== undefined) {
+    
+    currentQuestions.forEach((q, index) => {
+        const globalNum = ((currentSection - 1) * 50) + ((currentPart - 1) * 5) + (index + 1);
+        let status = 'unanswered';
+        let statusText = 'Not answered';
+	
+        if (answers[q.id] !== undefined) {
             if (answers[q.id] === q.correct) {
-              status = 'correct';
-              statusText = '✓ Correct';
+		status = 'correct';
+		statusText = '✓ Correct';
             } else {
-              status = 'incorrect';
-              statusText = `✗ Incorrect - You chose: ${q.options[answers[q.id]]}<br>Correct answer: ${q.options[q.correct]}`;
+		status = 'incorrect';
+		statusText = `✗ Incorrect - You chose: ${q.options[answers[q.id]]}<br>Correct answer: ${q.options[q.correct]}`;
             }
-          }
-
-	    /*
+        }
+	
+	/*
           html += `
-                <div class="result-item ${status}">
-                    <strong>Question ${globalNum}:</strong> ${q.text}<br>
-                    <em>${statusText}</em>
-                    ${status === 'incorrect' && q.explanation ? `<div class="explanation">💡 ${q.explanation}</div>` : ''}
-                </div>
-            `;
-	    */
-const stats = questionStats[q.id] || { attempts: 0, correct: false };
-const attemptsText = stats.attempts > 0 
-  ? `${stats.attempts} attempt${stats.attempts > 1 ? 's' : ''}` 
-  : "No attempts";
-
-const outcomeText = stats.correct ? "✅ Eventually Correct" : "❌ Not Correct";
-
-html += `
+          <div class="result-item ${status}">
+          <strong>Question ${globalNum}:</strong> ${q.text}<br>
+          <em>${statusText}</em>
+          ${status === 'incorrect' && q.explanation ? `<div class="explanation">💡 ${q.explanation}</div>` : ''}
+          </div>
+          `;
+	*/
+	const stats = questionStats[q.id] || { attempts: 0, correct: false };
+	const attemptsText = stats.attempts > 0 
+	      ? `${stats.attempts} attempt${stats.attempts > 1 ? 's' : ''}` 
+	      : "No attempts";
+	
+	const outcomeText = stats.correct ? "✅ Eventually Correct" : "❌ Not Correct";
+	
+	html += `
   <div class="result-item ${status}">
     <strong>Question ${globalNum}:</strong> ${q.text}<br>
     <em>${statusText}</em><br>
@@ -517,17 +537,21 @@ html += `
     ${status === 'incorrect' && q.explanation ? `<div class="explanation">💡 ${q.explanation}</div>` : ''}
   </div>
 `;
+	
+	
+    });
+    
+    document.getElementById('resultsContent').innerHTML = html;
+    document.getElementById('resultsModal').classList.add('active');
+} // checkAnswers
 
-	    
-        });
+function closeResults() {
+    document.getElementById('resultsModal').classList.remove('active');
+} //closeResults
 
-        document.getElementById('resultsContent').innerHTML = html;
-        document.getElementById('resultsModal').classList.add('active');
-      }
-
-      function closeResults() {
-        document.getElementById('resultsModal').classList.remove('active');
-      } //closeResults
+function closeMessage() {
+    document.getElementById('messageModal').classList.remove('active');
+}
 
 // **** Entry Point ****
 // window.onload = initExam;
@@ -1185,6 +1209,16 @@ async function importFromZip(file) {
       }
       function scrollToTop() {
         const modalContent = document.querySelector('#resultsModal .modal-content');
+        modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+
+      function scrollToBottomMessage() {
+        const modalContent = document.querySelector('#messageModal .modal-content');
+        modalContent.scrollTo({ top: modalContent.scrollHeight, behavior: 'smooth' });
+      }
+      function scrollToTopMessage() {
+        const modalContent = document.querySelector('#messageModal .modal-content');
         modalContent.scrollTo({ top: 0, behavior: 'smooth' });
       }
 

@@ -195,6 +195,28 @@
         </div>
       </div>
 
+      
+ <!-- Message Window Modal -->
+      <div id="messageModal" class="modal">
+        <div class="modal-content">
+          <h2>Message Window - important!</h2>
+
+          <!-- Top scroll button -->
+          <div class="navigation" style="justify-content:flex-end;">
+            <button class="scroll-btn" onclick="scrollToBottomMessage()">⬇️ Go to Bottom</button>
+          </div>
+
+          <div id="messageResultsContent"></div>
+
+          <!-- Bottom scroll button -->
+          <div class="navigation" style="justify-content:flex-end;">
+            <button class="scroll-btn" onclick="scrollToTopMessage()">⬆️ Go to Top</button>
+          </div>
+
+          <button class="btn" onclick="closeMessage()">Close</button>
+        </div>
+      </div>
+      
 
       <!-- Notification -->
       <div id="notification" class="notification">
