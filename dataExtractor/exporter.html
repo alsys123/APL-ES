@@ -1,30 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spreadsheet Exporter (with fixed ranges)</title>
+  <title>Exam Builder (v1.3)</title>
+
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="dataExtractor.js"></script>
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #spreadsheetId { width: 600px; padding: 6px; }
-    #status { margin-top: 10px; white-space: pre-wrap; font-size: 0.9em; }
-    #csvPreview { margin-top: 20px; padding: 10px; border: 1px solid #ccc;
-                  background: #f9f9f9; max-height: 300px; overflow:auto; font-family: monospace;
-		  white-space: pre;
- }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background: #f4f6f8;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+      font-weight: 600;
+      color: #1a3d7c;
+      text-align: center;
+    }
+
+    #spreadsheetId {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s ease;
+      color: #fff;
+    }
+
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-full { background: #1a73e8; }
+    .btn-student { background: #34a853; }
+    .btn-learning { background: #fbbc04; color: #333; }
+
+    #status {
+      margin-top: 20px;
+      padding: 12px;
+      background: #eef3ff;
+      border-left: 4px solid #1a73e8;
+      border-radius: 6px;
+      font-size: 14px;
+      min-height: 40px;
+      white-space: pre-wrap;
+    }
+
+    #csvPreview {
+      margin-top: 25px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+      border-radius: 6px;
+      max-height: 350px;
+      overflow: auto;
+      font-family: Consolas, monospace;
+      white-space: pre;
+    }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <h1>Exam Builder (v1.3)</h1>
 
-  <h1>Export Google Spreadsheet to ZIP (v1.2)</h1>
-  <input id="spreadsheetId" placeholder="Enter Spreadsheet ID">
-  <button onclick="exportSpreadsheet()">Export</button>
+    <input id="spreadsheetId" placeholder="Enter Spreadsheet ID">
 
-  <p id="status"></p>
-  
-  <div id="csvPreview"></div>
-  
+    <div class="button-row">
+      <button class="btn-full" onclick="exportSpreadsheet('full')">
+        Build FULL Exam
+      </button>
+
+      <button class="btn-student" onclick="exportSpreadsheet('student')">
+        Build STUDENT Exam
+      </button>
+
+      <button class="btn-learning" onclick="exportSpreadsheet('withLearning')">
+        Build STUDENT + Study Notes
+      </button>
+    </div>
+
+    <p id="status"></p>
+    <div id="csvPreview"></div>
+  </div>
 </body>
 </html>

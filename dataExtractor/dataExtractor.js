@@ -1,6 +1,6 @@
 
 //__ exportSpreadsheet
-async function exportSpreadsheet() {
+async function exportSpreadsheet(buildType) {
     const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
     const status = document.getElementById("status");
     const preview = document.getElementById("csvPreview");
@@ -24,15 +24,31 @@ async function exportSpreadsheet() {
             status.textContent += `Fetching ${sheet.range}...\n`;
 
 	    const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet.name)}&range=${encodeURIComponent(sheet.range)}`;
-
-//	    const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${sheet.gid}`;
-
-	    //            const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&sheet=${encodeURIComponent(sheet.name)}&range=${encodeURIComponent(sheet.range)}`;
-	    
+   
             const resp = await fetch(csvUrl);
-            const csv = await resp.text();
-            zip.file(`${sheet.name}.csv`, csv);
-        
+	    let csv = await resp.text();
+	    
+	    // do we build a full version or a student version?
+	    if (buildType === 'student') {
+		// Blank specific columns depending on sheet
+		if (sheet.name === "examQuestions") {
+		    csv = blankColumnsInCsv(csv, [8, 9]);   // Columns I, J
+		}
+		if (sheet.name === "sectionPartTitles") {
+		    csv = blankColumnsInCsv(csv, [4]);      // Column E
+		}
+	    }
+
+	    if (buildType === 'withLearning') {
+		// Blank specific columns depending on sheet
+		if (sheet.name === "examQuestions") {
+		    csv = blankColumnsInCsv(csv, [8, 9]);   // Columns I, J
+		}
+	    }
+	    
+	    zip.file(`${sheet.name}.csv`, csv);
+	    
+	    
             if (sheet.name === "examData") {
                 examDataCsv = csv;
             }
@@ -43,14 +59,14 @@ async function exportSpreadsheet() {
                 const firstSample = lines.slice(0, 8).join("\n");
                 preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
             }
-	//    preview.textContent += "----"; 
+	
             // Questions
             if (index === 0) {
                 const lines = csv.split(/\r?\n/);
                 const firstSample = lines.slice(0, 5).join("\n");
                 preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
             }
-	//    preview.textContent += "----"; 
+	
             // Questions
             if (index === 1) {
                 const lines = csv.split(/\r?\n/);
@@ -76,6 +92,19 @@ async function exportSpreadsheet() {
         status.textContent = "Error: " + err.message;
     }
 } // <-- closes exportSpreadsheet
+
+//__ blankColumnsInCsv
+function blankColumnsInCsv(csv, columnsToBlank) {
+    const lines = csv.split(/\r?\n/);
+    const output = lines.map(line => {
+        const cols = line.split(",");
+        columnsToBlank.forEach(idx => {
+            if (cols[idx] !== undefined) cols[idx] = "";
+        });
+        return cols.join(",");
+    });
+    return output.join("\n");
+} // blankColumnsInCsv
 
 //__ formatTimestamp
 function formatTimestamp() {
@@ -106,23 +135,6 @@ function extractExportNameFromExamData(csv) {
     return null;
 } //extractExportNameFromExamData
 
-/*
-function extractExportNameFromExamData(csv) {
-
-    console.log("MY csv: ",csv);
-    
-    const rows = parseTwoColumnCsv(csv);
-    for (const [key, value] of rows) {
-	
-	//	  console.log(key, "-->", value);
-	if (key && key.trim().toLowerCase() === "extractorname") {
-	    return value || null;
-	}
-    }
-    return null;
-} //extractExportNameFromExamData
-
-*/
 
 //_ parseTwoColumnCsv
 function parseTwoColumnCsv(csv) {
