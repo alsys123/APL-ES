@@ -46,6 +46,7 @@ async function exportSpreadsheet(buildType) {
 		}
 	    }
 	    
+	    
 	    zip.file(`${sheet.name}.csv`, csv);
 	    
 	    
@@ -85,7 +86,7 @@ async function exportSpreadsheet(buildType) {
         
         status.textContent += "Packaging ZIP...\n";
         const content = await zip.generateAsync({ type: "blob" });
-        saveAs(content, `${safeName}-${timestamp}.zip`);
+        saveAs(content, `${safeName}-${buildType}-${timestamp}.zip`);
         
         status.textContent += "Download complete.";
     } catch (err) {
@@ -93,18 +94,64 @@ async function exportSpreadsheet(buildType) {
     }
 } // <-- closes exportSpreadsheet
 
-//__ blankColumnsInCsv
+
+//__ blankColumnsInCsv (quote‑aware)
 function blankColumnsInCsv(csv, columnsToBlank) {
     const lines = csv.split(/\r?\n/);
+
     const output = lines.map(line => {
-        const cols = line.split(",");
+        if (line.trim() === "") return line;
+
+        const cols = parseCsvLine(line);
+
         columnsToBlank.forEach(idx => {
             if (cols[idx] !== undefined) cols[idx] = "";
         });
-        return cols.join(",");
+
+        return cols.map(escapeCsvField).join(",");
     });
+
     return output.join("\n");
-} // blankColumnsInCsv
+}  // blankColumnsInCsv
+
+function parseCsvLine(line) {
+    const result = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const next = line[i + 1];
+
+        if (char === '"' && inQuotes && next === '"') {
+            // Escaped quote ("")
+            current += '"';
+            i++;
+        } else if (char === '"') {
+            // Toggle quote mode
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            // End of field
+            result.push(current);
+            current = "";
+        } else {
+            current += char;
+        }
+    }
+
+    result.push(current);
+    return result;
+} //parseCsvLine
+
+function escapeCsvField(field) {
+    if (field === "") return ""; // blanked column stays blank
+
+    // If field contains comma or quote, wrap in quotes
+    if (field.includes(",") || field.includes('"')) {
+        return '"' + field.replace(/"/g, '""') + '"';
+    }
+    return field;
+} //escapeCsvField
 
 //__ formatTimestamp
 function formatTimestamp() {
