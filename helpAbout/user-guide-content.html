@@ -1,7 +1,7 @@
 <h2>User Guide</h2>
 
 <h3>🔐 Logging In</h3>
-<p>Enter your assigned username and password on the login screen. Your credentials are provided by your instructor or administrator.</p>
+<p>Enter your username on the login screen. Your username may be provided by your instructor.  You can always just use the default of student1 or make something up yourself.  Anything will work.  This is just an identifier.</p>
 
 <h3>📖 Taking the Exam</h3>
 <p>The exam consists of 300 questions organized into:</p>
@@ -99,6 +99,171 @@
 <li>Current section/part is highlighted in navigation</li>
 <li>Use scroll buttons (⬆ ⬇) to quickly move through long content</li>
 </ul>
+
+<p>
+The Quick Navigation panel gives you an at‑a‑glance view of your progress across all
+sections and parts of the exam. Each part is represented as a small square button.
+The color and pattern of each button show your current status for that part.
+</p>
+
+<h3>🔵 What Each Square Represents</h3>
+<p>
+Every square corresponds to one <strong>Part</strong> (5 questions). Clicking a square jumps
+directly to that part. The appearance of the square tells you how well you’ve done so far.
+</p>
+
+<h3>🎨 Color and Pattern Meanings</h3>
+
+<ul>
+  <li><strong>Empty (no color)</strong> — You haven’t answered any questions in this part yet.</li>
+
+  <li><strong>Yellow (“progress”)</strong> — You’ve answered some questions, but not all, and no incorrect answers have been marked yet.</li>
+
+  <li><strong>Green (“done”)</strong> — All 5 questions in this part are correct.</li>
+
+  <li><strong>Red (“wrong”)</strong> — At least one answer in this part is incorrect.</li>
+</ul>
+
+<h3>🟩🟥 Mixed Green/Red Progress Bars</h3>
+<p>
+Some squares show a <strong>green‑to‑red gradient</strong>. These appear when you’ve completed all
+five questions in a part, but with a mix of correct and incorrect answers.
+</p>
+
+<p>Each square below shows exactly how a part will appear in the Quick Navigation panel.</p>
+
+<style>
+  .qn-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .qn-demo-item {
+    text-align: center;
+    font-size: 0.9em;
+  }
+  .qn-demo-item button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    cursor: default;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  /* Your actual classes */
+  button.done {
+    background: #4CAF50;
+  }
+  button.wrong {
+    background: #f44336;
+  }
+  button.progress {
+    background: #ffeb3b;
+    color: #000;
+  }
+
+  button.done4-wrong1 {
+    background: linear-gradient(to bottom,
+      #4CAF50 0%,
+      #4CAF50 80%,
+      #f44336 80%,
+      #f44336 100%
+    );
+  }
+
+  button.done3-wrong2 {
+    background: linear-gradient(to bottom,
+      #4CAF50 0%,
+      #4CAF50 60%,
+      #f44336 60%,
+      #f44336 100%
+    );
+  }
+
+  button.done2-wrong3 {
+    background: linear-gradient(to bottom,
+      #4CAF50 0%,
+      #4CAF50 30%,
+      #f44336 30%,
+      #f44336 100%
+    );
+  }
+
+  button.unanswered {
+    background: #ddd;
+    color: #000;
+  }
+</style>
+
+<div class="qn-demo-grid">
+
+  <div class="qn-demo-item">
+    <button class="unanswered"></button>
+    <div>Unanswered</div>
+  </div>
+
+  <div class="qn-demo-item">
+    <button class="progress"></button>
+    <div>In Progress</div>
+  </div>
+
+  <div class="qn-demo-item">
+    <button class="done"></button>
+    <div>All Correct</div>
+  </div>
+
+  <div class="qn-demo-item">
+    <button class="wrong"></button>
+    <div>At Least 1 Wrong</div>
+  </div>
+
+  <div class="qn-demo-item">
+    <button class="done4-wrong1"></button>
+    <div>4 Correct, 1 Wrong</div>
+  </div>
+
+  <div class="qn-demo-item">
+    <button class="done3-wrong2"></button>
+    <div>3 Correct, 2 Wrong</div>
+  </div>
+
+  <div class="qn-demo-item">
+    <button class="done2-wrong3"></button>
+    <div>2 Correct, 3 Wrong</div>
+  </div>
+
+</div>
+
+
+<p>
+These visual indicators make it easy to see where you’re strong and where you may want to
+revisit explanations or retry questions.
+</p>
+
+<h3>🧭 Using Quick Navigation Effectively</h3>
+<ul>
+  <li>Click any square to jump instantly to that part.</li>
+  <li>Use the colors to plan your study session:
+    <ul>
+      <li>Green = mastered</li>
+      <li>Yellow = in progress</li>
+      <li>Red = needs review</li>
+      <li>Mixed = partially correct, revisit explanations</li>
+    </ul>
+  </li>
+  <li>Hovering over a square (if enabled) shows the Section and Part number.</li>
+</ul>
+
+<div class="callout">
+  <h4>💡 Tip</h4>
+  <p>
+    Use Quick Navigation after grading a section to immediately jump to weak areas and
+    strengthen your understanding before moving on.
+  </p>
+</div>
 
 <h3>💾 Export/Import Progress</h3>
 <p><strong>To Export:</strong></p>
