@@ -1,0 +1,132 @@
+  <h2>🛠️ Exam Builder</h2>
+
+    <h3>📐 Architecture Overview</h3>
+    <p>
+      The Exam Builder converts a structured Google Spreadsheet into a ZIP archive containing
+      CSV files used by the APL‑ES exam engine. It supports multiple build modes (FULL, STUDENT,
+      STUDENT+Learning) and integrates directly with the APL‑ES runtime.
+      </p>
+      <p>In other words, the Exam Builder is responsible for converting a structured Google Spreadsheet into a
+    complete APL‑ES exam package. It validates the input, extracts the three required forms,
+    applies column‑level transformations, and produces a standardized ZIP bundle ready for
+    import into the APL‑ES runtime.
+    </p>
+    <h3 style="margin-top:25px;">Architecture Overview</h3> <p>The Exam Builder follows a simple, transparent processing pipeline:</p> <ol>
+      <li><strong>Fetch Spreadsheet</strong> – The tool retrieves three named sheets from a Google Spreadsheet using fixed ranges.</li>
+      <li><strong>Normalize Data</strong> – Columns are cleaned, blanked (where required), and validated.
+      </li>
+      <li><strong>Transform to CSV</strong> – Each sheet is converted into a CSV representation.</li>
+      <li><strong>Package</strong> – All CSV files are bundled into a ZIP archive.</li>
+      <li><strong>Load / Reload</strong> – The ZIP can be imported directly into APL‑ES to refresh the exam content.</li> </ol>
+
+    <div style="margin:20px 0; padding:15px; background:#eef3ff; border-left:4px solid #1a73e8;"> <strong>Note:</strong> The Exam Builder supports both FULL and STUDENT versions of the exam, with optional inclusion of Learning Notes. </div>
+
+    <div style="text-align:center; margin:20px 0;">
+      <img src="https://alsys123.github.io/APL-ES/helpAbout/APL-ES-Architecture-v2.jpg"
+           alt="APL-ES Architecture Diagram"
+	style="max-width:100%; border:1px solid #ccc; border-radius:8px;"
+		onerror="this.style.display='none';"							>
+      <p style="font-size:0.9em; color:#555;">
+        Figure: APL‑ES Architecture v2 — Exam Builder Workflow
+      </p>
+    </div>
+
+    <h3>📊 Spreadsheet Format</h3>
+    <p>The Google Spreadsheet must contain <strong>three forms</strong>, each with a specific structure.
+      These forms define the questions, section/part hierarchy, and exam metadata.
+      </p>
+
+    <h2><code>examQuestions</code></h2>
+     <p>This sheet defines every question in the exam. Required columns:</p>
+
+  <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
+ID (Question #)
+Section
+Part
+Question
+Option 1
+Option 2
+Option 3
+Option 4
+Correct (a/b/c/d)
+Explain (rationale)
+  </pre>
+
+  <p>
+    Each row represents a single multiple‑choice question. The <em>Correct</em> column uses
+    letter‑based indexing (a–d). The <em>Explain</em> column provides the rationale shown after
+    answering.  The <em>Header Row</em> is required for each sheet.  Exmples have been included for each sheet.  In the examQuestions example, newlines have been added for readability only.
+  </p>
+  
+    <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
+   "ID: Question number","Section","Part","Question","Option 1","Option 2","Option 3","Option 4","Correct","Explain"
+   "1","1","1","What key type is recommended for Push-to-Talk (PTT) to avoid auto-repeat issues?","Space bar",
+        "Enter key","Left or Right Control","Any letter key","c","Ctrl keys don’t auto-repeat like character keys,
+        avoiding unwanted transmissions."
+   "2","1","1","Where should your microphone be positioned for best audio quality?","Directly in front of mouth",
+        "Slightly to one side and below mouth","Above the head","Against the throat","b",
+        "Offset reduces breath noise and plosives while keeping clear audio."
+
+    </pre>
+
+    <h2><code>sectionPartTitles</code></h2>
+
+    <p>This sheet defines the hierarchical structure of the exam:</p>
+
+  <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
+Section Number
+Part Number
+Section Name
+Part Name
+  </pre>
+
+  <p>
+    Sections group major topics; Parts subdivide them. The Exam Builder uses this sheet to
+    generate navigation, grouping, and scoring logic.
+  </p>
+  
+    <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
+      "Section Number","Part Number","Section Name","Part Name"
+      "1","1","BASIC PROCEDURES AND EQUIPMENT","Radio Equipment Setup"
+      "1","2","BASIC PROCEDURES AND EQUIPMENT","Callsign Procedures"
+      "1","3","BASIC PROCEDURES AND EQUIPMENT","Standard Phraseology - Roger and Wilco"
+    </pre>
+
+    <h2><code>examData</code></h2>
+
+     <p>This sheet contains metadata and configuration values:</p>
+
+  <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
+Descriptor
+Value
+  </pre>
+
+  <p>Common descriptors include:</p>
+
+  <ul>
+    <li><strong>Title</strong> – Display name of the exam</li>
+    <li><strong>Version</strong> – Version string</li>
+    <li><strong>ExportName</strong> – Used for naming output files</li>
+    <li><strong>ExtractorName</strong> – Internal identifier</li>
+    <li><strong>Passing</strong> – Required score percentage</li>
+    <li><strong>ReleaseDate</strong> – Human‑readable date</li>
+    <li><strong>Description</strong> – Long‑form description of the exam</li>
+  </ul>
+
+      <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
+"","Descriptor","Value"
+"1","Title","CIX Exam for Pilots"
+"2","Version","1.2"
+"3","ExportName","Pilot"
+"4","ExtractorName","PilotData"
+"5","Passing","80"
+"6","ReleaseDate","Jan 2, 2026"
+"7","Description","This comprehensive examination platform..."
+    </pre>
+
+    <h3>📦 Output</h3>
+    <p>
+      The builder produces a ZIP archive containing three CSV files. These files populate the
+      APL‑ES exam interface, scoring engine, and navigation structure. Column blanking rules are
+      applied depending on the selected build mode.
+    </p>

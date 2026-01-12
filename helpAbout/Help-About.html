@@ -5,277 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APL-ES - Help & About</title>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
 
-body {
-font-family: ‘Segoe UI’, Tahoma, Geneva, Verdana, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-min-height: 100vh;
-padding: 20px;
-}
-
-.container {
-background: white;
-border-radius: 20px;
-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-max-width: 1000px;
-margin: 0 auto;
-padding: 40px;
-}
-
-.header {
-text-align: center;
-margin-bottom: 40px;
-padding-bottom: 20px;
-border-bottom: 3px solid #667eea;
-}
-
-.header h1 {
-color: #667eea;
-font-size: 2.5em;
-margin-bottom: 10px;
-}
-
-.header .subtitle {
-color: #666;
-font-size: 1.2em;
-}
-
-.nav-tabs {
-display: flex;
-gap: 10px;
-margin-bottom: 30px;
-flex-wrap: wrap;
-justify-content: center;
-}
-
-.tab-btn {
-background: #f5f5f5;
-border: 2px solid #e0e0e0;
-padding: 12px 24px;
-border-radius: 8px;
-font-size: 16px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.3s;
-}
-
-.tab-btn:hover {
-background: #e8ebff;
-border-color: #667eea;
-}
-
-.tab-btn.active {
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-color: white;
-border-color: #667eea;
-}
-
-.tab-content {
-display: none;
-}
-
-.tab-content.active {
-display: block;
-animation: fadeIn 0.5s;
-}
-
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-.section {
-margin-bottom: 40px;
-}
-
-.section h2 {
-color: #667eea;
-font-size: 1.8em;
-margin-bottom: 15px;
-padding-left: 15px;
-border-left: 4px solid #667eea;
-}
-
-.section h3 {
-color: #764ba2;
-font-size: 1.3em;
-margin-top: 25px;
-margin-bottom: 12px;
-}
-
-.section p {
-color: #333;
-line-height: 1.8;
-margin-bottom: 15px;
-font-size: 16px;
-}
-
-.section ul, .section ol {
-margin-left: 30px;
-margin-bottom: 20px;
-}
-
-.section li {
-color: #333;
-line-height: 1.8;
-margin-bottom: 10px;
-font-size: 16px;
-}
-
-.feature-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 20px;
-margin: 20px 0;
-}
-
-.feature-card {
-background: #f9f9f9;
-padding: 20px;
-border-radius: 12px;
-border: 2px solid #e0e0e0;
-transition: all 0.3s;
-}
-
-.feature-card:hover {
-border-color: #667eea;
-transform: translateY(-5px);
-box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-}
-
-.feature-card h4 {
-color: #667eea;
-font-size: 1.2em;
-margin-bottom: 10px;
-display: flex;
-align-items: center;
-gap: 10px;
-}
-
-.feature-card p {
-color: #666;
-font-size: 14px;
-line-height: 1.6;
-}
-
-.icon {
-font-size: 1.5em;
-}
-
-.callout {
-background: #e8ebff;
-border-left: 4px solid #667eea;
-padding: 20px;
-border-radius: 8px;
-margin: 20px 0;
-}
-
-.callout.warning {
-background: #fff3cd;
-border-left-color: #ffc107;
-}
-
-.callout.success {
-background: #d4edda;
-border-left-color: #28a745;
-}
-
-.callout h4 {
-color: #667eea;
-margin-bottom: 10px;
-font-size: 1.1em;
-}
-
-.callout.warning h4 {
-color: #856404;
-}
-
-.callout.success h4 {
-color: #155724;
-}
-
-.button-example {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-background: #f5f5f5;
-padding: 8px 16px;
-border-radius: 6px;
-border: 1px solid #ddd;
-margin: 5px;
-font-family: monospace;
-font-size: 14px;
-}
-
-.kbd {
-background: #667eea;
-color: white;
-padding: 4px 10px;
-border-radius: 4px;
-font-family: monospace;
-font-size: 14px;
-font-weight: 600;
-}
-
-.footer {
-margin-top: 50px;
-padding-top: 30px;
-border-top: 2px solid #e0e0e0;
-text-align: center;
-color: #666;
-}
-
-.footer p {
-margin-bottom: 10px;
-}
-
-.version {
-display: inline-block;
-background: #667eea;
-color: white;
-padding: 5px 15px;
-border-radius: 20px;
-font-size: 14px;
-font-weight: 600;
-margin-top: 10px;
-}
-
-table {
-width: 100%;
-border-collapse: collapse;
-margin: 20px 0;
-}
-
-th, td {
-padding: 12px;
-text-align: left;
-border-bottom: 1px solid #e0e0e0;
-}
-
-th {
-background: #f5f5f5;
-color: #667eea;
-font-weight: 600;
-}
-
-tr:hover {
-background: #f9f9f9;
-}
-
-code {
-background: #f5f5f5;
-padding: 2px 6px;
-border-radius: 4px;
-font-family: monospace;
-color: #667eea;
-}
-</style>
+  <!-- External CSS file -->
+  <link rel="stylesheet" href="helpAboutStyle.css?v=2">
 
 </head>
 <body>
@@ -290,6 +22,7 @@ color: #667eea;
 <button class="tab-btn" onclick="showTab('features')">Features</button>
 <button class="tab-btn" onclick="showTab('user-guide')">User Guide</button>
 <button class="tab-btn" onclick="showTab('examBuilder')">Exam Builder</button>
+<button class="tab-btn" onclick="showTab('instructors')">Instructors</button>
 <button class="tab-btn" onclick="showTab('faq')">FAQ</button>
 <button class="tab-btn" onclick="showTab('about')">About</button>
 </div>
@@ -297,544 +30,37 @@ color: #667eea;
 <!-- Getting Started Tab -->
 
 <div id="getting-started" class="tab-content active">
-<div class="section">
-<h2>Getting Started</h2>
-<p>Welcome to the CIX Exam System for Pilots! This comprehensive examination platform is designed to help you prepare for your pilot certification through a structured, interactive learning experience.</p>
-
-<h3>🚀 Quick Start</h3>
-<ol>
-<li><strong>Login:</strong> Use your provided username and password to access the exam system</li>
-<li><strong>Navigate:</strong> The exam is organized into 6 sections with 10 parts each, containing 300 total questions</li>
-<li><strong>Answer Questions:</strong> Click on any option to select it. Click again to deselect</li>
-<li><strong>Save Progress:</strong> Your progress is automatically saved. Use the Save button for manual saves</li>
-<li><strong>Check Answers:</strong> Use the Check button to review your current part or Grade Exam for full results</li>
-</ol>
-
-<div class="callout success">
-<h4>💡 Pro Tip</h4>
-<p>Your progress is automatically saved locally, so you can close your browser and return anytime to continue where you left off.</p>
-</div>
-
-<h3>📊 System Requirements</h3>
-<ul>
-<li>Modern web browser (Chrome, Firefox, Safari, or Edge)</li>
-<li>Internet connection for initial loading</li>
-<li>JavaScript enabled</li>
-<li>Cookies/Local Storage enabled for progress saving</li>
-</ul>
-</div>
+  <div class="section" id="getting-started-section"></div>
 </div>
 
 <!-- Features Tab -->
-
 <div id="features" class="tab-content">
-<div class="section">
-<h2>Key Features</h2>
-<p>The CIX Exam System includes powerful features to enhance your learning experience:</p>
-
-<div class="feature-grid">
-<div class="feature-card">
-<h4><span class="icon">💾</span> Auto-Save Progress</h4>
-<p>Your answers are automatically saved to your browser. Never lose your progress, even if you accidentally close the page.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">📍</span> Progress Tracking</h4>
-<p>Visual progress bar shows answered questions out of 300 total. See completion percentage in real-time.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">✓</span> Instant Feedback</h4>
-<p>Enable Auto-Check mode to see immediate feedback on your answers with color-coded question cards.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">📊</span> Comprehensive Grading</h4>
-<p>View detailed results by section and part with percentage scores and pass/fail indicators.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">⬇️</span> Export/Import</h4>
-<p>Export your progress to a ZIP file for backup or import previously saved progress.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">🧭</span> Quick Navigation</h4>
-<p>Jump to any section or part instantly using the dropdown menu or visual grid navigation.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">💡</span> Explanations</h4>
-<p>Learn from your mistakes with detailed explanations for incorrect answers when Auto-Check is enabled.</p>
-</div>
-
-<div class="feature-card">
-<h4><span class="icon">📱</span> Responsive Design</h4>
-<p>Works seamlessly on desktop, tablet, and mobile devices for studying on the go.</p>
-</div>
-</div>
-
-<h3>🎨 Visual Indicators</h3>
-<table>
-<thead>
-<tr>
-<th>Indicator</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🟢 Green Card</td>
-<td>Correct answer (Auto-Check enabled)</td>
-</tr>
-<tr>
-<td>🔴 Red Card</td>
-<td>Incorrect answer (Auto-Check enabled)</td>
-</tr>
-<tr>
-<td>⚪ White Card</td>
-<td>Unanswered or Auto-Check disabled</td>
-</tr>
-<tr>
-<td>✅ Pass</td>
-<td>80% or higher on section/part</td>
-</tr>
-<tr>
-<td>❌ Fail</td>
-<td>Below 80% on section/part</td>
-</tr>
-<tr>
-<td>⏳ In Progress</td>
-<td>Not all questions answered yet</td>
-</tr>
-</tbody>
-</table>
-</div>
+  <div class="section" id="features-section"></div>
 </div>
 
 <!-- User Guide Tab -->
-
 <div id="user-guide" class="tab-content">
-<div class="section">
-<h2>User Guide</h2>
-
-<h3>🔐 Logging In</h3>
-<p>Enter your assigned username and password on the login screen. Your credentials are provided by your instructor or administrator.</p>
-
-<h3>📖 Taking the Exam</h3>
-<p>The exam consists of 300 questions organized into:</p>
-<ul>
-<li><strong>6 Sections</strong> covering different aviation topics</li>
-<li><strong>10 Parts per section</strong> for manageable study sessions</li>
-<li><strong>5 Questions per part</strong> for focused learning</li>
-</ul>
-
-<h3>🎯 Answering Questions</h3>
-<ol>
-<li>Read each question carefully</li>
-<li>Click on your chosen answer option</li>
-<li>The selected option will be highlighted in blue</li>
-<li>Click the same option again to deselect if needed</li>
-<li>Move between parts using the Previous/Next buttons</li>
-</ol>
-
-<div class="callout">
-<h4>💡 Selecting and Deselecting Answers</h4>
-<p>You can change your answer at any time by clicking a different option, or remove your answer entirely by clicking the selected option again.</p>
+  <div class="section" id="user-guide-section"></div>
 </div>
 
-<h3>🔘 Button Functions</h3>
-<table>
-<thead>
-<tr>
-<th>Button</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span class="button-example">← Previous</span></td>
-<td>Go to previous part (disabled on Section 1, Part 1)</td>
-</tr>
-<tr>
-<td><span class="button-example">Next →</span></td>
-<td>Go to next part or section</td>
-</tr>
-<tr>
-<td><span class="button-example">💾 Save</span></td>
-<td>Manually save progress (also auto-saves)</td>
-</tr>
-<tr>
-<td><span class="button-example">✓ Check</span></td>
-<td>View results for current part</td>
-</tr>
-<tr>
-<td><span class="button-example">📊 Grade Exam</span></td>
-<td>View comprehensive results for all sections</td>
-</tr>
-<tr>
-<td><span class="button-example">⬇ Export</span></td>
-<td>Download progress as ZIP file</td>
-</tr>
-<tr>
-<td><span class="button-example">⬆ Import</span></td>
-<td>Upload previously saved progress</td>
-</tr>
-<tr>
-<td><span class="button-example">🟢 Auto-Check ON</span></td>
-<td>Toggle instant feedback mode on/off</td>
-</tr>
-</tbody>
-</table>
-
-<h3>🕵️ Auto-Check Mode</h3>
-<p>Enable Auto-Check to receive immediate visual feedback:</p>
-<ul>
-<li><strong>Green cards:</strong> Correct answers</li>
-<li><strong>Red cards:</strong> Incorrect answers with explanations</li>
-<li><strong>White cards:</strong> Unanswered questions</li>
-</ul>
-
-<div class="callout warning">
-<h4>⚠️ Study Strategy</h4>
-<p>Consider disabling Auto-Check when taking practice exams to simulate real testing conditions. Enable it during study sessions to learn from explanations.</p>
-</div>
-
-<h3>📊 Viewing Results</h3>
-<p><strong>Check Current Part:</strong> Click "Check" to see results for the current 5 questions</p>
-<p><strong>Grade Full Exam:</strong> Click "Grade Exam" to see:</p>
-<ul>
-<li>Overall percentage and pass/fail status</li>
-<li>Individual section summaries (collapsible)</li>
-<li>Part-by-part breakdown with scores</li>
-<li>Failed sections automatically expanded</li>
-</ul>
-
-<h3>🧭 Navigation Tips</h3>
-<ul>
-<li>Use <span class="button-example">📑 Quick Navigation</span> to see all sections/parts at once</li>
-<li>Use the dropdown menu to jump directly to any section/part</li>
-<li>Current section/part is highlighted in navigation</li>
-<li>Use scroll buttons (⬆ ⬇) to quickly move through long content</li>
-</ul>
-
-<h3>💾 Export/Import Progress</h3>
-<p><strong>To Export:</strong></p>
-<ol>
-<li>Click the "⬇ Export" button</li>
-<li>A ZIP file downloads automatically</li>
-<li>Save this file for backup or transfer</li>
-</ol>
-
-<p><strong>To Import:</strong></p>
-<ol>
-<li>Click the "⬆ Import" button</li>
-<li>Select your previously exported ZIP file</li>
-<li>Your progress will be restored immediately</li>
-</ol>
-
-<div class="callout success">
-<h4>✅ Best Practice</h4>
-<p>Export your progress regularly, especially before major study sessions or when switching devices. The export file contains your complete progress and can be imported on any computer.</p>
-</div>
-</div>
+<!-- Instructors Tab -->
+<div id="instructors" class="tab-content">
+  <div class="section" id="instructors-section"></div>
 </div>
 
 <!-- FAQ Tab -->
-
 <div id="faq" class="tab-content">
-<div class="section">
-<h2>Frequently Asked Questions</h2>
-
-<h3>❓ Will I lose my progress if I close the browser?</h3>
-<p>No! Your progress is automatically saved in your browser's local storage. You can safely close the browser and return later. However, if you clear your browser data or switch devices, you'll need to import your progress from an exported ZIP file.</p>
-
-<h3>❓ Can I use multiple devices?</h3>
-<p>Yes, using the Export/Import feature. Export your progress from one device and import it on another. Note that progress is not automatically synced between devices.</p>
-
-<h3>❓ What is the passing score?</h3>
-<p>Each section and the overall exam require 80% or higher to pass. You can view detailed scores in the Grade Exam results.</p>
-
-<h3>❓ How many questions are in the exam?</h3>
-<p>The complete exam contains 300 questions divided into 6 sections of 50 questions each. Each section has 10 parts with 5 questions per part.</p>
-
-<h3>❓ Can I change my answer?</h3>
-<p>Yes! Click any answer option to select it. Click the same option again to deselect, or click a different option to change your answer. You can modify answers at any time before final submission.</p>
-
-<h3>❓ What does Auto-Check do?</h3>
-<p>Auto-Check provides immediate visual feedback. Question cards turn green for correct answers and red for incorrect answers. Red cards also display explanations to help you learn from mistakes.</p>
-
-<h3>❓ Should I use Auto-Check while studying?</h3>
-<p>It depends on your learning style:</p>
-<ul>
-<li><strong>Study mode:</strong> Enable Auto-Check to learn from explanations immediately</li>
-<li><strong>Practice exam mode:</strong> Disable Auto-Check to simulate real testing conditions</li>
-</ul>
-
-<h3>❓ What happens if I forget my password?</h3>
-<p>Contact your instructor or system administrator to reset your password. Passwords cannot be recovered through the system itself.</p>
-
-<h3>❓ Can I skip questions and come back later?</h3>
-<p>Yes! You can navigate freely between all sections and parts. Unanswered questions are tracked, and you can return to them anytime using the navigation tools.</p>
-
-<h3>❓ Is there a time limit?</h3>
-<p>No, there is no time limit. Take as long as you need to complete the exam. Your progress is saved continuously.</p>
-
-<h3>❓ What browsers are supported?</h3>
-<p>The system works best on modern browsers: Chrome, Firefox, Safari, and Microsoft Edge (latest versions). Ensure JavaScript and cookies are enabled.</p>
-
-<h3>❓ Will my exported file work on a different computer?</h3>
-<p>Yes! The exported ZIP file contains your complete progress and can be imported on any computer running the exam system, as long as you log in with the same username.</p>
-
-<h3>❓ What does "⏳ In Progress" mean?</h3>
-<p>This indicates you haven't answered all questions in that section or part yet. Complete all questions to see a final pass/fail status.</p>
-
-<h3>❓ Can I retake the exam?</h3>
-<p>Yes! You can review and change any answers at any time. Use the navigation tools to revisit specific sections or parts.</p>
-</div>
+  <div class="section" id="faq-section"></div>
 </div>
 
+<!-- Exam Builder Tab -->
 <div id="examBuilder" class="tab-content">
-  <div class="section">
-
-    <h2>🛠️ Exam Builder</h2>
-
-    <h3>📐 Architecture Overview</h3>
-    <p>
-      The Exam Builder converts a structured Google Spreadsheet into a ZIP archive containing
-      CSV files used by the APL‑ES exam engine. It supports multiple build modes (FULL, STUDENT,
-      STUDENT+Learning) and integrates directly with the APL‑ES runtime.
-      </p>
-      <p>In other words, the Exam Builder is responsible for converting a structured Google Spreadsheet into a
-    complete APL‑ES exam package. It validates the input, extracts the three required forms,
-    applies column‑level transformations, and produces a standardized ZIP bundle ready for
-    import into the APL‑ES runtime.
-    </p>
-    <h3 style="margin-top:25px;">Architecture Overview</h3> <p>The Exam Builder follows a simple, transparent processing pipeline:</p> <ol>
-      <li><strong>Fetch Spreadsheet</strong> – The tool retrieves three named sheets from a Google Spreadsheet using fixed ranges.</li>
-      <li><strong>Normalize Data</strong> – Columns are cleaned, blanked (where required), and validated.
-      </li>
-      <li><strong>Transform to CSV</strong> – Each sheet is converted into a CSV representation.</li>
-      <li><strong>Package</strong> – All CSV files are bundled into a ZIP archive.</li>
-      <li><strong>Load / Reload</strong> – The ZIP can be imported directly into APL‑ES to refresh the exam content.</li> </ol>
-
-    <div style="margin:20px 0; padding:15px; background:#eef3ff; border-left:4px solid #1a73e8;"> <strong>Note:</strong> The Exam Builder supports both FULL and STUDENT versions of the exam, with optional inclusion of Learning Notes. </div>
-
-    <div style="text-align:center; margin:20px 0;">
-      <img src="https://alsys123.github.io/APL-ES/helpAbout/APL-ES-Architecture-v2.jpg"
-           alt="APL-ES Architecture Diagram"
-	style="max-width:100%; border:1px solid #ccc; border-radius:8px;"
-		onerror="this.style.display='none';"							>
-      <p style="font-size:0.9em; color:#555;">
-        Figure: APL‑ES Architecture v2 — Exam Builder Workflow
-      </p>
-    </div>
-
-    <h3>📊 Spreadsheet Format</h3>
-    <p>The Google Spreadsheet must contain <strong>three forms</strong>, each with a specific structure.
-      These forms define the questions, section/part hierarchy, and exam metadata.
-      </p>
-
-    <h2><code>examQuestions</code></h2>
-     <p>This sheet defines every question in the exam. Required columns:</p>
-
-  <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
-ID (Question #)
-Section
-Part
-Question
-Option 1
-Option 2
-Option 3
-Option 4
-Correct (a/b/c/d)
-Explain (rationale)
-  </pre>
-
-  <p>
-    Each row represents a single multiple‑choice question. The <em>Correct</em> column uses
-    letter‑based indexing (a–d). The <em>Explain</em> column provides the rationale shown after
-    answering.  The <em>Header Row</em> is required for each sheet.  Exmples have been included for each sheet.  In the examQuestions example, newlines have been added for readability only.
-  </p>
-  
-    <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
-   "ID: Question number","Section","Part","Question","Option 1","Option 2","Option 3","Option 4","Correct","Explain"
-   "1","1","1","What key type is recommended for Push-to-Talk (PTT) to avoid auto-repeat issues?","Space bar",
-        "Enter key","Left or Right Control","Any letter key","c","Ctrl keys don’t auto-repeat like character keys,
-        avoiding unwanted transmissions."
-   "2","1","1","Where should your microphone be positioned for best audio quality?","Directly in front of mouth",
-        "Slightly to one side and below mouth","Above the head","Against the throat","b",
-        "Offset reduces breath noise and plosives while keeping clear audio."
-
-    </pre>
-
-    <h2><code>sectionPartTitles</code></h2>
-
-    <p>This sheet defines the hierarchical structure of the exam:</p>
-
-  <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
-Section Number
-Part Number
-Section Name
-Part Name
-  </pre>
-
-  <p>
-    Sections group major topics; Parts subdivide them. The Exam Builder uses this sheet to
-    generate navigation, grouping, and scoring logic.
-  </p>
-  
-    <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
-      "Section Number","Part Number","Section Name","Part Name"
-      "1","1","BASIC PROCEDURES AND EQUIPMENT","Radio Equipment Setup"
-      "1","2","BASIC PROCEDURES AND EQUIPMENT","Callsign Procedures"
-      "1","3","BASIC PROCEDURES AND EQUIPMENT","Standard Phraseology - Roger and Wilco"
-    </pre>
-
-    <h2><code>examData</code></h2>
-
-     <p>This sheet contains metadata and configuration values:</p>
-
-  <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
-Descriptor
-Value
-  </pre>
-
-  <p>Common descriptors include:</p>
-
-  <ul>
-    <li><strong>Title</strong> – Display name of the exam</li>
-    <li><strong>Version</strong> – Version string</li>
-    <li><strong>ExportName</strong> – Used for naming output files</li>
-    <li><strong>ExtractorName</strong> – Internal identifier</li>
-    <li><strong>Passing</strong> – Required score percentage</li>
-    <li><strong>ReleaseDate</strong> – Human‑readable date</li>
-    <li><strong>Description</strong> – Long‑form description of the exam</li>
-  </ul>
-
-      <pre style="background:#f9f9f9; padding:12px; border:1px solid #ccc; white-space:pre;">
-"","Descriptor","Value"
-"1","Title","CIX Exam for Pilots"
-"2","Version","1.2"
-"3","ExportName","Pilot"
-"4","ExtractorName","PilotData"
-"5","Passing","80"
-"6","ReleaseDate","Jan 2, 2026"
-"7","Description","This comprehensive examination platform..."
-    </pre>
-
-    <h3>📦 Output</h3>
-    <p>
-      The builder produces a ZIP archive containing three CSV files. These files populate the
-      APL‑ES exam interface, scoring engine, and navigation structure. Column blanking rules are
-      applied depending on the selected build mode.
-    </p>
-
-      </div>
+  <div class="section" id="examBuilder-section"></div>
 </div>
-
 
 <!-- About Tab -->
-
 <div id="about" class="tab-content">
-<div class="section">
-<h2>About the CIX Exam System</h2>
-
-<h3>🎓 Purpose</h3>
-<p>The CIX Exam System for Pilots is a comprehensive web-based examination platform designed to facilitate pilot training and certification preparation. The system provides an interactive, user-friendly environment for studying aviation knowledge and regulations.</p>
-
-<h3>🏗️ System Architecture</h3>
-<p>This application is built using modern web technologies:</p>
-<ul>
-<li><strong>Frontend:</strong> HTML5, CSS3, and JavaScript (ES6+)</li>
-<li><strong>Data Source:</strong> Google Sheets API for centralized question management</li>
-<li><strong>Storage:</strong> Browser LocalStorage for progress persistence</li>
-<li><strong>Export Format:</strong> ZIP files using JSZip library</li>
-</ul>
-
-<h3>✨ Key Capabilities</h3>
-<ul>
-<li>300 questions across 6 comprehensive sections</li>
-<li>Real-time progress tracking and visualization</li>
-<li>Automatic and manual progress saving</li>
-<li>Instant feedback with detailed explanations</li>
-<li>Flexible navigation and question review</li>
-<li>Export/import functionality for progress backup</li>
-<li>Responsive design for all devices</li>
-<li>Comprehensive grading and reporting</li>
-</ul>
-
-<h3>🔒 Privacy & Data</h3>
-<p>Your exam data is stored locally in your browser and is never transmitted to external servers (except for loading questions from Google Sheets). Exported progress files contain only your answers and current position—no personal information beyond your username.</p>
-
-<div class="callout">
-<h4>📝 Important Note</h4>
-<p>Always keep your exported progress files secure, as they contain your complete exam history. Clearing your browser data will delete your local progress, but exported files provide a backup.</p>
-</div>
-
-<h3>📚 Question Management</h3>
-<p>Questions are managed through Google Sheets, allowing instructors to:</p>
-<ul>
-<li>Update questions without modifying code</li>
-<li>Add explanations and correct answers centrally</li>
-<li>Organize content by section and part</li>
-<li>Maintain consistent formatting across all questions</li>
-</ul>
-
-<h3>🛠️ Technical Specifications</h3>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Version</td>
-<td>23.0</td>
-</tr>
-<tr>
-<td>Questions</td>
-<td>300 total (6 sections × 10 parts × 5 questions)</td>
-</tr>
-<tr>
-<td>Data Format</td>
-<td>JSON export in ZIP container</td>
-</tr>
-<tr>
-<td>Storage Method</td>
-<td>Browser LocalStorage API</td>
-</tr>
-<tr>
-<td>API Integration</td>
-<td>Google Sheets API v4</td>
-</tr>
-<tr>
-<td>Passing Grade</td>
-<td>80% per section and overall</td>
-</tr>
-</tbody>
-</table>
-
-<h3>🔄 Version History</h3>
-<p><strong>Version 1.0 (Current)</strong></p>
-<ul>
-<li>Initial release</li>
-
-</ul>
-
-<h3>👥 Credits</h3>
-<p>The CIX Exam System was developed to support pilot training programs with a modern, efficient, and user-friendly examination platform. Special thanks to all instructors and students who provided feedback during development.</p>
-
-<h3>📞 Support</h3>
-<p>For technical support, questions about the exam content, or to report issues, please contact your instructor or program administrator. </p>
-
-<div class="callout success">
-<h4>🎯 Mission Statement</h4>
-<p>Our goal is to provide aviation students with the best possible tools for learning and assessment, combining comprehensive content with modern technology to support your learning journey </p>
-</div>
-</div>
+  <div class="section" id="about-section"></div>
 </div>
 
 <div class="footer">
@@ -846,20 +72,64 @@ Value
 </div>
 
 <script>
-function showTab(tabId) {
-// Hide all tabs
-document.querySelectorAll('.tab-content').forEach(tab => {
-tab.classList.remove('active');
-});
-document.querySelectorAll('.tab-btn').forEach(btn => {
-btn.classList.remove('active');
-});
-// Show selected tab
-document.getElementById(tabId).classList.add('active');
-event.target.classList.add('active');
-// Scroll to top
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  function showTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+	  tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+	  btn.classList.remove('active');
+      });
+      // Show selected tab
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+  
+  fetch("faq-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("faq-section").innerHTML = html;
+  });
+
+  fetch("examBuilder-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("examBuilder-section").innerHTML = html;
+  });
+
+  fetch("about-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("about-section").innerHTML = html;
+  });
+
+  fetch("user-guide-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("user-guide-section").innerHTML = html;
+  });
+
+  fetch("features-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("features-section").innerHTML = html;
+  });
+
+    fetch("getting-started-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("getting-started-section").innerHTML = html;
+  });
+
+  fetch("instructors-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("instructors-section").innerHTML = html;
+  });
+
 </script>
 
 </body>
