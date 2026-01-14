@@ -38,5 +38,5 @@ url embedded call in google sites:
 "https://alsys123.github.io/APL-ES/index.html" is the mainline for the entire app
 
 To get info information on versions in Ubuntu:
-git log --pretty=format:"%ad: %s" --date=short
+git log --reverse --pretty=format:"%ad: %s" --date=short
 
