@@ -1,7 +1,6 @@
 Readme for A Prior Learning Exam System (APL-ES)
 
-Working public site for app:  https://sites.google.com/view/apl-es/home
-
+Working public site for app: https://sites.google.com/view/apl-es/apl-es
 To test in ubuntu:
 
 1)
