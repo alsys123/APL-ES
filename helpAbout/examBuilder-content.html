@@ -124,6 +124,38 @@ Value
 "7","Description","This comprehensive examination platform..."
     </pre>
 
+     
+
+<h3>🔑 Finding Your Google Spreadsheet ID</h3>
+<p>
+The Exam Builder needs the <strong>Spreadsheet ID</strong> from your Google Sheet so it knows where
+to fetch the exam data. The ID is simply part of the URL — you don’t need any special tools to
+find it.
+</p>
+
+<ol>
+  <li>Open your Google Spreadsheet in your browser.</li>
+  <li>Look at the address bar at the top of the screen.</li>
+  <li>
+    You will see a URL similar to:<br>
+    <code>https://docs.google.com/spreadsheets/d/<strong>1AbCDeFGhijkLMNopQRstuVWxyz1234567890</strong>/edit</code>
+  </li>
+  <li>
+    The long string of letters and numbers between <code>/d/</code> and <code>/edit</code> is your
+    <strong>Spreadsheet ID</strong>.
+  </li>
+  <li>Copy that ID and paste it into the Exam Builder.</li>
+</ol>
+
+<div class="callout">
+  <h4>💡 Tip</h4>
+  <p>
+    You only need the ID — not the whole URL. The Exam Builder uses this ID to read the three
+    required sheets: <code>examQuestions</code>, <code>sectionPartTitles</code>, and <code>examData</code>.
+  </p>
+</div>
+
+      
     <h3>📦 Output</h3>
     <p>
       The builder produces a ZIP archive containing three CSV files. These files populate the

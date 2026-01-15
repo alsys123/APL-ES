@@ -6,6 +6,7 @@ const gPickerLoaderStatus = document.getElementById("pickerLoaderStatus");
 // Map exam types to GitHub ZIP URLs
 const examZips = {
     aviation: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Aviation.zip",
+    aviationStudent: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Aviation-student.zip",
     bridge: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Bridge.zip",
     cognitive: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Cognitive.zip",
     driver: "https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/APLES-Driver.zip"
@@ -16,6 +17,38 @@ const examZips = {
 function getJsDelivrURL(examName) {
     return `https://cdn.jsdelivr.net/gh/alsys123/APL-ES/dataSets/${examName}.zip`;
 } //getJsDelivrURL
+
+//__ loadExamFromGitHub
+// dynamic loader where we need to infer the filename ... not used yet. Keep for reference
+async function loadExamFromGitHub(examName) {
+  const apiUrl = "https://api.github.com/repos/alsys123/APL-ES/contents/dataSets";
+
+  try {
+    // Fetch directory listing
+    const response = await fetch(apiUrl);
+    const files = await response.json();
+
+    // Find the ZIP whose name starts with examName-
+    const match = files.find(file =>
+      file.name.startsWith(`${examName}-`) &&
+      file.name.endsWith(".zip")
+    );
+
+    if (!match) {
+      console.error(`No ZIP found for exam: ${examName}`);
+      return;
+    }
+
+    // Use GitHub's direct download URL
+    const zipUrl = match.download_url;
+    console.log("Resolved ZIP URL:", zipUrl);
+
+    loadZipFromUrl(zipUrl);
+
+  } catch (err) {
+    console.error("Error loading exam from GitHub:", err);
+  }
+} // loadExamFromGitHub
 
 //_ handleExamSelect
 function handleExamSelect() {

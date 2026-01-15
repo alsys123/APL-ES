@@ -678,9 +678,21 @@
 
 /* Exam Image */
 .examImage {
-  width: 80%;
   max-width: 300px;
-  border-radius: 5px;
+  width:220px;
+  height:220px;
+  object-fit: cover;   /* crop to fit */
+  border: 2px solid #444;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Highlight a word in exam picker */
+.examVariant {
+  font-weight: 600;      /* slightly bold, not heavy */
+  font-size: 1.2em;     /* just a touch larger */
+  margin-left: 4px;
+  color: #555;             /* dark gray */
 }
 
 /* Label */
