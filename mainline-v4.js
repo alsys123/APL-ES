@@ -17,6 +17,7 @@ let questionStats = {};
 // keyed by qId: { attempts: number, correct: boolean }
 let shuffleMap = {};       // qId → array of original indices
 let gMetaData = {};
+let gExamType = 'full';  // full or student.  Default full.
 
 function scrollPageBottom() {
     // Use the element that actually scrolls inside Google Sites
@@ -51,6 +52,20 @@ async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, exam
     
     console.log("Exam Data cvs Parsed",examDataCVSParsed);
 
+//    console.log("Questions: ", questionsFromCSV );
+    const allBlank = questionsFromCSV.every(row => row[8].trim() === "");
+    if (allBlank) {
+	gExamType = 'student'
+	document.getElementById("checkBtn1").disabled = true;
+	document.getElementById("checkBtn2").disabled = true;
+	document.getElementById("autoCheckBtn").disabled = true;
+	document.getElementById("gradeBtn").innerHTML = "📊 Progress Report";
+	document.getElementById("gradeBtn").setAttribute("onclick", "progressReport()");
+
+    };
+
+    console.log("All answer columns are blank:", allBlank);
+    
     //const meta = Object.fromEntries(metadata);
 
    // console.log("meta: ", meta);
@@ -885,32 +900,35 @@ async function importFromZip(file) {
           console.error('Import error:', err);
           showNotification('Failed to import progress from ZIP.', 'error');
         }
-      } //importFromZip
+	} //importFromZip
+	
 */
 
 // ****  end of import/export  ****
 
-/// ** Start of grading exam ****
-      function gradeExam() {
-        function getStatus(correct, incorrect, unanswered, total) {
-          if (correct === 0 && incorrect === 0 && unanswered > 0) {
+//__ gradeExam - also turns into Progress Report for student examType
+function gradeExam() {
+
+    //__ inner: getStatus
+    function getStatus(correct, incorrect, unanswered, total) {
+        if (correct === 0 && incorrect === 0 && unanswered > 0) {
             //   return "📌 Not Started";
             return '<span class="blue-pin">📌 Not Started</span>';
-          }
-          if (correct === 0 && incorrect > 0 && unanswered === 0) {
-            return "❌ Wrong";
-          }
-          if (correct > 0 && incorrect === 0 && unanswered === 0) {
-            return "✅ Pass"; // 5 0 0 case
-          }
-          if (unanswered > 0) {
-            return "⏳ In Progress";
-          }
-          // Mixed case: some correct + some wrong, no unanswered
-          const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
-          return percent >= 80 ? "✅ Pass" : "❌ Fail";
         }
-
+        if (correct === 0 && incorrect > 0 && unanswered === 0) {
+            return "❌ Wrong";
+        }
+        if (correct > 0 && incorrect === 0 && unanswered === 0) {
+            return "✅ Pass"; // 5 0 0 case
+        }
+        if (unanswered > 0) {
+            return "⏳ In Progress";
+        }
+          // Mixed case: some correct + some wrong, no unanswered
+        const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+        return percent >= 80 ? "✅ Pass" : "❌ Fail";
+    } // inner: getStatus
+    
         let summaryHtml = `<div class="result-summary"><h3>Section Summaries</h3>`;
         let detailsHtml = "";
         let totalCorrect = 0, totalQuestionsCounted = 0;
@@ -1010,15 +1028,14 @@ async function importFromZip(file) {
 
 
 
-        document.getElementById('resultsContent').innerHTML = summaryHtml + detailsHtml;
-        document.getElementById('resultsModal').classList.add('active');
+          document.getElementById('resultsContent').innerHTML = summaryHtml + detailsHtml;
+          document.getElementById('resultsModal').classList.add('active');
 
         enableCollapsibles();
       } // gradeExam
 
-// *** END of grading exam ***
-
-      function populateJumpDropdown() {
+//__ populateJumpDropdown
+function populateJumpDropdown() {
         const select = document.getElementById('jumpSection');
           if (!select) return;
 
@@ -1060,7 +1077,7 @@ async function importFromZip(file) {
             select.appendChild(opt);
           }
         }
-      } // populateJumpDropdown
+} // populateJumpDropdown
 
 
       function jumpToSectionPart() {
@@ -1246,7 +1263,7 @@ async function importFromZip(file) {
         }
       }
 
-      function toggleAutoCheck() {
+function toggleAutoCheck() {
         autoCheckEnabled = !autoCheckEnabled;
         const btn = document.getElementById('autoCheckBtn');
 
@@ -1263,5 +1280,511 @@ async function importFromZip(file) {
         }
 
         renderQuestions(); // refresh cards immediately
+}
+
+//__ gradeExam - also turns into Progress Report for student examType
+function gradeExam() {
+
+    //__ inner: getStatus
+    function getStatus(correct, incorrect, unanswered, total) {
+        if (correct === 0 && incorrect === 0 && unanswered > 0) {
+            //   return "📌 Not Started";
+            return '<span class="blue-pin">📌 Not Started</span>';
+        }
+        if (correct === 0 && incorrect > 0 && unanswered === 0) {
+            return "❌ Wrong";
+        }
+        if (correct > 0 && incorrect === 0 && unanswered === 0) {
+            return "✅ Pass"; // 5 0 0 case
+        }
+        if (unanswered > 0) {
+            return "⏳ In Progress";
+        }
+          // Mixed case: some correct + some wrong, no unanswered
+        const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+        return percent >= 80 ? "✅ Pass" : "❌ Fail";
+    } // inner: getStatus
+    
+        let summaryHtml = `<div class="result-summary"><h3>Section Summaries</h3>`;
+        let detailsHtml = "";
+        let totalCorrect = 0, totalQuestionsCounted = 0;
+
+        for (let s = 1; s <= 6; s++) {
+          let sectionCorrect = 0, sectionIncorrect = 0, sectionUnanswered = 0, sectionTotal = 0;
+
+          const sectionTitle = sectionPartTitlesDesc[s]?.[1]?.[0]?.textSection || `Section ${s}`;
+          const shortSectionTitle = sectionTitle.length > 25
+            ? sectionTitle.substring(0, 25) + "…"
+            : sectionTitle;
+
+          let sectionDetails = `
+      <div class="section-block">
+        <button class="collapsible">Section ${s}: ${sectionTitle}</button>
+        <div class="section-content">
+    `;
+
+          for (let p = 1; p <= 10; p++) {
+            const currentQuestions = questions[s]?.[p] || [];
+            if (currentQuestions.length === 0) continue;
+
+            let correct = 0, incorrect = 0, unanswered = 0;
+
+            currentQuestions.forEach(q => {
+              if (answers[q.id] === undefined) {
+                unanswered++;
+              } else if (answers[q.id] === q.correct) {
+                correct++;
+              } else {
+                incorrect++;
+              }
+            });
+
+            const total = currentQuestions.length;
+            const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const status = getStatus(correct, incorrect, unanswered, total);
+
+            const partTitle = sectionPartTitlesDesc[s]?.[p]?.[0]?.textPart || `Part ${p}`;
+
+            // Build counts string, ignoring zeros
+            let counts = [];
+            if (correct > 0) counts.push(`${correct} correct`);
+            if (incorrect > 0) counts.push(`${incorrect} wrong`);
+            if (unanswered > 0) counts.push(`${unanswered} not answered`);
+
+            sectionDetails += `<div class="grade-text" style="display:flex; justify-content:space-between;">
+      <span>Part ${p}: ${partTitle} — ${percentage}% (${counts.join(", ")})
+      </span><span style="text-align:right;">${status}</span></div>`;
+
+
+            sectionCorrect += correct;
+            sectionIncorrect += incorrect;
+            sectionUnanswered += unanswered;
+            sectionTotal += total;
+
+            totalCorrect += correct;
+            totalQuestionsCounted += total;
+          }
+
+          if (sectionTotal > 0) {
+            const sectionPercent = Math.round((sectionCorrect / sectionTotal) * 100);
+            const sectionStatus = getStatus(sectionCorrect, sectionIncorrect, sectionUnanswered, sectionTotal);
+
+            summaryHtml += `<div style="clear:both; margin-bottom:20px;">
+    <span style="float:left">Section ${s}: ${shortSectionTitle}</span>
+    <span style="float:right">${sectionPercent}% ${sectionStatus}</span>
+  </div>`;
+
+
+
+            let counts = [];
+            if (sectionCorrect > 0) counts.push(`${sectionCorrect} correct`);
+            if (sectionIncorrect > 0) counts.push(`${sectionIncorrect} wrong`);
+            if (sectionUnanswered > 0) counts.push(`${sectionUnanswered} not answered`);
+
+            sectionDetails += `
+  <div style="margin-top:5px; clear:both;">
+    <span style="float:left; font-style:italic;">Total: ${sectionPercent}% (${counts.join(", ")})</span>
+    <span style="float:right; font-style:italic;">${sectionStatus}</span>
+  </div></div></div>
+`;
+
+
+            detailsHtml += sectionDetails;
+          }
+        }
+
+        const overallPercent = totalQuestionsCounted > 0 ? Math.round((totalCorrect / totalQuestionsCounted) * 100) : 0;
+        const totalIncorrect = totalQuestionsCounted - totalCorrect;
+        const totalUnanswered = totalQuestionsCounted - Object.keys(answers).length;
+        const overallStatus = getStatus(totalCorrect, totalIncorrect, totalUnanswered, totalQuestionsCounted);
+
+        summaryHtml += `<div style="clear:both; margin-top:40px; 
+        margin-bottom:10px; font-weight:bold; line-height:1;font-size:24px;" 
+        class="score">${overallPercent}% Overall — ${overallStatus}</div></div>`;
+
+
+
+          document.getElementById('resultsContent').innerHTML = summaryHtml + detailsHtml;
+          document.getElementById('resultsModal').classList.add('active');
+
+        enableCollapsibles();
+      } // gradeExam
+
+//__ populateJumpDropdown
+function populateJumpDropdown() {
+        const select = document.getElementById('jumpSection');
+          if (!select) return;
+
+        // Reset dropdown
+        select.innerHTML = '<option value="">-- Select Section/Part --</option>';
+
+//	  console.log("I am okay");
+//	  console.log("Available section keys:", Object.keys(sectionPartTitlesDesc));
+
+        // Helper: shorten section text only
+        const shortenSection = (text, max = 30) =>
+          text && text.length > max ? text.substring(0, max) + "…" : text;
+
+        for (let s = 1; s <= 6; s++) {
+          for (let p = 1; p <= 10; p++) {
+            const titles = sectionPartTitlesDesc[s]?.[p] || [];
+
+//	      console.log("Size of titles=",titles.length);
+
+	    
+	      let label;
+
+	      if (titles.length) {
+              // ✅ shorten only the section text
+              const sectionText = shortenSection(titles[0].textSection, 30);
+              const partText = titles[0].textPart; // untouched
+		label = `Section ${s}, Part ${p} — ${sectionText}: ${partText}`;
+		
+	//      console.log("got titles =", `Section ${s}, Part ${p} — ${sectionText}: ${partText}`);
+
+            } else {
+              label = `Section ${s}, Part ${p}`;
+            }
+
+	      
+            const opt = document.createElement('option');
+            opt.value = `${s}-${p}`;
+            opt.textContent = label;
+            select.appendChild(opt);
+          }
+        }
+} // populateJumpDropdown
+
+
+      function jumpToSectionPart() {
+        const val = document.getElementById('jumpSection').value;
+        if (!val) return;
+        const [s, p] = val.split('-').map(Number);
+
+
+        // ✅ Close Quick Nav if it was open
+        const grid = document.getElementById("jumpGridContainer");
+        if (grid && grid.style.display === "block") {
+          toggleJumpGrid(); // only call if open
+        }
+
+        currentSection = s;
+        currentPart = p;
+        renderQuestions();
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
       }
 
+      function toggleJumpGrid() {
+        const container = document.getElementById('jumpGridContainer');
+        const btn = event.target;
+        if (container.style.display === 'none') {
+          // 👉 Rebuild grid so current section/part is highlighted
+          populateJumpGrid();
+          container.style.display = 'block';
+          btn.textContent = '📑 Hide Quick Navigation';
+        } else {
+          container.style.display = 'none';
+          btn.textContent = '📑 Show Quick Navigation';
+        }
+      }
+
+
+      function getStatusClass(correct, incorrect, unanswered, total, section, part) {
+        if (total === 0) return null;
+
+        const allUnanswered = unanswered === total;
+        const allCorrect = correct === total && incorrect === 0;
+
+        //console.log(correct, incorrect);
+
+        // partial fill squares
+        if (correct === 4 && incorrect === 1) return 'done4-wrong1';
+        if (correct === 3 && incorrect === 2) return 'done3-wrong2';
+        if (correct === 2 && incorrect === 3) return 'done2-wrong3';
+
+        // full fill squares
+        if (allUnanswered) return null;
+        if (incorrect >= 1) return 'wrong';   // red
+        if (allCorrect) return 'done';        // green
+        return 'progress';                    // yellow
+      }
+
+      function getButtonClasses(correct, incorrect, unanswered, total, section, part) {
+        const classes = [];
+        const statusClass = getStatusClass(correct, incorrect, unanswered, total, section, part);
+        if (statusClass) classes.push(statusClass);
+
+        // Highlight active part directly here
+        if (currentSection === section && currentPart === part) {
+          classes.push('active');
+        }
+
+        return classes;
+      }
+
+      function populateJumpGrid() {
+        const grid = document.getElementById('jumpGrid');
+        grid.innerHTML = '';
+
+        // Loop through all sections
+        for (let s = 1; s <= 6; s++) {
+          const sectionTitles = sectionPartTitlesDesc[s];
+          if (!sectionTitles) continue;
+
+          // Section heading
+          const sectionHeader = document.createElement('h3');
+          sectionHeader.textContent = `Section ${s}: ${sectionTitles[1]?.[0]?.textSection || ''}`;
+          grid.appendChild(sectionHeader);
+
+          // Flat list of parts (numbers only)
+          for (let p = 1; p <= 10; p++) {
+            if (!sectionTitles[p]) continue;
+
+            const btn = document.createElement('button');
+            btn.textContent = `Part ${p}`; // ✅ only number, no title
+            btn.onclick = () => {
+              currentSection = s;
+              currentPart = p;
+              renderQuestions();
+              populateJumpGrid(); // refresh grid so active button updates
+            };
+
+            // --- Compute status for this part ---
+            const currentQuestions = questions[s]?.[p] || [];
+            let correct = 0, incorrect = 0, unanswered = 0;
+
+            currentQuestions.forEach(q => {
+              if (answers[q.id] === undefined) {
+                unanswered++;
+              } else if (answers[q.id] === q.correct) {
+                correct++;
+              } else {
+                incorrect++;
+              }
+            });
+            // Apply modular worker function
+            const classes = getButtonClasses(correct, incorrect, unanswered, currentQuestions.length, s, p);
+            classes.forEach(cls => btn.classList.add(cls));
+
+            // Highlight active part
+            if (currentSection === s && currentPart === p) {
+              btn.classList.add('active');
+            }
+            //console.log(`Section ${s} Part ${p}`, correct, incorrect, unanswered, total);
+
+            grid.appendChild(btn);
+          }
+        }
+      } // populateJumpGrid
+
+      function enableCollapsibles() {
+        const coll = document.querySelectorAll(".collapsible");
+        coll.forEach(btn => {
+          btn.onclick = function () {
+            this.parentElement.classList.toggle("active");
+          };
+        });
+
+        // 👉 Auto‑open failed sections
+        coll.forEach(btn => {
+          const sectionContent = btn.nextElementSibling;
+          if (sectionContent && sectionContent.innerHTML.includes("❌ Fail")) {
+            btn.parentElement.classList.add("active");
+          }
+        });
+      } // enableCollapsibles
+
+
+      function scrollToBottom() {
+        const modalContent = document.querySelector('#resultsModal .modal-content');
+        modalContent.scrollTo({ top: modalContent.scrollHeight, behavior: 'smooth' });
+      }
+      function scrollToTop() {
+        const modalContent = document.querySelector('#resultsModal .modal-content');
+        modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+
+      function scrollToBottomMessage() {
+        const modalContent = document.querySelector('#messageModal .modal-content');
+        modalContent.scrollTo({ top: modalContent.scrollHeight, behavior: 'smooth' });
+      }
+      function scrollToTopMessage() {
+        const modalContent = document.querySelector('#messageModal .modal-content');
+        modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+
+      function scrollMainBottom() {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } // scrollMainBottom
+
+      function scrollMainTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } // scrollMainTop
+
+      function highlightCurrentJump() {
+        const gridButtons = document.querySelectorAll('#jumpGrid button');
+        gridButtons.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.textContent === `S${currentSection}P${currentPart}`) {
+            btn.classList.add('active');
+          }
+        });
+
+        const dropdown = document.getElementById('jumpSection');
+        if (dropdown) {
+          dropdown.value = `${currentSection}-${currentPart}`;
+        }
+      }
+
+//__ toggleAutoCheck
+function toggleAutoCheck() {
+        autoCheckEnabled = !autoCheckEnabled;
+        const btn = document.getElementById('autoCheckBtn');
+
+        if (autoCheckEnabled) {
+          btn.textContent = "🟢 Auto-Check ON";
+          btn.classList.remove("off");
+          btn.classList.add("on");
+          showNotification("Auto-check is now ON", "success");
+        } else {
+          btn.textContent = "⚪ Auto-Check OFF";
+          btn.classList.remove("on");
+          btn.classList.add("off");
+          showNotification("Auto-check is now OFF", "warning");
+        }
+
+        renderQuestions(); // refresh cards immediately
+} // toggleAutoCheck
+
+//__ progressReport
+function progressReport() {
+
+    //__ inner: getStatus
+    function getStatus(correct, incorrect, unanswered, total) {
+        if (correct === 0 && incorrect === 0 && unanswered > 0) {
+            //   return "📌 Not Started";
+            return '<span class="blue-pin">📌 Not Started</span>';
+        }
+/*
+        if (correct === 0 && incorrect > 0 && unanswered === 0) {
+            return "❌ Wrong";
+        }
+        if (correct > 0 && incorrect === 0 && unanswered === 0) {
+            return "✅ Pass"; // 5 0 0 case
+        }
+*/
+	if (unanswered > 0) {
+            return "⏳ In Progress";
+        }
+          // Mixed case: some correct + some wrong, no unanswered
+        const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+        return percent >= 80 ? "✅ Pass" : "❌ Fail";
+    } // inner: getStatus
+    
+        let summaryHtml = `<div class="result-summary"><h3>Section Summaries</h3>`;
+        let detailsHtml = "";
+        let totalCorrect = 0, totalQuestionsCounted = 0;
+
+        for (let s = 1; s <= 6; s++) {
+          let sectionCorrect = 0, sectionIncorrect = 0, sectionUnanswered = 0, sectionTotal = 0;
+
+          const sectionTitle = sectionPartTitlesDesc[s]?.[1]?.[0]?.textSection || `Section ${s}`;
+          const shortSectionTitle = sectionTitle.length > 25
+            ? sectionTitle.substring(0, 25) + "…"
+            : sectionTitle;
+
+          let sectionDetails = `
+      <div class="section-block">
+        <button class="collapsible">Section ${s}: ${sectionTitle}</button>
+        <div class="section-content">
+    `;
+
+          for (let p = 1; p <= 10; p++) {
+            const currentQuestions = questions[s]?.[p] || [];
+            if (currentQuestions.length === 0) continue;
+
+            let correct = 0, incorrect = 0, unanswered = 0;
+
+            currentQuestions.forEach(q => {
+              if (answers[q.id] === undefined) {
+                unanswered++;
+              } else if (answers[q.id] === q.correct) {
+                correct++;
+              } else {
+                incorrect++;
+              }
+            });
+
+            const total = currentQuestions.length;
+            const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const status = getStatus(correct, incorrect, unanswered, total);
+
+            const partTitle = sectionPartTitlesDesc[s]?.[p]?.[0]?.textPart || `Part ${p}`;
+
+            // Build counts string, ignoring zeros
+            let counts = [];
+            if (correct > 0) counts.push(`${correct} correct`);
+            if (incorrect > 0) counts.push(`${incorrect} wrong`);
+            if (unanswered > 0) counts.push(`${unanswered} not answered`);
+
+            sectionDetails += `<div class="grade-text" style="display:flex; justify-content:space-between;">
+      <span>Part ${p}: ${partTitle} — ${percentage}% (${counts.join(", ")})
+      </span><span style="text-align:right;">${status}</span></div>`;
+
+
+            sectionCorrect += correct;
+            sectionIncorrect += incorrect;
+            sectionUnanswered += unanswered;
+            sectionTotal += total;
+
+            totalCorrect += correct;
+            totalQuestionsCounted += total;
+          }
+
+          if (sectionTotal > 0) {
+            const sectionPercent = Math.round((sectionCorrect / sectionTotal) * 100);
+            const sectionStatus = getStatus(sectionCorrect, sectionIncorrect, sectionUnanswered, sectionTotal);
+
+            summaryHtml += `<div style="clear:both; margin-bottom:20px;">
+    <span style="float:left">Section ${s}: ${shortSectionTitle}</span>
+    <span style="float:right">${sectionPercent}% ${sectionStatus}</span>
+  </div>`;
+
+
+
+            let counts = [];
+            if (sectionCorrect > 0) counts.push(`${sectionCorrect} correct`);
+            if (sectionIncorrect > 0) counts.push(`${sectionIncorrect} wrong`);
+            if (sectionUnanswered > 0) counts.push(`${sectionUnanswered} not answered`);
+
+            sectionDetails += `
+  <div style="margin-top:5px; clear:both;">
+    <span style="float:left; font-style:italic;">Total: ${sectionPercent}% (${counts.join(", ")})</span>
+    <span style="float:right; font-style:italic;">${sectionStatus}</span>
+  </div></div></div>
+`;
+
+
+            detailsHtml += sectionDetails;
+          }
+        }
+
+        const overallPercent = totalQuestionsCounted > 0 ? Math.round((totalCorrect / totalQuestionsCounted) * 100) : 0;
+        const totalIncorrect = totalQuestionsCounted - totalCorrect;
+        const totalUnanswered = totalQuestionsCounted - Object.keys(answers).length;
+        const overallStatus = getStatus(totalCorrect, totalIncorrect, totalUnanswered, totalQuestionsCounted);
+
+        summaryHtml += `<div style="clear:both; margin-top:40px; 
+        margin-bottom:10px; font-weight:bold; line-height:1;font-size:24px;" 
+        class="score">${overallPercent}% Overall — ${overallStatus}</div></div>`;
+
+
+
+          document.getElementById('resultsContent').innerHTML = summaryHtml + detailsHtml;
+          document.getElementById('resultsModal').classList.add('active');
+
+        enableCollapsibles();
+} // progressReport

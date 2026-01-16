@@ -85,22 +85,28 @@
     
     <!-- Exam Screen -->
     <div class="screen" id="examScreen">
-      <button class="logout-btn btn-secondary btn-small" onclick="logout()">Logout</button>
+
+      <div class="topButtonBar">
+	<button class="logout-btn btn-secondary btn-small" onclick="logout()">Logout</button>
+      
+        <button class="btn btn-secondary btn-small" onclick="toggleJumpGrid()">📑 Show Quick Navigation</button>
 
       <div class="navigation" style="justify-content: flex-end;">
         <button class="scroll-btn" onclick="scrollPageBottom()">⬇️ Go to Bottom</button>
       </div>
 
-      <button class="btn btn-secondary btn-small" onclick="toggleJumpGrid()">📑 Show Quick Navigation</button>
+      </div>
+
       <div id="jumpGridContainer" class="jump-grid" style="display:none">
-
         <div id="jumpGrid"></div>
       </div>
+
+      <!--
       <div id="jumpGridContainer" class="jump-grid">
-
-        <div id="jumpGrid"></div>
+	<div id="jumpGrid"></div>
       </div>
-
+      -->
+      
       <div class="exam-header">
         <!-- <h1>CIX Exam for Pilots</h1> -->
       <!--  <h1>Bridge Exam for Learning</h1> -->
@@ -138,7 +144,7 @@
         <div class="navigation">
           <button class="btn btn-secondary" onclick="previousPart()" id="prevBtn">← Previous</button>
           <button class="btn btn-secondary btn-small" onclick="saveProgress()">💾 Save</button>
-          <button class="btn btn-success btn-small" onclick="checkAnswers()">✓ Check</button>
+          <button id="checkBtn1" class="btn btn-success btn-small" onclick="checkAnswers()">✓ Check</button>
           <button class="btn btn-secondary" onclick="nextPart()" id="nextBtn">Next →</button>
         </div>
 
@@ -153,7 +159,7 @@
       <div class="navigation">
         <button class="btn btn-secondary" onclick="previousPart()" id="prevBtn">← Previous</button>
         <button class="btn btn-secondary btn-small" onclick="saveProgress()">💾 Save</button>
-        <button class="btn btn-success btn-small" onclick="checkAnswers()">✓ Check</button>
+        <button id="checkBtn2" class="btn btn-success btn-small" onclick="checkAnswers()">✓ Check</button>
 
         <button class="btn btn-secondary btn-small" onclick="triggerImport()">⬆️ Import</button>
         <button class="btn btn-secondary btn-small" onclick="exportToZip()">⬇️ Export</button>
@@ -161,9 +167,11 @@
         <input type="file" id="importFileInput" accept=".zip" style="display:none" />
 
         <button class="btn btn-secondary" onclick="nextPart()" id="nextBtn">Next →</button>
-        <button id="autoCheckBtn" class="btn btn-secondary btn-small off" onclick="toggleAutoCheck()">⚪ Auto-Check
+        <button id="autoCheckBtn" class="btn btn-secondary btn-small off"
+		onclick="toggleAutoCheck()">⚪ Auto-Check
           OFF</button>
-        <button class="btn btn-success btn-small" onclick="gradeExam()">📊 Grade Exam</button>
+        <button id="gradeBtn" class="btn btn-success btn-small"
+		onclick="gradeExam()">📊 Grade Exam</button>
 
       </div>
 

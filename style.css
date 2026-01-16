@@ -118,6 +118,14 @@
       width: auto;
     }
 
+    .topButtonBar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  width: 100%;
+}
 
     .progress-bar {
       background: #e0e0e0;
@@ -255,7 +263,7 @@
     }
 
     .logout-btn {
-      position: absolute;
+/*      position: absolute; */
       top: 50px;
       background: #dc3545;
       padding: 5px 10px;
