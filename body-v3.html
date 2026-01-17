@@ -36,6 +36,15 @@
 	  <button class="examButton">Load Bridge Exam</button>
 	</div>
 	
+	<div class="examCard" data-exam="bridgeStudentLearning">
+	  <img src="images/bridgeStudent.jpeg" alt="Bridge Exam Student Study Notes" class="examImage"> 
+	  <div class="examLabel">Bridge Exam
+	    <span class="examVariant"> student with Study Notes</span></div>
+	  <button class="examButton">Load Bridge Exam
+	    <span class="examVariant"> with Study Notes</span>
+	  </button>
+	</div>
+	
 	<div class="examCard" data-exam="cognitive">
 	  <img src="images/cognitive.jpeg" alt="Cognitive Exam" class="examImage"> 
 	  <div class="examLabel">Cognitive Exam</div>
@@ -143,8 +152,6 @@
 
         <div class="navigation">
           <button class="btn btn-secondary" onclick="previousPart()" id="prevBtn">← Previous</button>
-          <button class="btn btn-secondary btn-small" onclick="saveProgress()">💾 Save</button>
-          <button id="checkBtn1" class="btn btn-success btn-small" onclick="checkAnswers()">✓ Check</button>
           <button class="btn btn-secondary" onclick="nextPart()" id="nextBtn">Next →</button>
         </div>
 
@@ -171,7 +178,7 @@
 		onclick="toggleAutoCheck()">⚪ Auto-Check
           OFF</button>
         <button id="gradeBtn" class="btn btn-success btn-small"
-		onclick="gradeExam()">📊 Grade Exam</button>
+		onclick="gradeExam()">📊 Grade Report</button>
 
       </div>
 
@@ -191,7 +198,7 @@
       <!-- Results Modal -->
       <div id="resultsModal" class="modal">
         <div class="modal-content">
-          <h2>Answer Check Results</h2>
+          <h2 id="resultsTitle">Answer Check Results</h2>
 
           <!-- Top scroll button -->
           <div class="navigation" style="justify-content:flex-end;">

@@ -9,12 +9,6 @@
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
-  <!-- Your own JS files -->
-<!--
-  <script src="pickerLoader.js?v=2" defer></script>
-  <script src="mainline-v2.js?v=2" defer ></script>
-  -->
-  
   <!-- External CSS file -->
   <link rel="stylesheet" href="style.css?v=2">
 </head>
@@ -30,23 +24,25 @@
 		document.getElementById('MainContent').innerHTML = html;
 		//console.log("at 1");
 		loadScript('mainline-v4.js?v=2', () => {
-		    // Show the picker screen
-		    showScreen('pickLoaderScreen');
-		    
-		    // NOW load pickerLoader.js and run setup AFTER it loads
-		    loadScript('pickerLoader.js?v=2', () => {
-		//	console.log("pickerLoader.js loaded, running setup...");
-			if (typeof setupPickerLoaderUI === "function") {
-			    setupPickerLoaderUI();
-			} else {
-			    console.error("setupPickerLoaderUI is not defined");
-			}
-		    });
-		});
+		    loadScript('reports.js?v=2', () => {
+			// Show the picker screen
+			showScreen('pickLoaderScreen');
+			
+			// NOW load pickerLoader.js and run setup AFTER it loads
+			loadScript('pickerLoader.js?v=2', () => {
+			    //	console.log("pickerLoader.js loaded, running setup...");
+			    if (typeof setupPickerLoaderUI === "function") {
+				setupPickerLoaderUI();
+			    } else {
+				console.error("setupPickerLoaderUI is not defined");
+			    }
+			}); // load pickerLoader
+		    }); // load reports
+		});  // load mainline
 	    }).catch(err => console.error('Error loading body-v3.html:', err));
-
-    });
-
+	
+	    }); // DOMContentLoaded
+	
     //
     function loadScript(src, onload) {
 	const s = document.createElement('script');

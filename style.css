@@ -522,6 +522,60 @@
       color: #fff;
     }
 
+    button.doneGray {
+	background-color: #333;
+	color: #fff;
+    }
+    
+button.doneGray1 {
+  background: linear-gradient(
+    to top,
+    #4a4a4a 0%,      /* dark gray start */
+    #4a4a4a 20%,     /* completed portion */
+    #cfcfcf 20%,     /* uncompleted portion */
+    #cfcfcf 100%     /* light gray to top */
+  );
+  color: #fff;
+}
+button.doneGray2 {
+  background: linear-gradient(
+    to top,
+    #4a4a4a 0%,
+    #4a4a4a 40%,
+    #cfcfcf 40%,
+    #cfcfcf 100%
+  );
+  color: #fff;
+}
+button.doneGray3 {
+  background: linear-gradient(
+    to top,
+    #4a4a4a 0%,
+    #4a4a4a 60%,
+    #cfcfcf 60%,
+    #cfcfcf 100%
+  );
+  color: #fff;
+}
+button.doneGray4 {
+  background: linear-gradient(
+    to top,
+    #4a4a4a 0%,
+    #4a4a4a 80%,
+    #cfcfcf 80%,
+    #cfcfcf 100%
+  );
+  color: #fff;
+}
+button.doneGray5 {
+  background: linear-gradient(
+    to top,
+    #4a4a4a 0%,
+    #4a4a4a 100%
+  );
+  color: #fff;
+}
+
     button.wrong {
       background-color: #f44336;
       color: #fff;
@@ -698,7 +752,7 @@
 /* Highlight a word in exam picker */
 .examVariant {
   font-weight: 600;      /* slightly bold, not heavy */
-  font-size: 1.2em;     /* just a touch larger */
+  font-size: 0.8em;     /* just a touch larger or smaller*/
   margin-left: 4px;
   color: #555;             /* dark gray */
 }
