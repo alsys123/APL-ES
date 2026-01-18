@@ -25,18 +25,20 @@
 		//console.log("at 1");
 		loadScript('mainline-v4.js?v=2', () => {
 		    loadScript('reports.js?v=2', () => {
-			// Show the picker screen
-			showScreen('pickLoaderScreen');
-			
-			// NOW load pickerLoader.js and run setup AFTER it loads
-			loadScript('pickerLoader.js?v=2', () => {
-			    //	console.log("pickerLoader.js loaded, running setup...");
-			    if (typeof setupPickerLoaderUI === "function") {
-				setupPickerLoaderUI();
-			    } else {
-				console.error("setupPickerLoaderUI is not defined");
-			    }
-			}); // load pickerLoader
+			loadScript('funView.js?v=2', () => {
+			    // Show the picker screen
+			    showScreen('pickLoaderScreen');
+			    
+			    // NOW load pickerLoader.js and run setup AFTER it loads
+			    loadScript('pickerLoader.js?v=2', () => {
+				//	console.log("pickerLoader.js loaded, running setup...");
+				if (typeof setupPickerLoaderUI === "function") {
+				    setupPickerLoaderUI();
+				} else {
+				    console.error("setupPickerLoaderUI is not defined");
+				}
+			    }); // load pickerLoader
+			}); // funView
 		    }); // load reports
 		});  // load mainline
 	    }).catch(err => console.error('Error loading body-v3.html:', err));

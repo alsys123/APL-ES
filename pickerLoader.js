@@ -56,19 +56,36 @@ async function loadExamFromGitHub(examName) {
 function handleExamSelect() {
     const choice = document.getElementById("examPicker").value;
     if (!choice) return;
+
+    console.log("choice is: ",choice);
     
     if (choice === "custom") {
         document.getElementById("customFile").style.display = "block";
-    } else {
-        document.getElementById("customFile").style.display = "none";
-        loadExamZip(examZips[choice]);
+	return;
     }
+
+    if (choice === "googleSpreadsheet") {
+	//        document.getElementById("customFile").style.display = "block";
+	console.log("selected speadsheet");
+	return;
+    }
+    
+
+    // else
+    document.getElementById("customFile").style.display = "none";
+    loadExamZip(examZips[choice]);
+    
 } // handleExamSelect
 
 
 // __ loadExamZip
 async function loadExamZip(url) {
-      try {
+
+    if (url === undefined) return;
+    
+//    console.log("loadExamZip:", url);
+
+    try {
         gPickerLoaderStatus.textContent = "Fetching " + url + "...";
         const resp = await fetch(url);
         const blob = await resp.blob();
@@ -81,7 +98,15 @@ async function loadExamZip(url) {
     
 } // loadExamZip
 
-// __loadCustomZip
+//__ loadGoogleSheet (from html)
+async function loadGoogleSheet(sheetID) {
+    console.log("here is my id: ", sheetID );
+    //    initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed);
+    initExam([], [], []);
+} // loadGoogleSheet
+
+
+// __loadCustomZip (from html)
 async function loadCustomZip(file) {
       try {
         gPickerLoaderStatus.textContent = "Loading custom ZIP...";
@@ -90,7 +115,7 @@ async function loadCustomZip(file) {
 
         await parseExamZip(zip);
       } catch (err) {
-        gPickerLoaderStatus.textContent = "Error loading custom exam: " + err.message;
+        gPickerLoaderStatus.textContent = "Error loading CUSTOM exam: " + err.message;
       }
     } // loadCustomZip
 
@@ -175,7 +200,10 @@ async function parseExamZip(zip) {
 
 
 // __ setupPickerLoaderUI
-    function setupPickerLoaderUI() {
+function setupPickerLoaderUI() {
+
+    console.log("setup Picker");
+    
 	// Card click
 	document.querySelectorAll(".examCard").forEach(card => {
 	    card.addEventListener("click", () => {
@@ -193,6 +221,24 @@ async function parseExamZip(zip) {
 		loadExamZip(examZips[exam]);
 	    });
 	});
+
+	// Google Spreadsheet - prep
+	const GoogleSCard = document.querySelector('.examCard[data-exam="googleSpreadsheet"]');
+//	if (GoogleSCard) { true; }
+//	    const fileInput = customCard.querySelector("#customFile");
+	 //   const button = customCard.querySelector(".examButton");
+	    
+	    // Clicking the card opens the file picker
+//	    customCard.addEventListener("click", () => {
+//		fileInput.click();
+//	    });
+	    
+	    // Clicking the button also opens the file picker
+//	    button.addEventListener("click", e => {
+//		e.stopPropagation();
+//		fileInput.click();
+//	    });
+//	}
 	
 	// Custom exam card
 	const customCard = document.querySelector('.examCard[data-exam="custom"]');
@@ -220,4 +266,106 @@ async function parseExamZip(zip) {
 	}
     } //setupPickerLoaderUI
 
+
+// __ extractSpreadsheet
+async function extractSpreadsheet(spreadSheetId, buildType) {
+//    const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+    const status = document.getElementById("status");
+/*
+    const preview = document.getElementById("csvPreview");
+    preview.textContent = "";
+    if (!spreadsheetId) {
+        status.textContent = "Please enter a Spreadsheet ID.";
+        return;
+    }
+  */  
+    const ranges = [
+        { name: "examQuestions", range: "examQuestions!A:J" },
+        { name: "sectionPartTitles", range: "sectionPartTitles!A:E" },
+        { name: "examData", range: "examData!A:C" }
+    ];
+    
+ //   try {
+//        const zip = new JSZip();
+        let examDataCsv = null;
+    
+        for (const [index, sheet] of ranges.entries()) {
+            status.textContent += `Fetching ${sheet.range}...\n`;
+
+	    const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet.name)}&range=${encodeURIComponent(sheet.range)}`;
+   
+            const resp = await fetch(csvUrl);
+	    let csv = await resp.text();
+
+	    /*
+	    // do we build a full version or a student version?
+	    if (buildType === 'student') {
+		// Blank specific columns depending on sheet
+		if (sheet.name === "examQuestions") {
+		    csv = blankColumnsInCsv(csv, [8, 9]);   // Columns I, J
+		}
+		if (sheet.name === "sectionPartTitles") {
+		    csv = blankColumnsInCsv(csv, [4]);      // Column E
+		}
+	    }
+
+	    if (buildType === 'withLearning') {
+		// Blank specific columns depending on sheet
+		if (sheet.name === "examQuestions") {
+		    csv = blankColumnsInCsv(csv, [8, 9]);   // Columns I, J
+		}
+	    }
 	    
+*/	    
+//	    zip.file(`${sheet.name}.csv`, csv);
+	    
+	    
+//            if (sheet.name === "examData") {
+//                examDataCsv = csv;
+//            }
+
+	    /*
+	    // examData
+            if (index === 2) {
+                const lines = csv.split(/\r?\n/);
+                const firstSample = lines.slice(0, 8).join("\n");
+                preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
+            }
+	
+            // Questions
+            if (index === 0) {
+                const lines = csv.split(/\r?\n/);
+                const firstSample = lines.slice(0, 5).join("\n");
+                preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
+            }
+	
+            // Questions
+            if (index === 1) {
+                const lines = csv.split(/\r?\n/);
+                const firstSample = lines.slice(0, 5).join("\n");
+                preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
+            }
+        } // <-- closes for-loop
+
+	*/
+/*
+            const exportName = examDataCsv
+            ? extractExportNameFromExamData(examDataCsv)
+            : null;
+        
+        const timestamp = formatTimestamp();
+        const baseName = exportName || "Spreadsheet";
+        const safeName = baseName.replace(/[^a-z0-9_\-]+/gi, "_");
+        
+        status.textContent += "Packaging ZIP...\n";
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, `${safeName}-${buildType}-${timestamp}.zip`);
+        
+        status.textContent += "Download complete.";
+    } catch (err) {
+        status.textContent = "Error: " + err.message;
+    }
+*/
+	    
+	}
+}// extractSpreadsheet
