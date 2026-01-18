@@ -11,6 +11,10 @@
 
   <!-- External CSS file -->
   <link rel="stylesheet" href="style.css?v=2">
+
+  <script type="module" src="funView.js"></script>
+  <div id="MainContent"></div>
+  
 </head>
   <body>
   <div id="MainContent"></div>
@@ -25,7 +29,6 @@
 		//console.log("at 1");
 		loadScript('mainline-v4.js?v=2', () => {
 		    loadScript('reports.js?v=2', () => {
-			loadScript('funView.js?v=2', () => {
 			    // Show the picker screen
 			    showScreen('pickLoaderScreen');
 			    
@@ -38,7 +41,6 @@
 				    console.error("setupPickerLoaderUI is not defined");
 				}
 			    }); // load pickerLoader
-			}); // funView
 		    }); // load reports
 		});  // load mainline
 	    }).catch(err => console.error('Error loading body-v3.html:', err));

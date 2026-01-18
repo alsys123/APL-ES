@@ -66,16 +66,17 @@
 		 onchange="loadCustomZip(this.files[0])">
   	</div>
 	
-	<div class="examCard" data-exam="googleSpreadsheet">
+	<div class="examCardSpreadsheet" data-exam="googleSpreadsheet">
 	  <img src="images/custom.jpeg" alt="Google Spreadsheet" class="examImage">
-	  <div class="examLabel">Google Spreadsheet WIP still!!</div>
-<!--	  <button class="examButton">Google Spreadsheet</button> -->
-	  
-	  <input type="text" id="sheetInput" placeholder="Enter sheet ID"
-		 onkeydown="if(event.key==='Enter'){ loadGoogleSheet(this.value); }">
-	  
+	  <div class="examLabel">Google Spreadsheet</div>
+	<input type="text" id="sheetInput" size="40" placeholder="Enter sheet ID"
+	       oninput="document.getElementById('loadBtn').disabled = !this.value.trim()">
+	<button id="loadBtn" class="examButton" disabled
+		onclick="loadGoogleSheet(document.getElementById('sheetInput').value)">
+	  Load Sheet
+	</button>
 	</div>
-
+	
       </div>
       
       <!-- Status Console -->

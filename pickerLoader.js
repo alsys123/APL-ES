@@ -100,9 +100,9 @@ async function loadExamZip(url) {
 
 //__ loadGoogleSheet (from html)
 async function loadGoogleSheet(sheetID) {
-    console.log("here is my id: ", sheetID );
-    //    initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, examDataCVSParsed);
-    initExam([], [], []);
+//    console.log("here is my id: ", sheetID );
+    extractSpreadsheet(sheetID);
+
 } // loadGoogleSheet
 
 
@@ -202,7 +202,7 @@ async function parseExamZip(zip) {
 // __ setupPickerLoaderUI
 function setupPickerLoaderUI() {
 
-    console.log("setup Picker");
+//    console.log("setup Picker");
     
 	// Card click
 	document.querySelectorAll(".examCard").forEach(card => {
@@ -224,21 +224,6 @@ function setupPickerLoaderUI() {
 
 	// Google Spreadsheet - prep
 	const GoogleSCard = document.querySelector('.examCard[data-exam="googleSpreadsheet"]');
-//	if (GoogleSCard) { true; }
-//	    const fileInput = customCard.querySelector("#customFile");
-	 //   const button = customCard.querySelector(".examButton");
-	    
-	    // Clicking the card opens the file picker
-//	    customCard.addEventListener("click", () => {
-//		fileInput.click();
-//	    });
-	    
-	    // Clicking the button also opens the file picker
-//	    button.addEventListener("click", e => {
-//		e.stopPropagation();
-//		fileInput.click();
-//	    });
-//	}
 	
 	// Custom exam card
 	const customCard = document.querySelector('.examCard[data-exam="custom"]');
@@ -266,106 +251,43 @@ function setupPickerLoaderUI() {
 	}
     } //setupPickerLoaderUI
 
+//__ extractSpreadsheet
+async function extractSpreadsheet(spreadsheetId) {
+//  const status = document.getElementById("status");
 
-// __ extractSpreadsheet
-async function extractSpreadsheet(spreadSheetId, buildType) {
-//    const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
-    const status = document.getElementById("status");
-/*
-    const preview = document.getElementById("csvPreview");
-    preview.textContent = "";
-    if (!spreadsheetId) {
-        status.textContent = "Please enter a Spreadsheet ID.";
-        return;
-    }
-  */  
-    const ranges = [
-        { name: "examQuestions", range: "examQuestions!A:J" },
-        { name: "sectionPartTitles", range: "sectionPartTitles!A:E" },
-        { name: "examData", range: "examData!A:C" }
-    ];
-    
- //   try {
-//        const zip = new JSZip();
-        let examDataCsv = null;
-    
-        for (const [index, sheet] of ranges.entries()) {
-            status.textContent += `Fetching ${sheet.range}...\n`;
+  const ranges = [
+    { name: "examQuestions", range: "examQuestions!A:J" },
+    { name: "sectionPartTitles", range: "sectionPartTitles!A:E" },
+    { name: "examData", range: "examData!A:C" }
+  ];
 
-	    const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet.name)}&range=${encodeURIComponent(sheet.range)}`;
-   
-            const resp = await fetch(csvUrl);
-	    let csv = await resp.text();
+  let examQuestionsCSV = "";
+  let sectionPartTitlesCSV = "";
+  let examDataCSV = "";
 
-	    /*
-	    // do we build a full version or a student version?
-	    if (buildType === 'student') {
-		// Blank specific columns depending on sheet
-		if (sheet.name === "examQuestions") {
-		    csv = blankColumnsInCsv(csv, [8, 9]);   // Columns I, J
-		}
-		if (sheet.name === "sectionPartTitles") {
-		    csv = blankColumnsInCsv(csv, [4]);      // Column E
-		}
-	    }
+  for (const sheet of ranges) {
+    status.textContent += `Fetching ${sheet.range}...\n`;
 
-	    if (buildType === 'withLearning') {
-		// Blank specific columns depending on sheet
-		if (sheet.name === "examQuestions") {
-		    csv = blankColumnsInCsv(csv, [8, 9]);   // Columns I, J
-		}
-	    }
-	    
-*/	    
-//	    zip.file(`${sheet.name}.csv`, csv);
-	    
-	    
-//            if (sheet.name === "examData") {
-//                examDataCsv = csv;
-//            }
+    const csvUrl =
+      `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv` +
+      `&sheet=${encodeURIComponent(sheet.name)}` +
+      `&range=${encodeURIComponent(sheet.range)}`;
 
-	    /*
-	    // examData
-            if (index === 2) {
-                const lines = csv.split(/\r?\n/);
-                const firstSample = lines.slice(0, 8).join("\n");
-                preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
-            }
-	
-            // Questions
-            if (index === 0) {
-                const lines = csv.split(/\r?\n/);
-                const firstSample = lines.slice(0, 5).join("\n");
-                preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
-            }
-	
-            // Questions
-            if (index === 1) {
-                const lines = csv.split(/\r?\n/);
-                const firstSample = lines.slice(0, 5).join("\n");
-                preview.textContent += `Preview of ${sheet.name}:\n\n${firstSample}\n\n`;
-            }
-        } // <-- closes for-loop
+    const resp = await fetch(csvUrl);
+    const csv = await resp.text();
 
-	*/
-/*
-            const exportName = examDataCsv
-            ? extractExportNameFromExamData(examDataCsv)
-            : null;
-        
-        const timestamp = formatTimestamp();
-        const baseName = exportName || "Spreadsheet";
-        const safeName = baseName.replace(/[^a-z0-9_\-]+/gi, "_");
-        
-        status.textContent += "Packaging ZIP...\n";
-        const content = await zip.generateAsync({ type: "blob" });
-        saveAs(content, `${safeName}-${buildType}-${timestamp}.zip`);
-        
-        status.textContent += "Download complete.";
-    } catch (err) {
-        status.textContent = "Error: " + err.message;
-    }
-*/
-	    
-	}
-}// extractSpreadsheet
+    if (sheet.name === "examQuestions") examQuestionsCSV = csv;
+    if (sheet.name === "sectionPartTitles") sectionPartTitlesCSV = csv;
+    if (sheet.name === "examData") examDataCSV = csv;
+  }
+
+  // Parse CSV → arrays
+  const examQuestionsParsed = parseCSVFull(examQuestionsCSV);
+  const sectionPartTitlesParsed = parseCSVFull(sectionPartTitlesCSV);
+  const examDataParsed = parseCSVFull(examDataCSV);
+
+  initExam(examQuestionsParsed, sectionPartTitlesParsed, examDataParsed);
+
+//  status.textContent += "Spreadsheet loaded successfully.\n";
+} //extractSpreadsheet
+
