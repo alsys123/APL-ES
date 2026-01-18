@@ -1557,3 +1557,25 @@ function toggleAutoCheck() {
 } // toggleAutoCheck
 
 
+function getProgressSummary() {
+    let totalAnswered = 0;
+    let totalQuestions = 0;
+
+    for (let s = 1; s <= 6; s++) {
+        for (let p = 1; p <= 10; p++) {
+            const currentQuestions = questions[s]?.[p] || [];
+            currentQuestions.forEach(q => {
+                totalQuestions++;
+                if (answers[q.id] !== undefined) {
+                    totalAnswered++;
+                }
+            });
+        }
+    }
+
+    return {
+        totalAnswered,
+        totalQuestions,
+        percent: Math.round((totalAnswered / totalQuestions) * 100)
+    };
+}

@@ -190,6 +190,9 @@
         <button id="gradeBtn" class="btn btn-success btn-small"
 		onclick="gradeExam()">📊 Grade Report</button>
 
+	<button class="btn btn-secondary btn-small off"
+		onclick="showLego()">Show LEGO Progress</button>
+
       </div>
 
       <div class="form-group">
@@ -226,8 +229,20 @@
         </div>
       </div>
 
-      
- <!-- Message Window Modal -->
+      <!-- For Lego Modal -->
+      <div id="legoModal" class="modal">
+	<div class="modal-content" style="position:relative;">
+	  <h2>3D LEGO Viewer</h2>
+	  
+	  <div id="legoContainer" 
+               style="width:100%; height:500px; background:#111; border-radius:8px;">
+	  </div>
+	  
+	  <button class="btn" onclick="closeLegoModal()">Close</button>
+	</div>
+      </div>
+
+      <!-- Message Window Modal -->
       <div id="messageModal" class="modal">
         <div class="modal-content">
           <h2>Message Window - important!</h2>
