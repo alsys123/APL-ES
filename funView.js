@@ -93,6 +93,7 @@ function initLegoScene(progress) {
     for (let i = 0; i < bricksToShow; i++) {
 	const brick = createBrick(0x0055ff);
 	brick.position.y = i * BRICK_HEIGHT;
+		 brick.position.x = 4;
 	scene.add(brick);
     }
     
