@@ -1576,6 +1576,7 @@ function getProgressSummary() {
     return {
         totalAnswered,
         totalQuestions,
-        percent: Math.round((totalAnswered / totalQuestions) * 100)
+        percent: Math.round((totalAnswered / totalQuestions) * 100),
+	answers
     };
 }

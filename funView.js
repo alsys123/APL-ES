@@ -64,6 +64,8 @@ function initLegoScene(progress) {
         return group;
     }
 
+    // bricks are added using json
+    /*
     // Add bricks
     const brick1 = createBrick(0xee0000);
     scene.add(brick1);
@@ -96,6 +98,7 @@ function initLegoScene(progress) {
 		 brick.position.x = 4;
 	scene.add(brick);
     }
+    */
     
     // Controls
     controls = new OrbitControls(camera, renderer.domElement);
@@ -123,7 +126,10 @@ function openLegoModal(progress) {
     document.getElementById("legoModal").classList.add("active");
     if (!legoInitialized) {
 	initLegoScene(progress);
-	legoInitialized = true; }
+	// load your file here
+	loadLegoJson(progress,"dataSets/legoCastle-1.json"); 
+	legoInitialized = true;
+    }
 }
 
 
@@ -142,5 +148,59 @@ function showLego() {
     openLegoModal(progress);          // open the modal
 }
 
+//__ createBrickFromJson
+function createBrickFromJson(block) {
+    const { w, l, flat, pos } = block;
 
+    const group = new THREE.Group();
+//    const color = flat ? 0xffcc00 : 0x0055ff; // example colors
+    const color = 0xff0000;   // red
+    const material = new THREE.MeshPhongMaterial({ color, shininess: 90 });
 
+    // Brick height: flat tiles are thinner
+    const BRICK_HEIGHT = flat ? 0.4 : 1.2;
+
+    // Body
+    const bodyGeom = new THREE.BoxGeometry(w * 1, BRICK_HEIGHT, l * 1);
+    bodyGeom.translate(0, BRICK_HEIGHT / 2, 0);
+    const body = new THREE.Mesh(bodyGeom, material);
+    group.add(body);
+
+    // Studs (only if not flat)
+    if (!flat) {
+        const studGeom = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 32);
+        studGeom.translate(0, 0.15, 0);
+
+        for (let ix = 0; ix < w; ix++) {
+            for (let iz = 0; iz < l; iz++) {
+                const stud = new THREE.Mesh(studGeom, material);
+                stud.position.set(
+                    -((w - 1) / 2) + ix,
+                    BRICK_HEIGHT,
+                    -((l - 1) / 2) + iz
+                );
+                group.add(stud);
+            }
+        }
+    }
+
+    // Position in world
+    group.position.set(pos.x, pos.y, pos.z);
+
+    return group;
+} // createBrickFromJson
+
+async function loadLegoJson(progress,url) {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    data.forEach(block => {
+	// if answered only .. show the brick
+	if (progress.answers[block.id] !== undefined) {
+            const brick = createBrickFromJson(block);
+	    scene.add(brick);
+	}
+    });
+}
+
+window.loadLegoJson = loadLegoJson;
