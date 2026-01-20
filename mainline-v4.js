@@ -479,6 +479,8 @@ function updateProgress() {
         document.getElementById('currentSectionLabel').textContent = `Section ${currentSection}: ${sectionTitle}`;
         document.getElementById('currentPartLabel').textContent = `Part ${currentPart}: ${partTitle}`;
 
+//    initLegoScene(answers);
+    
 } // updateProgress
 
       function updateNavigation() {

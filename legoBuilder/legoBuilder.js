@@ -339,15 +339,24 @@ function parseJsonWithComments(text) {
 
 // ---------- Save / Load ----------
 function saveScene() {
+  let saveId = 1;
+
   const data = bricks.map(b => ({
-    id: b.id,
+    id: saveId++,   // Always starts at 1
     w: b.w,
     l: b.l,
     flat: b.flat,
-    pos: { x: b.mesh.position.x, y: b.mesh.position.y, z: b.mesh.position.z }
+    pos: {
+      x: b.mesh.position.x,
+      y: b.mesh.position.y,
+      z: b.mesh.position.z
+    }
   }));
 
-  const blob = new Blob([JSON.stringify(data,null,2)], { type:'application/json' });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: 'application/json'
+  });
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -355,6 +364,7 @@ function saveScene() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
 
 function onFileChosen(e) {
   const file = e.target.files[0];

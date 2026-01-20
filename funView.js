@@ -69,12 +69,13 @@ function initLegoScene(progress) {
     // Add bricks
     const brick1 = createBrick(0xee0000);
     scene.add(brick1);
-
+    */
+    
     const brick2 = createBrick(0x0055ff);
     brick2.position.y = BRICK_HEIGHT;
     brick2.position.x = 1;
     scene.add(brick2);
-
+/*
     const brick3 = createBrick(0x0055ff);
     brick3.position.y = BRICK_HEIGHT * 2;
     brick3.position.x = 1;
@@ -89,7 +90,8 @@ function initLegoScene(progress) {
     brick5.position.y = BRICK_HEIGHT * 4;
     brick5.position.x = 1;
     scene.add(brick5);
-
+*/
+    /*
     // ... fun status
     const bricksToShow = Math.round(progress.percent / 10); // 10% per brick
     for (let i = 0; i < bricksToShow; i++) {
@@ -123,6 +125,7 @@ function animate() {
 }
 
 function openLegoModal(progress) {
+    console.log("openning Lego Modal");
     document.getElementById("legoModal").classList.add("active");
     if (!legoInitialized) {
 	initLegoScene(progress);
@@ -184,6 +187,13 @@ function createBrickFromJson(block) {
         }
     }
 
+    // --- Thin black border around the brick body ---
+    { const edgeGeom = new THREE.EdgesGeometry(bodyGeom);
+      const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
+      const border = new THREE.LineSegments(edgeGeom, edgeMat);
+      border.position.copy(body.position); group.add(border);
+    }
+    
     // Position in world
     group.position.set(pos.x, pos.y, pos.z);
 
