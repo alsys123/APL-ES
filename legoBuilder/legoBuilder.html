@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Lego Builder</title>
+
+<script type="module" src="legoBuilder.js"></script>
+
+<style>
+  body { margin: 0; overflow: hidden; background: #202020; font-family: sans-serif; }
+  #ui {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 10;
+    font-size: 13px;
+  }
+  #ui h3 { margin: 6px 0 4px; font-size: 13px; }
+  #ui button { margin: 2px; padding: 4px 8px; font-size: 12px; cursor: pointer; }
+  #ui .row { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div id="ui">
+  <div class="row">
+    <h3>Add Brick</h3>
+    <button id="add1x1">1×1</button>
+    <button id="add2x2">2×2</button>
+    <button id="add2x4">2×4</button>
+    <button id="add1x1flat">1×1 Flat</button>
+  </div>
+
+  <div class="row">
+    <h3>Move Selected Brick(s)</h3>
+    <div>X: <button id="moveXm">X–</button><button id="moveXp">X+</button></div>
+    <div>Y: <button id="moveYm">Y–</button><button id="moveYp">Y+</button></div>
+    <div>Z: <button id="moveZm">Z–</button><button id="moveZp">Z+</button></div>
+  </div>
+
+  <div class="row">
+    <h3>Scene</h3>
+    <button id="saveBtn">Save</button>
+    <button id="loadBtn">Load</button>
+    <button id="deleteBrick">Delete Selected</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" />
+  </div>
+
+  <div class="row">
+    <label><input type="checkbox" id="showBorders" checked> Show Borders</label>
+  </div>
+
+  <div class="row">
+    Click a brick to select. Shift‑click to multi‑select. Drag to move in X/Z.
+  </div>
+</div>
+
+
+</body>
+</html>

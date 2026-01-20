@@ -300,7 +300,21 @@ function saveProgress() {
         showNotification(`Progress saved!<br>Answered: ${totalAnswered}/${totalQuestions}<br>Section ${currentSection}, Part ${currentPart}`, 'success');
       } //saveProgress
 
-      function renderQuestions() {
+//__ clearSavedProgress
+function clearSavedProgress() {
+    const key = `exam_${currentUser}`;
+
+    // Remove saved exam data
+    localStorage.removeItem(key);
+
+    // Reset in‑memory answers too (optional but recommended)
+    answers = {};
+    updateProgress();
+    showNotification("Saved progress cleared.", "success");
+} //clearSavedProgress
+
+//__ renderQuestions
+function renderQuestions() {
         const container = document.getElementById('questionsContainer');
         container.innerHTML = '';
 
@@ -436,7 +450,8 @@ function selectAnswer(qId, optionIndex) {
   renderQuestions(); // refresh UI
 } //selectAnswer
 
-      function updateProgress() {
+//__ updateProgress
+function updateProgress() {
         const totalAnswered = Object.keys(answers).length;
         const percentage = totalQuestions > 0 ? Math.round((totalAnswered / totalQuestions) * 100) : 0;
 
@@ -464,7 +479,7 @@ function selectAnswer(qId, optionIndex) {
         document.getElementById('currentSectionLabel').textContent = `Section ${currentSection}: ${sectionTitle}`;
         document.getElementById('currentPartLabel').textContent = `Part ${currentPart}: ${partTitle}`;
 
-      }
+} // updateProgress
 
       function updateNavigation() {
         const prevBtn = document.getElementById('prevBtn');

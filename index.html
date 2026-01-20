@@ -70,6 +70,11 @@
       <button onclick="openExams()">The Exams</button>
       <button onclick="openExtractor()">Exam Builder</button>
       <button onclick="openHelp()">Help & About</button>
+      <button onclick="openLegoBuilder()" 
+              style="font-size:14px; padding:6px 10px; border-radius:8px; background:#ffd54f; border:none; cursor:pointer;">
+	🧱 Lego Builder
+      </button>
+      
     </div>
   </div>
 
@@ -91,6 +96,11 @@
     function openHelp() {
       document.getElementById("mainFrame").src = "helpAbout/helpAboutWrapper.html";
     }
+
+    function openLegoBuilder() {
+      document.getElementById("mainFrame").src = "legoBuilder/legoBuilder.html";
+    }
+
   </script>
 
 </body>

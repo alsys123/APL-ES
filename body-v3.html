@@ -176,6 +176,10 @@
       <div class="navigation">
         <button class="btn btn-secondary" onclick="previousPart()" id="prevBtn">← Previous</button>
         <button class="btn btn-secondary btn-small" onclick="saveProgress()">💾 Save</button>
+
+	<button class="btn btn-secondary btn-small" onclick="clearSavedProgress()">
+	  <span style="font-size:32px; vertical-align:middle;">🧹</span>Clear Saved</button>
+
         <button id="checkBtn2" class="btn btn-success btn-small" onclick="checkAnswers()">✓ Check</button>
 
         <button class="btn btn-secondary btn-small" onclick="triggerImport()">⬆️ Import</button>
@@ -275,11 +279,11 @@
         <span class="close" onclick="closeExplainModal()">&times;</span>
         <h2 id="modalTitle"></h2>
         <div id="notes-content"></div>
-
+	
         <!-- Bottom close button -->
         <div class="modal-footer">
           <button class="close-btn" onclick="closeExplainModal()">Close</button>
         </div>
       </div>
     </div>
-
+    
