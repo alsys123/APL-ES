@@ -61,7 +61,6 @@ function init() {
   document.getElementById('add2x2').onclick = () => addBrick(2,2,false);
   document.getElementById('add2x4').onclick = () => addBrick(2,4,false);
   document.getElementById('add1x1flat').onclick = () => addBrick(1,1,true);
-  document.getElementById('add2x2flat').onclick = () => addBrick(2,2,true);
 
   document.getElementById('moveXm').onclick = () => moveSelected(-1,0,0);
   document.getElementById('moveXp').onclick = () => moveSelected(1,0,0);
