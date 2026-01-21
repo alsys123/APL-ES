@@ -61,6 +61,7 @@ function init() {
   document.getElementById('add2x2').onclick = () => addBrick(2,2,false);
   document.getElementById('add2x4').onclick = () => addBrick(2,4,false);
   document.getElementById('add1x1flat').onclick = () => addBrick(1,1,true);
+    document.getElementById('add2x2flat').onclick = () => addBrick(2,2,true);
 
   document.getElementById('moveXm').onclick = () => moveSelected(-1,0,0);
   document.getElementById('moveXp').onclick = () => moveSelected(1,0,0);
@@ -85,8 +86,18 @@ function init() {
 
   addBrick(2,4,false,new THREE.Vector3(0,0,0));
   addBrick(2,2,false,new THREE.Vector3(cellSize*3,0,0));
-  addBrick(1,1,false,new THREE.Vector3(-cellSize*3,0,0));
-}
+    addBrick(1,1,false,new THREE.Vector3(-cellSize*3,0,0));
+
+    const ui = document.getElementById('ui');
+    const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+    
+    toggleMenuBtn.onclick = () => {
+	const hidden = ui.classList.toggle('hiddenMenu');
+	toggleMenuBtn.textContent = hidden ? "Show Controls" : "Hide Controls";
+	
+    };
+
+} // init
 
 // ---------- Loop ----------
 function animate() {
@@ -345,7 +356,7 @@ function saveScene() {
     id: saveId++,   // Always starts at 1
     w: b.w,
     l: b.l,
-    flat: b.flat,
+      flat: b.flat,
     pos: {
       x: b.mesh.position.x,
       y: b.mesh.position.y,
@@ -394,7 +405,9 @@ function loadScene(data) {
   nextBrickId = 1;
 
   data.forEach(item => {
-    const pos = new THREE.Vector3(item.pos.x,item.pos.y,item.pos.z);
+      const pos = new THREE.Vector3(item.pos.x,item.pos.y,item.pos.z);
+     
+      // normal brick
     const brick = addBrick(item.w, item.l, item.flat, pos);
     brick.id = item.id;
     brick.mesh.position.y = item.pos.y;
@@ -411,3 +424,4 @@ function loadScene(data) {
     b.helperUnselected.visible = visible;
   });
 }
+
