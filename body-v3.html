@@ -237,6 +237,17 @@
       <div id="legoModal" class="modal">
 	<div class="modal-content" style="position:relative;">
 	  <h2>3D LEGO Viewer</h2>
+	  <h5>Show your answered progress using Lego models<h5>
+	  <h5>The more questions you answer.  The more you see of the model.<h5>    
+	  <div style="margin-bottom:10px; text-align:center;">
+	    <select id="legoSceneSelect" onchange="changeLegoScene()" 
+		    style="padding:4px 8px; border-radius:6px; font-size:14px;">
+	      <option value="dataSets/legoCastle-1.json">🏰 Castle</option>
+	      <option value="dataSets/legoTower.json">🗼 Tower</option>
+	      <option value="dataSets/legoVillage.json">🏘️ Village</option>
+	      <option value="dataSets/legoBridge.json">🌉 Bridge</option>
+	    </select>
+	  </div>
 	  
 	  <div id="legoContainer" 
                style="width:100%; height:500px; background:#111; border-radius:8px;">

@@ -118,11 +118,22 @@ function initLegoScene(progress) {
     animate();
 }
 
+let animateFrame;
+
+function animate() {
+    animateFrame = requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+/*
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
     renderer.render(scene, camera);
-}
+    }
+*/
+
 
 function openLegoModal(progress) {
     console.log("openning Lego Modal");
@@ -130,20 +141,26 @@ function openLegoModal(progress) {
     if (!legoInitialized) {
 	initLegoScene(progress);
 	// load your file here
-	loadLegoJson(progress,"dataSets/legoCastle-1.json"); 
+//	loadLegoJson(progress,"dataSets/legoCastle-1.json"); 
+	const select = document.getElementById("legoSceneSelect");
+	const url = select.value;
+	loadLegoJson(progress, url);
+	
 	legoInitialized = true;
     }
 }
 
+/*
+function closeLegoModal() {
+    document.getElementById("legoModal").classList.remove("active");
+    }
+*/
 
 function closeLegoModal() {
     document.getElementById("legoModal").classList.remove("active");
+    cleanupLegoScene();
 }
 
-window.openLegoModal = openLegoModal;
-window.closeLegoModal = closeLegoModal;
-window.initLegoScene = initLegoScene;
-window.showLego = showLego;
 
 
 function showLego() {
@@ -214,3 +231,65 @@ async function loadLegoJson(progress,url) {
 }
 
 window.loadLegoJson = loadLegoJson;
+
+//__ cleanupLegoScene
+function cleanupLegoScene() {
+    console.log("Cleaning up LEGO scene…");
+
+    // Stop animation loop
+    cancelAnimationFrame(animateFrame);
+
+    // Dispose renderer
+    if (renderer) {
+        renderer.dispose();
+    }
+
+    // Dispose scene objects
+    if (scene) {
+        scene.traverse(obj => {
+            if (obj.geometry) obj.geometry.dispose();
+            if (obj.material) {
+                if (Array.isArray(obj.material)) {
+                    obj.material.forEach(m => m.dispose());
+                } else {
+                    obj.material.dispose();
+                }
+            }
+        });
+    }
+
+    // Remove canvas from DOM
+    const container = document.getElementById("legoContainer");
+    if (container && renderer && renderer.domElement) {
+        container.removeChild(renderer.domElement);
+    }
+
+    // Reset all globals
+    renderer = null;
+    camera = null;
+    scene = null;
+    controls = null;
+    legoInitialized = false;
+
+    console.log("LEGO scene reset complete.");
+} // cleanupLegoScene
+
+function changeLegoScene() {
+    const select = document.getElementById("legoSceneSelect");
+    const url = select.value;
+
+    // Reset everything
+    cleanupLegoScene();
+
+    // Rebuild fresh
+    const progress = getProgressSummary();
+    initLegoScene(progress);
+    loadLegoJson(progress, url);
+}
+
+// expose functions globally
+window.openLegoModal = openLegoModal;
+window.closeLegoModal = closeLegoModal;
+window.initLegoScene = initLegoScene;
+window.showLego = showLego;
+window.changeLegoScene = changeLegoScene;

@@ -309,6 +309,9 @@ function clearSavedProgress() {
 
     // Reset in‑memory answers too (optional but recommended)
     answers = {};
+    // Uncheck all UI inputs
+    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => { el.checked = false;
+											   });
     updateProgress();
     showNotification("Saved progress cleared.", "success");
 } //clearSavedProgress
