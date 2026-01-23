@@ -60,11 +60,19 @@ function init() {
   document.getElementById('add1x1').onclick = () => addBrick(1,1,false);
   document.getElementById('add2x2').onclick = () => addBrick(2,2,false);
   document.getElementById('add2x4').onclick = () => addBrick(2,4,false);
-  document.getElementById('add1x1flat').onclick = () => addBrick(1,1,true);
+  document.getElementById('add4x2').onclick = () => addBrick(4,2,false);
+  document.getElementById('add4x4').onclick = () => addBrick(4,4,false);
+  document.getElementById('add8x8').onclick = () => addBrick(8,8,false);
+
+    document.getElementById('add1x1flat').onclick = () => addBrick(1,1,true);
     document.getElementById('add2x2flat').onclick = () => addBrick(2,2,true);
 
     document.getElementById('steeple').onclick = () => addBrick(9,1,true);
-    document.getElementById('slope').onclick = () => addBrick(9,2,true);
+
+    document.getElementById('slopeNorth').onclick = () => addBrick(9,2,true);
+    document.getElementById('slopeEast').onclick = () => addBrick(9,3,true);
+    document.getElementById('slopeSouth').onclick = () => addBrick(9,4,true);
+    document.getElementById('slopeWest').onclick = () => addBrick(9,5,true);
 
   document.getElementById('moveXm').onclick = () => moveSelected(-1,0,0);
   document.getElementById('moveXp').onclick = () => moveSelected(1,0,0);
@@ -155,8 +163,16 @@ function snapBrickToStudGrid(brick) {
 //__ addBrick - steeple is really cone and slope
 function addBrick(w, l, flat = false, pos = null) {
   const isSteeple = (w === 9 && l === 1);
-    const isSlope = (w === 9 && l === 2);
+//    const isSlope = (w === 9 && l === 2);
 
+    // for orientation
+    const isSlopeNorth = (w === 9 && l === 2);
+    const isSlopeEast  = (w === 9 && l === 3);
+    const isSlopeSouth = (w === 9 && l === 4);
+    const isSlopeWest  = (w === 9 && l === 5);
+    
+    const isSlope = isSlopeNorth || isSlopeEast || isSlopeSouth || isSlopeWest;
+    
   // ───────────────────────────────────────────────
   //  Dimensions
   // ───────────────────────────────────────────────
@@ -182,70 +198,84 @@ function addBrick(w, l, flat = false, pos = null) {
   mesh.position.copy(position);
   mesh.position.y = brickHeight / 2;
   scene.add(mesh);
-
-if (isSteeple) {
-  const coneHeight = cellSize * 2.5;   // adjust height here
-  const coneRadius = cellSize * 0.55;
-
-  const coneGeo = new THREE.ConeGeometry(coneRadius, coneHeight, 24);
-  const coneMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
-
-  const cone = new THREE.Mesh(coneGeo, coneMat);
-
-  // Make the cone the actual brick mesh
-  mesh.geometry = coneGeo;
-  mesh.material = coneMat;
-
-  // Reposition mesh so the cone sits on the ground
-  mesh.position.y = coneHeight / 2;
-} //isSteeple
+    
+    if (isSteeple) {
+	const coneHeight = cellSize * 2.5;   // adjust height here
+	const coneRadius = cellSize * 0.55;
+	
+	const coneGeo = new THREE.ConeGeometry(coneRadius, coneHeight, 24);
+	const coneMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
+	
+	const cone = new THREE.Mesh(coneGeo, coneMat);
+	
+	// Make the cone the actual brick mesh
+	mesh.geometry = coneGeo;
+	mesh.material = coneMat;
+	
+	// Reposition mesh so the cone sits on the ground
+	mesh.position.y = coneHeight / 2;
+    } //isSteeple
     
     // creating a slope tile
-if (isSlope) {
-  const W = cellSize;
-  const D = cellSize;
-//    const H = cellSize / 2;
-//const H = cellSize * 0.75;
-const H = cellSize * 0.6;
+    if (isSlope) {
+	const W = cellSize;
+	const D = cellSize;
+	//    const H = cellSize / 2;
+	//const H = cellSize * 0.75;
+	const H = cellSize * 0.6;
+	
+	const geom = new THREE.BufferGeometry();
+	
+	const vertices = new Float32Array([
+	    -W/2, 0, -D/2,
+	    W/2, 0, -D/2,
+	    W/2, 0,  D/2,
+	    -W/2, 0,  D/2,
+	    -W/2, H, -D/2,
+	    W/2, H, -D/2
+	]);
+	
+	const indices = [
+	    0,1,2, 0,2,3,
+	    3,2,5, 3,5,4,
+	    0,3,4,
+	    1,5,2,
+	    4,5,1, 4,1,0
+	];
+	
+	geom.setIndex(indices);
+	geom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+	geom.computeVertexNormals();
+	
+	// ⭐ CRITICAL FIX: recenter geometry like a brick
+	if (isSlopeNorth || isSlopeSouth) {
+	    geom.translate(0, -H/2, 0);
+	    geom.translate(0, 0, -cellSize * 0.5);
+	}
+	if (isSlopeEast || isSlopeWest) {
+	    geom.translate(0, -H/2, 0);
+	}
+	
+	//  const mat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
+	const mat = new THREE.MeshStandardMaterial({color: 0xff3333,flatShading: true });
+	
+	mesh.geometry = geom;
+	mesh.material = mat;
+	
+	//    if (isSlope) {
+	// rotate the slope
+	if (isSlopeNorth) mesh.rotation.y = 0;
+	if (isSlopeEast)  mesh.rotation.y = Math.PI / 2;
+	if (isSlopeSouth) mesh.rotation.y = Math.PI;
+	if (isSlopeWest)  mesh.rotation.y = -Math.PI / 2;
+	//}
+	
+	// Now this is correct
+	mesh.position.y = H / 2;
 
-  const geom = new THREE.BufferGeometry();
-
-  const vertices = new Float32Array([
-    -W/2, 0, -D/2,
-     W/2, 0, -D/2,
-     W/2, 0,  D/2,
-    -W/2, 0,  D/2,
-    -W/2, H, -D/2,
-     W/2, H, -D/2
-  ]);
-
-  const indices = [
-    0,1,2, 0,2,3,
-    3,2,5, 3,5,4,
-    0,3,4,
-    1,5,2,
-    4,5,1, 4,1,0
-  ];
-
-  geom.setIndex(indices);
-  geom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-  geom.computeVertexNormals();
-
-  // ⭐ CRITICAL FIX: recenter geometry like a brick
-    geom.translate(0, -H/2, 0);
-    geom.translate(0, 0, -cellSize * 0.5);
-
-//  const mat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
-    const mat = new THREE.MeshStandardMaterial({color: 0xff3333,flatShading: true });
+    } // slope
     
-  mesh.geometry = geom;
-  mesh.material = mat;
-
-  // Now this is correct
-  mesh.position.y = H / 2;
-}
-
-
+    
   // ───────────────────────────────────────────────
   //  Studs (normal bricks only)
   // ───────────────────────────────────────────────
@@ -515,7 +545,7 @@ function loadScene(data) {
     updateStuds(brick);
     brick.helperSelected.update();
     brick.helperUnselected.update();
-    nextBrickId = Math.max(nextBrickId, item.id + 1);
+      nextBrickId = Math.max(nextBrickId, item.id + 1);
   });
 
   const visible = document.getElementById('showBorders').checked;

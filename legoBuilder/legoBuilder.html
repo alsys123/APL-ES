@@ -52,19 +52,47 @@
     <button id="add1x1">1×1</button>
     <button id="add2x2">2×2</button>
     <button id="add2x4">2×4</button>
+    <button id="add4x2">4×2</button>
+    <button id="add4x4">4×4</button>
+    <button id="add8x8">8×8</button>
+<div>
     <button id="add1x1flat">1×1 Flat</button>
     <button id="add2x2flat">2×2 Flat</button>
     <button id="steeple">Cone</button>
-    <button id="slope">Slope</button>
+    </div>
+<div>Slope: 
+    <button id="slopeNorth">North</button>
+    <button id="slopeEast">East</button>
+    <button id="slopeSouth">South</button>
+    <button id="slopeWest">West</button>
+</div>
+</div>
 
-  </div>
-
-  <div class="row">
+<!--  <div class="row">
     <h3>Move Selected Brick(s)</h3>
     <div>X: <button id="moveXm">X–</button><button id="moveXp">X+</button></div>
     <div>Y: <button id="moveYm">Y–</button><button id="moveYp">Y+</button></div>
     <div>Z: <button id="moveZm">Z–</button><button id="moveZp">Z+</button></div>
   </div>
+  -->
+<div class="row">
+    <h3>Move Selected Brick(s)</h3>
+    <button id="moveXm">X–</button>
+    <button id="moveXp">X+</button>
+<button id="moveYm" style="background:#ffeb3b; border:1px solid #c9b200; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;">
+  Y–
+</button>
+
+<button id="moveYp" style="background:#ffeb3b; border:1px solid #c9b200; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;">
+  Y+
+</button>
+<!--
+    <button id="moveYm">Y–</button>
+    <button id="moveYp">Y+</button>
+-->
+    <button id="moveZm">Z–</button>
+    <button id="moveZp">Z+</button>
+</div>
 
   <div class="row">
     <h3>Scene</h3>
@@ -78,9 +106,16 @@
     <label><input type="checkbox" id="showBorders" checked> Show Borders</label>
   </div>
 
+  <!--
   <div class="row">
     Click a brick to select. Shift‑click to multi‑select. Drag to move in X/Z.
   </div>
+  -->
+  <div class="row">
+    Click a brick to select. Drag to move in X/Z.
+    <div>Shift‑click to multi‑select.</div>
+  </div>
+
 </div>
 
 
