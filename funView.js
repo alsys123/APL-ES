@@ -4,12 +4,14 @@ import { OrbitControls } from 'https://esm.sh/three@0.164.0/examples/jsm/control
 
 let renderer, camera, scene, controls;
 let legoInitialized = false;
+let showFullModel = false;
+let showBorders = true;
 
 function initLegoScene(progress) {
     if (legoInitialized) return;
     legoInitialized = true;
 
-    console.log("init Lego");
+//    console.log("init Lego");
     
     const container = document.getElementById("legoContainer");
     const width = container.clientWidth;
@@ -173,186 +175,345 @@ function showLego() {
 }
 
 //__ createBrickFromJson
-/*  from ... builder
-function createBrickFromJson(w, l, flat = false, pos = null) {
-  const isSteeple = (w === 9 && l === 1);
-//    const isSlope = (w === 9 && l === 2);
+function createBrickFromJson(block) {
+    const { w, l, flat, pos } = block;
 
-    // for orientation
+    // ───────────────────────────────────────────────
+    //  Brick type detection
+    // ───────────────────────────────────────────────
+    const isSteeple = (w === 9 && l === 1);
+
     const isSlopeNorth = (w === 9 && l === 2);
     const isSlopeEast  = (w === 9 && l === 3);
     const isSlopeSouth = (w === 9 && l === 4);
     const isSlopeWest  = (w === 9 && l === 5);
-    
+
     const isSlope = isSlopeNorth || isSlopeEast || isSlopeSouth || isSlopeWest;
-    
-  // ───────────────────────────────────────────────
-  //  Dimensions
-  // ───────────────────────────────────────────────
-  let brickWidth  = isSteeple ? cellSize * 1 : cellSize * w;
-  let brickDepth  = isSteeple ? cellSize * 1 : cellSize * l;
-  let brickHeight = isSteeple ? cellSize * 6
-                              : flat ? cellSize/4 
-                                     : cellSize/2;
 
-  const position = pos ? pos.clone() : new THREE.Vector3(0, 0, 0);
+    // ───────────────────────────────────────────────
+    //  Dimensions (EXACT builder logic)
+    // ───────────────────────────────────────────────
+    const brickWidth  = isSteeple ? cellSize * 1 : cellSize * w;
+    const brickDepth  = isSteeple ? cellSize * 1 : cellSize * l;
+    const brickHeight = isSteeple ? cellSize * 6
+                                  : flat ? cellSize/4 
+                                         : cellSize/2;
 
-  // ───────────────────────────────────────────────
-  //  Base mesh (invisible for steeple)
-  // ───────────────────────────────────────────────
-  const geo = new THREE.BoxGeometry(brickWidth, brickHeight, brickDepth);
-  const baseMat = new THREE.MeshStandardMaterial({ 
-    color: isSteeple ? 0x8888ff : 0xff3333,
-    visible: !isSteeple
-  });
-  const materials = Array(6).fill(baseMat.clone());
+    // World position (EXACT builder logic)
+    const worldPos = new THREE.Vector3(
+        pos.x * cellSize,
+        pos.y * cellSize,
+        pos.z * cellSize
+    );
 
-  const mesh = new THREE.Mesh(geo, materials);
-  mesh.position.copy(position);
-  mesh.position.y = brickHeight / 2;
-  scene.add(mesh);
-    
+    // ───────────────────────────────────────────────
+    //  Base mesh (invisible for steeple)
+    // ───────────────────────────────────────────────
+    const baseGeo = new THREE.BoxGeometry(brickWidth, brickHeight, brickDepth);
+    const baseMat = new THREE.MeshStandardMaterial({
+        color: isSteeple ? 0x8888ff : 0xff3333,
+        visible: !isSteeple
+    });
+
+    const mesh = new THREE.Mesh(baseGeo, baseMat);
+    mesh.position.copy(worldPos);
+    mesh.position.y += brickHeight / 2;
+
+    if (flat) {
+    mesh.position.y += cellSize * 0.09; // was 0.02
+    }
+
+    scene.add(mesh);
+
+    // ───────────────────────────────────────────────
+    //  Steeple (cone)
+    // ───────────────────────────────────────────────
     if (isSteeple) {
-	const coneHeight = cellSize * 2.5;   // adjust height here
-	const coneRadius = cellSize * 0.55;
-	
-	const coneGeo = new THREE.ConeGeometry(coneRadius, coneHeight, 24);
-	const coneMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
-	
-	const cone = new THREE.Mesh(coneGeo, coneMat);
-	
-	// Make the cone the actual brick mesh
-	mesh.geometry = coneGeo;
-	mesh.material = coneMat;
-	
-	// Reposition mesh so the cone sits on the ground
-	mesh.position.y = coneHeight / 2;
-    } //isSteeple
-    
-    // creating a slope tile
-    if (isSlope) {
-	const W = cellSize;
-	const D = cellSize;
-	//    const H = cellSize / 2;
-	//const H = cellSize * 0.75;
-	const H = cellSize * 0.6;
-	
-	const geom = new THREE.BufferGeometry();
-	
-	const vertices = new Float32Array([
-	    -W/2, 0, -D/2,
-	    W/2, 0, -D/2,
-	    W/2, 0,  D/2,
-	    -W/2, 0,  D/2,
-	    -W/2, H, -D/2,
-	    W/2, H, -D/2
-	]);
-	
-	const indices = [
-	    0,1,2, 0,2,3,
-	    3,2,5, 3,5,4,
-	    0,3,4,
-	    1,5,2,
-	    4,5,1, 4,1,0
-	];
-	
-	geom.setIndex(indices);
-	geom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-	geom.computeVertexNormals();
-	
-	// ⭐ CRITICAL FIX: recenter geometry like a brick
-	if (isSlopeNorth || isSlopeSouth) {
-	    geom.translate(0, -H/2, 0);
-	    geom.translate(0, 0, -cellSize * 0.5);
-	}
-	if (isSlopeEast || isSlopeWest) {
-	    geom.translate(0, -H/2, 0);
-	}
-	
-	//  const mat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
-	const mat = new THREE.MeshStandardMaterial({color: 0xff3333,flatShading: true });
-	
-	mesh.geometry = geom;
-	mesh.material = mat;
-	
-	//    if (isSlope) {
-	// rotate the slope
-	if (isSlopeNorth) mesh.rotation.y = 0;
-	if (isSlopeEast)  mesh.rotation.y = Math.PI / 2;
-	if (isSlopeSouth) mesh.rotation.y = Math.PI;
-	if (isSlopeWest)  mesh.rotation.y = -Math.PI / 2;
-	//}
-	
-	// Now this is correct
-	mesh.position.y = H / 2;
+        const coneHeight = cellSize * 2.5;
+        const coneRadius = cellSize * 0.55;
 
-    } // slope
+        const coneGeo = new THREE.ConeGeometry(coneRadius, coneHeight, 24);
+        const coneMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
+
+        mesh.geometry = coneGeo;
+        mesh.material = coneMat;
+
+// orig        mesh.position.y = worldPos.y + coneHeight / 2;
+
+	// Move steeple slightly downward using parentheses m
+	mesh.position.y = (worldPos.y + (coneHeight / 2)) - (cellSize * 1);
+
+        return mesh;
+    }
+
+    // ───────────────────────────────────────────────
+    //  Slope geometry
+    // ───────────────────────────────────────────────
+    if (isSlope) {
+        const W = cellSize;
+        const D = cellSize;
+        const H = cellSize * 0.6;
+
+        const geom = new THREE.BufferGeometry();
+
+        const vertices = new Float32Array([
+            -W/2, 0, -D/2,
+             W/2, 0, -D/2,
+             W/2, 0,  D/2,
+            -W/2, 0,  D/2,
+            -W/2, H, -D/2,
+             W/2, H, -D/2
+        ]);
+
+        const indices = [
+            0,1,2, 0,2,3,
+            3,2,5, 3,5,4,
+            0,3,4,
+            1,5,2,
+            4,5,1, 4,1,0
+        ];
+
+        geom.setIndex(indices);
+        geom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+        geom.computeVertexNormals();
+
+        // recenter like builder
+        if (isSlopeNorth || isSlopeSouth) {
+            geom.translate(0, -H/2, 0);
+            geom.translate(0, 0, -cellSize * 0.5);
+        }
+        if (isSlopeEast || isSlopeWest) {
+            geom.translate(0, -H/2, 0);
+        }
+
+        const mat = new THREE.MeshStandardMaterial({
+            color: 0xff3333,
+            flatShading: true
+        });
+
+        mesh.geometry = geom;
+        mesh.material = mat;
+
+        // orientation
+        if (isSlopeNorth) mesh.rotation.y = 0;
+        if (isSlopeEast)  mesh.rotation.y = Math.PI / 2;
+        if (isSlopeSouth) mesh.rotation.y = Math.PI;
+        if (isSlopeWest)  mesh.rotation.y = -Math.PI / 2;
+
+        mesh.position.y = worldPos.y + H / 2;
+        return mesh;
+    }
+
+    // ───────────────────────────────────────────────
+    //  Studs (EXACT builder geometry + placement)
+    // ───────────────────────────────────────────────
+    if (!flat) {
+        const studHeight = brickHeight * 0.4;
+        const studGeo = new THREE.CylinderGeometry(
+            cellSize * 0.18,
+            cellSize * 0.18,
+            studHeight,
+            16
+        );
+        const studMat = new THREE.MeshStandardMaterial({ color: 0xff6666 });
+
+        for (let i = 0; i < w; i++) {
+            for (let j = 0; j < l; j++) {
+                const stud = new THREE.Mesh(studGeo, studMat);
+
+                stud.position.set(
+                    worldPos.x + (i - (w - 1) / 2) * cellSize,
+                    worldPos.y + brickHeight + studHeight / 2,
+                    worldPos.z + (j - (l - 1) / 2) * cellSize
+                );
+
+                scene.add(stud);
+            }
+        }
+    } // not flat
+
+    // ───────────────────────────────────────────────
+    //  Border (thin black outline)
+    // ───────────────────────────────────────────────
+    if (showBorders) {
+	const edgeGeom = new THREE.EdgesGeometry(baseGeo);
+	const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000 });
+	const border = new THREE.LineSegments(edgeGeom, edgeMat);
+	
+	border.position.copy(mesh.position);
+	border.scale.set(1.002, 1.002, 1.002);
+	scene.add(border);
+    }
     
-    
-  // ───────────────────────────────────────────────
-  //  Studs (normal bricks only)
-  // ───────────────────────────────────────────────
-  const studs = [];
-  if (!flat && !isSteeple && !isSlope) {
-    const studGeo = new THREE.CylinderGeometry(cellSize*0.18, cellSize*0.18, brickHeight*0.4, 16);
+    return mesh;
+}
+
+/*  .. lost the studs on the brick
+function createBrickFromJson(block) {
+    const { w, l, flat, pos } = block;
+
+    // ───────────────────────────────────────────────
+    //  Brick type detection
+    // ───────────────────────────────────────────────
+    const isSteeple = (w === 9 && l === 1);
+
+    const isSlopeNorth = (w === 9 && l === 2);
+    const isSlopeEast  = (w === 9 && l === 3);
+    const isSlopeSouth = (w === 9 && l === 4);
+    const isSlopeWest  = (w === 9 && l === 5);
+
+    const isSlope = isSlopeNorth || isSlopeEast || isSlopeSouth || isSlopeWest;
+
+    // ───────────────────────────────────────────────
+    //  Dimensions (same as builder)
+    // ───────────────────────────────────────────────
+// Dimensions (EXACT builder logic)
+let brickWidth  = isSteeple ? cellSize * 1 : cellSize * w;
+let brickDepth  = isSteeple ? cellSize * 1 : cellSize * l;
+let brickHeight = isSteeple ? cellSize * 6
+                            : flat ? cellSize/4 
+                                   : cellSize/2;
+
+    const group = new THREE.Group();
+//    group.position.set(pos.x, pos.y, pos.z);
+group.position.set(
+    pos.x * cellSize,
+    pos.y * cellSize,
+    pos.z * cellSize
+);
+
+    // ───────────────────────────────────────────────
+    //  Base mesh (invisible for steeple)
+    // ───────────────────────────────────────────────
+    const baseGeo = new THREE.BoxGeometry(brickWidth, brickHeight, brickDepth);
+    const baseMat = new THREE.MeshStandardMaterial({
+        color: isSteeple ? 0x8888ff : 0xff3333,
+        visible: !isSteeple
+    });
+
+    const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+    baseMesh.position.y = brickHeight / 2;
+    group.add(baseMesh);
+
+    // ───────────────────────────────────────────────
+    //  Steeple (cone)
+    // ───────────────────────────────────────────────
+    if (isSteeple) {
+        const coneHeight = cellSize * 2.5;
+        const coneRadius = cellSize * 0.55;
+
+        const coneGeo = new THREE.ConeGeometry(coneRadius, coneHeight, 24);
+        const coneMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
+
+        const cone = new THREE.Mesh(coneGeo, coneMat);
+        cone.position.y = coneHeight / 2;
+
+        group.add(cone);
+        return group;
+    }
+
+    // ───────────────────────────────────────────────
+    //  Slope geometry
+    // ───────────────────────────────────────────────
+    if (isSlope) {
+        const W = cellSize;
+        const D = cellSize;
+        const H = cellSize * 0.6;
+
+        const geom = new THREE.BufferGeometry();
+
+        const vertices = new Float32Array([
+            -W/2, 0, -D/2,
+             W/2, 0, -D/2,
+             W/2, 0,  D/2,
+            -W/2, 0,  D/2,
+            -W/2, H, -D/2,
+             W/2, H, -D/2
+        ]);
+
+        const indices = [
+            0,1,2, 0,2,3,
+            3,2,5, 3,5,4,
+            0,3,4,
+            1,5,2,
+            4,5,1, 4,1,0
+        ];
+
+        geom.setIndex(indices);
+        geom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+        geom.computeVertexNormals();
+
+        // recenter like builder
+        if (isSlopeNorth || isSlopeSouth) {
+            geom.translate(0, -H/2, 0);
+            geom.translate(0, 0, -cellSize * 0.5);
+        }
+        if (isSlopeEast || isSlopeWest) {
+            geom.translate(0, -H/2, 0);
+        }
+
+        const mat = new THREE.MeshStandardMaterial({
+            color: 0xff3333,
+            flatShading: true
+        });
+
+        const slopeMesh = new THREE.Mesh(geom, mat);
+
+        // orientation
+        if (isSlopeNorth) slopeMesh.rotation.y = 0;
+        if (isSlopeEast)  slopeMesh.rotation.y = Math.PI / 2;
+        if (isSlopeSouth) slopeMesh.rotation.y = Math.PI;
+        if (isSlopeWest)  slopeMesh.rotation.y = -Math.PI / 2;
+
+        slopeMesh.position.y = H / 2;
+
+        group.add(slopeMesh);
+        return group;
+    }
+
+// ───────────────────────────────────────────────
+//  Studs (EXACT builder geometry + placement)
+// ───────────────────────────────────────────────
+if (!flat) {
+    const studHeight = brickHeight * 0.4;
+    const studGeo = new THREE.CylinderGeometry(
+        cellSize * 0.18,
+        cellSize * 0.18,
+        studHeight,
+        16
+    );
     const studMat = new THREE.MeshStandardMaterial({ color: 0xff6666 });
 
     for (let i = 0; i < w; i++) {
-      for (let j = 0; j < l; j++) {
-        const stud = new THREE.Mesh(studGeo, studMat);
-        stud.position.set(
-          mesh.position.x + (i - (w-1)/2) * cellSize,
-          mesh.position.y + brickHeight/2 + (brickHeight*0.4)/2,
-          mesh.position.z + (j - (l-1)/2) * cellSize
-        );
-        scene.add(stud);
-        studs.push(stud);
-      }
+        for (let j = 0; j < l; j++) {
+            const stud = new THREE.Mesh(studGeo, studMat);
+
+            stud.position.set(
+                (i - (w - 1) / 2) * cellSize,
+                brickHeight / 2 + studHeight / 2,
+                (j - (l - 1) / 2) * cellSize
+            );
+
+            group.add(stud);
+        }
     }
-  }
+}
 
-  // ───────────────────────────────────────────────
-  //  Helpers
-  // ───────────────────────────────────────────────
-//  const helperSelected   = new THREE.BoxHelper(mesh, 0xffff00);
-//  const helperUnselected = new THREE.BoxHelper(mesh, 0x555555);
-//  helperSelected.visible   = false;
-//  helperUnselected.visible = document.getElementById('showBorders').checked;
 
-//  scene.add(helperSelected);
-//  scene.add(helperUnselected);
+    // ───────────────────────────────────────────────
+    //  Border (thin black outline)
+    // ───────────────────────────────────────────────
+    const edgeGeom = new THREE.EdgesGeometry(baseGeo);
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const border = new THREE.LineSegments(edgeGeom, edgeMat);
+    border.position.copy(baseMesh.position);
+    border.scale.set(1.002, 1.002, 1.002);
+    group.add(border);
 
-  // ───────────────────────────────────────────────
-  //  Brick object
-  // ───────────────────────────────────────────────
-  const brick = { 
-    id: nextBrickId++,
-    mesh, 
-    studs, 
-    helperSelected, 
-    helperUnselected,
-    w,
-    l,
-    flat
-  };
-
-   
-  bricks.push(brick);
-
-  // ───────────────────────────────────────────────
-  //  Snapping & updates
-  // ───────────────────────────────────────────────
-  snapBrickToStudGrid(brick);
-  if (!isSteeple && !isSlope) updateStuds(brick);
-
-//  helperSelected.update();
-//  helperUnselected.update();
-
-//  selectBrick(brick, false);
-  return brick;
-  }
-  */
-
+    return group;
+}
+*/
+/* -- this one works but not updated!!!
 function createBrickFromJson(block) {
     const { w, l, flat, pos } = block;
 
@@ -401,7 +562,7 @@ function createBrickFromJson(block) {
     group.position.set(pos.x, pos.y, pos.z);
     return group;
 }
-
+*/
 
 /*
 function createBrickFromJson(block) {
@@ -454,6 +615,7 @@ function createBrickFromJson(block) {
 } // createBrickFromJson
 */
 
+//__ FUTURE>>>> trap the error do a try-catch .. if you cannot get the file
 async function loadLegoJson(progress,url) {
     //    const response = await fetch(url);
     // Do not cache
@@ -461,18 +623,40 @@ async function loadLegoJson(progress,url) {
     const data = await response.json();
 
     data.forEach(block => {
-	// if answered only .. show the brick
-	if (progress.answers[block.id] !== undefined) {
+	if (showFullModel) {
+            const brick = createBrickFromJson(block);
+	    scene.add(brick);
+	} else if (progress.answers[block.id] !== undefined ) {
             const brick = createBrickFromJson(block);
 	    scene.add(brick);
 	}
     });
     
-    console.log("Loaded Lego: ",url);
+//    console.log("Loaded Lego: ",url);
 
 }
 
-window.loadLegoJson = loadLegoJson;
+//__ toggleFullModel
+function toggleFullModel() {
+    const showFull = document.getElementById("legoFullModelToggle").checked;
+    
+    if (showFull) {
+	showFullModel = true;
+    } else {
+	showFullModel = false;
+    }
+   
+} //toggleFullModel
+
+function toggleLegoBorders() {
+  const show = document.getElementById("legoBorderToggle").checked;
+
+    if (show) {
+	showBorders = true;
+    } else {
+	showBorders = false;
+    }
+}
 
 //__ cleanupLegoScene
 function cleanupLegoScene() {
@@ -542,3 +726,6 @@ window.closeLegoModal = closeLegoModal;
 window.initLegoScene = initLegoScene;
 window.showLego = showLego;
 window.changeLegoScene = changeLegoScene;
+window.loadLegoJson = loadLegoJson;
+window.toggleFullModel = toggleFullModel;
+window.toggleLegoBorders = toggleLegoBorders;
