@@ -249,7 +249,8 @@
 	      <option value="dataSets/legoBridge1.json">🌉 Bridge1</option>
 	    </select>
 	  </div>
-	  <!-- ⭐ New Checkbox -->
+	  <!--
+	  
 	  <div style="margin-bottom:10px; text-align:center;">
 	    <label style="cursor:pointer; font-size:14px;">
 	      <input type="checkbox" id="legoFullModelToggle"
@@ -266,7 +267,47 @@
 	      Show Borders
 	    </label>
 	  </div>
-	  
+	  -->
+<!--
+	  <div style="display:flex; justify-content:center; gap:20px; margin-bottom:10px;">
+ 
+  <label style="cursor:pointer; font-size:14px; display:flex; align-items:center;">
+    <input type="checkbox"
+           id="legoFullModelToggle"
+           onchange="toggleFullModel(); this.parentElement.style.color = this.checked ? 'green' : 'black';"
+           style="transform:scale(1.2); margin-right:6px;">
+    See Full Model
+  </label>
+
+ 
+  <label style="cursor:pointer; font-size:14px; display:flex; align-items:center;">
+    <input type="checkbox"
+           id="legoBorderToggle"
+           onchange="toggleLegoBorders(); this.parentElement.style.color = this.checked ? 'green' : 'black';"
+           style="transform:scale(1.2); margin-right:6px;" checked>
+    Show Borders
+  </label>
+
+</div>
+	  -->
+	  <div style="display:flex; justify-content:center; gap:20px; margin-bottom:10px;">
+
+  <!-- Full Model -->
+  <label style="cursor:pointer; font-size:14px; display:flex; align-items:center; color:black;"
+         onclick="legoFullModelToggle.checked = !legoFullModelToggle.checked; this.style.color = legoFullModelToggle.checked ? 'green' : 'black'; toggleFullModel();">
+    <input type="checkbox" id="legoFullModelToggle" style="display:none;">
+    Click for Full Model
+  </label>
+
+  <!-- Borders -->
+  <label style="cursor:pointer; font-size:14px; display:flex; align-items:center; color:green;"
+         onclick="legoBorderToggle.checked = !legoBorderToggle.checked; this.style.color = legoBorderToggle.checked ? 'green' : 'black'; toggleLegoBorders();">
+    <input type="checkbox" id="legoBorderToggle" style="display:none;" checked>
+    Click to Show Borders
+  </label>
+
+</div>
+
 	  <div id="legoContainer" 
                style="width:100%; height:500px; background:#111; border-radius:8px;">
 	  </div>

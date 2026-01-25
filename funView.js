@@ -243,6 +243,19 @@ function createBrickFromJson(block) {
 	// Move steeple slightly downward using parentheses m
 	mesh.position.y = (worldPos.y + (coneHeight / 2)) - (cellSize * 1);
 
+	// --- GOLD BALL ON TOP ---
+	const ballRadius = cellSize * 0.15;	// small decorative sphere
+	const ballGeo = new THREE.SphereGeometry(ballRadius, 16, 16);
+	const ballMat = new THREE.MeshStandardMaterial({ color: 0xffd700 });	// gold
+	
+	const ball = new THREE.Mesh(ballGeo, ballMat);
+	
+	// Position ball at the tip of the cone
+	ball.position.y = coneHeight / 2 + ballRadius;
+	
+	// Attach ball to the same parent as the mesh
+	mesh.add(ball);
+
         return mesh;
     }
 
@@ -614,7 +627,60 @@ function createBrickFromJson(block) {
     return group;
 } // createBrickFromJson
 */
+async function loadLegoJson(progress, url) {
+  try {
+    const response = await fetch(`${url}?v=${Date.now()}`);
 
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} while loading ${url}`);
+    }
+
+    const data = await response.json();
+
+    // --- CAMERA RESTORE ---
+    if (data.camera) {
+      restoreCamera(camera, data.camera);
+    }
+
+    // --- BRICK LIST ---
+    const list = Array.isArray(data.bricks) ? data.bricks : data;
+
+    list.forEach(block => {
+      if (!block || typeof block.id === "undefined") return;
+
+      if (showFullModel) {
+        const brick = createBrickFromJson(block);
+        scene.add(brick);
+      } else if (progress.answers[block.id] !== undefined) {
+        const brick = createBrickFromJson(block);
+        scene.add(brick);
+      }
+    });
+
+  } catch (err) {
+    console.error("Error loading Lego JSON:", err);
+    alert(`Unable to load model: ${url}\n\n${err.message}`);
+  }
+}
+
+// do nothing for now
+function restoreCamera(camera, data) {
+  if (!data) return;
+
+  camera.position.set(data.position.x, data.position.y, data.position.z);
+  camera.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+  camera.zoom = data.zoom;
+  camera.updateProjectionMatrix();
+
+  controls.target.set(data.target.x, data.target.y, data.target.z);
+  controls.update();
+}
+
+//function restoreCamera(camera, data) {
+//    return;
+//}
+
+/*
 //__ FUTURE>>>> trap the error do a try-catch .. if you cannot get the file
 async function loadLegoJson(progress,url) {
     //    const response = await fetch(url);
@@ -634,7 +700,8 @@ async function loadLegoJson(progress,url) {
     
 //    console.log("Loaded Lego: ",url);
 
-}
+} // loadLegoJson
+*/
 
 //__ toggleFullModel
 function toggleFullModel() {
@@ -645,7 +712,9 @@ function toggleFullModel() {
     } else {
 	showFullModel = false;
     }
-   
+    // reset the scene
+    changeLegoScene();
+
 } //toggleFullModel
 
 function toggleLegoBorders() {
@@ -656,6 +725,10 @@ function toggleLegoBorders() {
     } else {
 	showBorders = false;
     }
+
+    // reset it all
+    changeLegoScene();
+    
 }
 
 //__ cleanupLegoScene

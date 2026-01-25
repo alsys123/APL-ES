@@ -214,6 +214,20 @@ function addBrick(w, l, flat = false, pos = null) {
 	
 	// Reposition mesh so the cone sits on the ground
 	mesh.position.y = coneHeight / 2;
+
+	
+	// --- GOLD BALL ON TOP ---
+	const ballRadius = cellSize * 0.15;	// small decorative sphere
+	const ballGeo = new THREE.SphereGeometry(ballRadius, 16, 16);
+	const ballMat = new THREE.MeshStandardMaterial({ color: 0xffd700 });	// gold
+	
+	const ball = new THREE.Mesh(ballGeo, ballMat);
+	
+	// Position ball at the tip of the cone
+	ball.position.y = coneHeight / 2 + ballRadius;
+	
+	// Attach ball to the same parent as the mesh
+	mesh.add(ball);
     } //isSteeple
     
     // creating a slope tile
@@ -480,9 +494,14 @@ function parseJsonWithComments(text) {
 
 // ---------- Save / Load ----------
 function saveScene() {
+
+    // Save camera settting as first item
+    const camJSON = saveCamera(camera);
+  //  localStorage.setItem("cameraState", JSON.stringify(camJSON));
+    
   let saveId = 1;
 
-  const data = bricks.map(b => ({
+  const bricksJSON = bricks.map(b => ({
     id: saveId++,   // Always starts at 1
     w: b.w,
     l: b.l,
@@ -493,10 +512,21 @@ function saveScene() {
       z: b.mesh.position.z
     }
   }));
+    
+    // Combine into one scene object
+    const sceneData = {
+	camera: camJSON,
+	bricks: bricksJSON
+    };
+    
+    // Create downloadable JSON file
+    const blob = new Blob([JSON.stringify(sceneData, null, 2)], {
+	type: "application/json"
+    });
 
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: 'application/json'
-  });
+    //  const blob = new Blob([JSON.stringify(data, null, 2)], {
+//    type: 'application/json'
+//  });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -504,7 +534,7 @@ function saveScene() {
   a.download = 'lego-scene.json';
   a.click();
   URL.revokeObjectURL(url);
-}
+} // saveScene
 
 
 function onFileChosen(e) {
@@ -523,26 +553,51 @@ function onFileChosen(e) {
   e.target.value = '';
 }
 
+//__ loadScene
 function loadScene(data) {
+
+    // --- Detect old format (array) vs new format (object) ---
+    const isOldFormat = Array.isArray(data);
+    // Normalize to new format shape
+    const cameraData = isOldFormat ? null : data.camera;
+    const bricksData = isOldFormat ? data : (data.bricks || []);
+    
+    // 1. Restore camera
+    if (cameraData) {
+	restoreCamera(camera, data.camera);
+    }
+    
   bricks.forEach(b => {
     scene.remove(b.mesh);
     b.studs.forEach(s => scene.remove(s));
     scene.remove(b.helperSelected);
     scene.remove(b.helperUnselected);
   });
+    
   bricks = [];
   selectedBricks.clear();
-  nextBrickId = 1;
-
-  data.forEach(item => {
-      const pos = new THREE.Vector3(item.pos.x,item.pos.y,item.pos.z);
+    nextBrickId = 1;
+    
+    // 2. Load bricks from data.bricks
+bricksData.forEach(item => {
+//    const list = data.bricks || [];
+    
+//    list.forEach(item => {
+	const pos = new THREE.Vector3(
+	    item.pos.x,
+	    item.pos.y,
+	    item.pos.z
+	);
      
       // normal brick
     const brick = addBrick(item.w, item.l, item.flat, pos);
     brick.id = item.id;
+    
     brick.mesh.position.y = item.pos.y;
+    
     snapBrickToStudGrid(brick);
     updateStuds(brick);
+    
     brick.helperSelected.update();
     brick.helperUnselected.update();
       nextBrickId = Math.max(nextBrickId, item.id + 1);
@@ -553,5 +608,51 @@ function loadScene(data) {
     b.helperSelected.visible = false;
     b.helperUnselected.visible = visible;
   });
+    
+}// loadScene
+
+function saveCamera(camera) {
+  return {
+    position: {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    },
+    target: {
+      x: controls.target.x,
+      y: controls.target.y,
+      z: controls.target.z
+    },
+    rotation: {
+      x: camera.rotation.x,
+      y: camera.rotation.y,
+      z: camera.rotation.z
+    },
+    zoom: camera.zoom
+  };
 }
 
+function restoreCamera(camera, data) {
+  camera.position.set(
+    data.position.x,
+    data.position.y,
+    data.position.z
+  );
+
+  camera.rotation.set(
+    data.rotation.x,
+    data.rotation.y,
+    data.rotation.z
+  );
+
+  camera.zoom = data.zoom;
+  camera.updateProjectionMatrix();
+
+  controls.target.set(
+    data.target.x,
+    data.target.y,
+    data.target.z
+  );
+
+  controls.update();
+}
