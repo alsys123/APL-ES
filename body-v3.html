@@ -127,10 +127,6 @@
       -->
       
       <div class="exam-header">
-        <!-- <h1>CIX Exam for Pilots</h1> -->
-      <!--  <h1>Bridge Exam for Learning</h1> -->
-	<!--        <h1>Exam System for Learning</h1>  -->
-	
 	<h1 id="examTitle">Exam System for Learning</h1>
 	<div>
 	  <h3 id="examVersion" style="font-weight: normal; text-align: right;">1.0</h3>
@@ -165,7 +161,6 @@
           <button class="btn btn-secondary" onclick="nextPart()" id="nextBtn">Next →</button>
         </div>
 
-
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill" style="width: 0%">0/300</div>
         </div>
@@ -196,6 +191,9 @@
 
 	<button class="btn btn-secondary btn-small off"
 		onclick="showLego()">Show LEGO Progress</button>
+
+	<button id="fullReport" class="btn btn-secondary btn-small off"
+		onclick="fullReport()">Full Report</button>
 
       </div>
 
@@ -242,54 +240,12 @@
 	  <div style="margin-bottom:10px; text-align:center;">
 	    <select id="legoSceneSelect" onchange="changeLegoScene()" 
 		    style="padding:4px 8px; border-radius:6px; font-size:14px;">
-	      <option value="dataSets/legoCastle-1.json">🏰 Castle</option>
+	      <option value="dataSets/legoCastle.json">🏰 Castle</option>
 	      <option value="dataSets/legoTower.json">🗼 Tower</option>
 	      <option value="dataSets/legoEgypt.json">🏘️ Egypt</option>
 	      <option value="dataSets/legoBridge.json">🌉 Bridge</option>
-	      <option value="dataSets/legoBridge1.json">🌉 Bridge1</option>
 	    </select>
 	  </div>
-	  <!--
-	  
-	  <div style="margin-bottom:10px; text-align:center;">
-	    <label style="cursor:pointer; font-size:14px;">
-	      <input type="checkbox" id="legoFullModelToggle"
-		     onchange="toggleFullModel()"
-		     style="transform:scale(1.2); margin-right:6px;"> See Full Model
-	    </label>
-	  </div>
-
-	  <div style="margin-bottom:10px; text-align:center;">
-	    <label style="cursor:pointer; font-size:14px;">
-	      <input type="checkbox" id="legoBorderToggle"
-		     onchange="toggleLegoBorders()"
-		     style="transform:scale(1.2); margin-right:6px;" checked>
-	      Show Borders
-	    </label>
-	  </div>
-	  -->
-<!--
-	  <div style="display:flex; justify-content:center; gap:20px; margin-bottom:10px;">
- 
-  <label style="cursor:pointer; font-size:14px; display:flex; align-items:center;">
-    <input type="checkbox"
-           id="legoFullModelToggle"
-           onchange="toggleFullModel(); this.parentElement.style.color = this.checked ? 'green' : 'black';"
-           style="transform:scale(1.2); margin-right:6px;">
-    See Full Model
-  </label>
-
- 
-  <label style="cursor:pointer; font-size:14px; display:flex; align-items:center;">
-    <input type="checkbox"
-           id="legoBorderToggle"
-           onchange="toggleLegoBorders(); this.parentElement.style.color = this.checked ? 'green' : 'black';"
-           style="transform:scale(1.2); margin-right:6px;" checked>
-    Show Borders
-  </label>
-
-</div>
-	  -->
 	  <div style="display:flex; justify-content:center; gap:20px; margin-bottom:10px;">
 
   <!-- Full Model -->

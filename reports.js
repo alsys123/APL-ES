@@ -244,3 +244,87 @@ function gradeExam() {
 
         enableCollapsibles();
       } // gradeExam
+function fullReport() {
+
+    document.getElementById("resultsTitle").textContent = "📘 Full Exam Report";
+
+    let html = `<div class="full-report">`;
+
+    // Loop through all sections
+    for (let s = 1; s <= 6; s++) {
+
+        const sectionTitle =
+            sectionPartTitlesDesc[s]?.[1]?.[0]?.textSection ||
+            `Section ${s}`;
+
+        html += `
+            <div class="section-block">
+                <h2>Section ${s}: ${sectionTitle}</h2>
+        `;
+
+        // Loop through parts
+        for (let p = 1; p <= 10; p++) {
+
+            const partQuestions = questions[s]?.[p] || [];
+            if (partQuestions.length === 0) continue;
+
+            const partTitle =
+                sectionPartTitlesDesc[s]?.[p]?.[0]?.textPart ||
+                `Part ${p}`;
+
+
+//        const currentTitles = sectionPartTitlesDesc[currentSection]?.[currentPart] || [];
+//        const notes = currentTitles.length ? currentTitles[0].notes : "";
+
+            const studyNotes =
+                sectionPartTitlesDesc[s]?.[p]?.[0]?.notes || "";
+
+            html += `
+                <div class="part-block">
+                    <h3>Part ${p}: ${partTitle}</h3>
+            `;
+
+            // Study notes
+            if (studyNotes.trim() !== "") {
+                html += `
+                    <div class="study-notes">
+                        <strong>Study Notes:</strong> 
+                        <i>${studyNotes}</i> <br>
+                    </div>
+                `;
+            }
+
+            // Questions + correct answers
+            html += `<div class="questions-block">`;
+
+	    let qNum = 1;
+
+            partQuestions.forEach(q => {
+
+                // Correct answer text
+                let correctAnswer = "";
+                if (q.correct !== undefined) {
+                    correctAnswer = q.options?.[q.correct] || "";
+                }
+
+                html += `
+                    <div class="question-item">
+                        Q${qNum})  ${q.text}  <em>✦</em> <i>${correctAnswer}</i>
+                    </div>
+                `;
+		qNum++;
+            });  // forEach
+
+            html += `</div></div><br>`; // end part-block
+        }
+
+        html += `</div><br><br>`; // end section-block
+    }
+
+    html += `</div>`; // end full-report
+
+    document.getElementById("resultsContent").innerHTML = html;
+    document.getElementById("resultsModal").classList.add("active");
+}
+
+

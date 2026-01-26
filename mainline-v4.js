@@ -20,12 +20,20 @@ let shuffleMap = {};       // qId → array of original indices
 let gMetaData = {};
 let gExamType = 'full';  // full or student.  Default full.
 
+let gSecretFullReport = 0;
+
 function scrollPageBottom() {
     // Use the element that actually scrolls inside Google Sites
     const scrollTarget = document.scrollingElement || document.documentElement;
 
     const maxScroll = scrollTarget.scrollHeight - scrollTarget.clientHeight;
     scrollTarget.scrollTo({ top: maxScroll, behavior: 'smooth' });
+    gSecretFullReport++;
+
+    if (gSecretFullReport > 2 && gExamType === 'full') {
+	    document.getElementById("fullReport").style.display = "";
+	}
+
 }
 
       function showNotification(message, type = 'success') {
@@ -66,6 +74,7 @@ async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, exam
 	document.getElementById("autoCheckBtn").disabled = true;
 	document.getElementById("gradeBtn").innerHTML = "📊 Progress Report";
 	document.getElementById("gradeBtn").setAttribute("onclick", "progressReport()");
+	document.getElementById("fullReport").style.display = "none";
 
     };
 
@@ -74,6 +83,9 @@ async function initExam(examQuestionsCVSParsed, sectionPartTitlesCVSParsed, exam
 	document.getElementById("autoCheckBtn").disabled = false;
 	document.getElementById("gradeBtn").innerHTML = "📊 Grade Report";
 	document.getElementById("gradeBtn").setAttribute("onclick", "gradeExam()");
+
+	// do not display until secret is displayed ... see got to bottom
+	document.getElementById("fullReport").style.display = "none";
 
     };
 
@@ -1150,12 +1162,14 @@ function populateJumpDropdown() {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       } // scrollMainBottom
 
-      function scrollMainTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } // scrollMainTop
+function scrollMainTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    gSecretFullReport++;
+    
+} // scrollMainTop
 
-      function highlightCurrentJump() {
-        const gridButtons = document.querySelectorAll('#jumpGrid button');
+function highlightCurrentJump() {
+    const gridButtons = document.querySelectorAll('#jumpGrid button');
         gridButtons.forEach(btn => {
           btn.classList.remove('active');
           if (btn.textContent === `S${currentSection}P${currentPart}`) {
