@@ -26,6 +26,7 @@
 <button class="tab-btn" onclick="showTab('faq')">FAQ</button>
 <button class="tab-btn" onclick="showTab('revision')">Revision History</button>
 <button class="tab-btn" onclick="showTab('about')">About</button>
+	<button class="tab-btn" onclick="showTab('legoBuilder')">Lego Builder</button>
 </div>
 
 <!-- Getting Started Tab -->
@@ -68,7 +69,12 @@
 <div id="revision" class="tab-content">
   <div class="section" id="revision-section"></div>
 </div>
-
+	
+<!-- Lego Builder -->
+<div id="legoBuilder" class="tab-content">
+  <div class="section" id="legoBuilder-section"></div>
+</div>
+	
 <div class="footer">
 <p><strong>APL-ES</strong></p>
 <p>Learning and Exam System</p>
@@ -141,6 +147,12 @@
 	document.getElementById("revision-section").innerHTML = html;
   });
 
+	fetch("legoBuilder-content.html")
+    .then(r => r.text())
+    .then(html => {
+	document.getElementById("legoBuilder-section").innerHTML = html;
+  });
+	
 </script>
 
 </body>
