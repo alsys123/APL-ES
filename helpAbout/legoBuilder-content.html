@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LEGO Builder – Detailed User Guide</title>
+  <style>
+    :root {
+      --bg-start: #0a0a1f;
+      --bg-end: #1e1e45;
+      --accent: #88ccff;
+      --accent-dark: #5a9fe6;
+      --text: #d8e0ff;
+      --card-bg: rgba(30, 35, 70, 0.65);
+      --border: #445577;
+      --warning: #ffca28;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 920px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    header {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 3.4rem;
+      color: var(--accent);
+      text-shadow: 0 4px 20px rgba(0,0,0,0.7);
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 1.5rem;
+      opacity: 0.92;
+      margin: 12px 0 20px;
+    }
+    .warning {
+      background: rgba(255, 202, 40, 0.18);
+      border: 2px solid var(--warning);
+      border-radius: 14px;
+      padding: 22px;
+      margin: 30px 0;
+      color: #fffce8;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 15px rgba(255,193,7,0.15);
+    }
+    .warning strong { color: #ffeb3b; }
+    section {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 35px rgba(0,0,0,0.55);
+      transition: transform 0.15s ease;
+    }
+    section:hover { transform: translateY(-3px); }
+    h2 {
+      color: var(--accent);
+      font-size: 2rem;
+      margin: 0 0 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+    }
+    h3 {
+      color: #bbddff;
+      font-size: 1.45rem;
+      margin: 28px 0 14px;
+    }
+    ul, ol {
+      padding-left: 28px;
+      margin: 14px 0;
+    }
+    li { margin-bottom: 12px; }
+    kbd {
+      background: #2a2a44;
+      color: #c0d0ff;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid #4a5a7a;
+      font-family: monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 1rem;
+      background: rgba(20,25,50,0.4);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px 16px;
+      border: 1px solid #3a4a66;
+      text-align: left;
+    }
+    th {
+      background: #1e2a45;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .tip, .ipad-note {
+      padding: 16px 20px;
+      margin: 24px 0;
+      border-radius: 0 12px 12px 0;
+      border-left: 6px solid;
+    }
+    .tip {
+      background: rgba(100,200,255,0.12);
+      border-left-color: #66ccff;
+    }
+    .ipad-note {
+      background: rgba(0, 150, 255, 0.14);
+      border-left-color: #0099ff;
+    }
+    footer {
+      text-align: center;
+      padding: 60px 0 40px;
+      opacity: 0.8;
+      font-size: 1rem;
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 2.6rem; }
+      section { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>LEGO Builder</h1>
+      <div class="subtitle">Detailed User Guide – 3D Virtual Brick Building Tool</div>
+    </header>
+
+    <div class="warning">
+      <strong>Important:</strong> No undo/redo exists.<br>
+      <strong>Save frequently</strong> — especially after big additions or changes.<br>
+      <small>(Camera view + all bricks are saved together in one file.)</small>
+    </div>
+
+    <section>
+      <h2>Mouse Controls – Regular Computer (Desktop / Laptop)</h2>
+      <p>The builder uses standard <strong>OrbitControls</strong> — very similar to 3D viewers in games, CAD, and design tools.</p>
+      <ul>
+        <li><strong>Left mouse button drag</strong> → orbit / rotate the camera around the model</li>
+        <li><strong>Right mouse button drag</strong> → pan / move the view left/right/up/down</li>
+        <li><strong>Mouse wheel scroll</strong> → zoom in / zoom out smoothly</li>
+        <li><strong>Click a brick</strong> → select it (yellow border if enabled)</li>
+        <li><strong>Shift + Click</strong> → add/remove bricks from multi-selection</li>
+        <li><strong>Click + drag on selected brick(s)</strong> → move them freely in the X/Z plane (auto-snaps to grid on release)</li>
+        <li><strong>Click empty space</strong> → deselect everything</li>
+      </ul>
+      <div class="tip">
+        Tip: Hold right mouse and drag to quickly recenter your view if you get lost in space.
+      </div>
+    </section>
+
+    <section>
+      <h2>Using on iPad / Tablets (Touch Gestures)</h2>
+      <p>Works well in Safari/Chrome on iPad — touch support is built-in, but gestures can feel slightly less precise than mouse.</p>
+      <ul>
+        <li><strong>One finger drag</strong> → orbit / rotate view</li>
+        <li><strong>Two-finger drag</strong> → pan the view</li>
+        <li><strong>Two-finger pinch/spread</strong> → zoom</li>
+        <li><strong>Tap brick</strong> → select</li>
+        <li><strong>Tap & hold + drag on selected brick</strong> → move in X/Z (snaps on release)</li>
+      </ul>
+      <div class="ipad-note">
+        <strong>iPad tips:</strong> Use landscape mode + Add to Home Screen for cleaner full-screen experience.<br>
+        Nudge buttons (X/Y/Z ±) are often more reliable than long drags.<br>
+        Gestures may get "sticky" after long sessions — lift fingers and touch again.<br>
+        Performance good on recent iPads; very large models (>500 bricks) may slow down.
+      </div>
+    </section>
+
+    <section>
+      <h2>Building Large Models – Hundreds of Bricks</h2>
+      <p>Your LEGO models can easily reach **hundreds of bricks** (500–1000+ is realistic) — the system is designed to handle reasonably large scenes without crashing.</p>
+      <ul>
+        <li>Snapping and movement remain fast even with many pieces</li>
+        <li>Save/load works fine — files stay small (usually <10–50 KB even for big builds)</li>
+        <li>Performance depends on device:
+          <ul>
+            <li>Modern desktop/laptop → smooth with 1000+ bricks</li>
+            <li>Recent iPad (M1/M2/M4) → good up to ~600–800 bricks</li>
+            <li>Older devices or phones → slow above ~200–300 bricks</li>
+          </ul>
+        </li>
+      </ul>
+      <div class="tip">
+        For very large models: hide borders (uncheck box) to improve rendering speed, and save incremental versions often.
+      </div>
+    </section>
+
+    <section>
+      <h2>Save & Load – Editable Text Format</h2>
+      <p><strong>Save</strong> creates a file called <code>lego-scene.json</code> — this is a plain **text file** (JSON format).</p>
+      <ul>
+        <li>You can open it in any text editor: Notepad, TextEdit, VS Code, Sublime Text, etc.</li>
+        <li>It contains:
+          <ul>
+            <li>Every brick (type, size, exact position)</li>
+            <li>Your current camera position, rotation, target & zoom</li>
+          </ul>
+        </li>
+        <li>You can hand-edit positions, add bricks manually, or fix mistakes if you're comfortable with JSON</li>
+        <li><strong>Load</strong> → pick any previously saved .json file to resume exactly where you left off (including viewpoint)</li>
+      </ul>
+      <div class="tip">
+        Pro tip: Make copies with names like model-v1.json, model-v2.json → gives you basic version history since there's no undo.
+      </div>
+    </section>
+
+    <section>
+      <h2>Available Pieces Quick Reference</h2>
+      <table>
+        <tr><th>Button</th><th>Type</th><th>Height</th><th>Notes</th></tr>
+        <tr><td>1×1, 2×2, 2×4, 4×2, 4×4, 8×8</td><td>Classic bricks</td><td>Full (≈2 plates)</td><td>With studs</td></tr>
+        <tr><td>1×1 Flat, 2×2 Flat</td><td>Plates</td><td>Thin (~¼)</td><td>No studs</td></tr>
+        <tr><td>Cone + Ball</td><td>Steeple / turret</td><td>Tall (~6×)</td><td>Gold ball top</td></tr>
+        <tr><td>Slope N / E / S / W</td><td>Sloped wedge</td><td>~60%</td><td>Facing direction</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Other Controls</h2>
+      <ul>
+        <li><strong>Delete Selected</strong> → removes highlighted bricks</li>
+        <li><strong>Show borders</strong> checkbox → toggle wireframes (helps see selection & edges)</li>
+        <li><strong>Hide Controls</strong> (top-right) → clean canvas view; tap again to show UI</li>
+        <li><strong>Y± buttons</strong> → move up/down one plate at a time (perfect stacking)</li>
+      </ul>
+    </section>
+
+    <footer>
+      Built with Three.js • Happy building! 🧱<br>
+      Large models welcome — save often and enjoy!
+    </footer>
+
+  </div>
+
+</body>
+</html>
