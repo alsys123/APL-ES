@@ -712,33 +712,26 @@ button.doneGray5 {
 #examGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
+  gap: 100px;
 }
 
-/* Exam Card */
-/*
+
 .examCard {
-  background: #f8f8f8;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  max-width: 100%;
-  margin: 0 auto;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    max-width: auto;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* forces left alignment */
 }
- */
-.examCard {
-/*  background: #f8f8f8; 
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1); */
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  max-width: 100%;
-  margin: 0 auto; /* centers it */
+
+
+.examCard input {
+    width: 100%;
+    box-sizing: border-box;
 }
- 
+
 .examCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
